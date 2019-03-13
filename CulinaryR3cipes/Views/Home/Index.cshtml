@@ -1,18 +1,23 @@
-﻿@model IEnumerable<Recipe>
+﻿@model RecipesListViewModel
+
 @{
     ViewData["Title"] = "Index";
 }
 
 <h2>Index</h2>
 
-@foreach(var recipe in Model)
+@foreach(var recipe in Model.Recipes)
 {
     <div>
         <h3>@recipe.Name</h3>
         @recipe.Description
         @foreach(var i in recipe.Ingredients)
         {
-            @String.Format("{0} : {1}{2}", i.Product.Name, i.Quantity, i.Product.Measure)            
+        <div>
+            @String.Format("{0} : {1}{2}", i.Product.Name, i.Quantity, i.Product.Measure)
+        </div>
         }
     </div>
 }
+
+<div page-model="@Model.PagingInfo" page-action="Index"></div>
