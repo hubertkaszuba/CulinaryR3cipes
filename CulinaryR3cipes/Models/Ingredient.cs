@@ -10,7 +10,7 @@ namespace CulinaryR3cipes.Models
         public int RecipeId { get; set; }
         public int Quantity { get; set; }
 
-        public Product Product { get; set; }
-        public Recipe Recipe { get; set; }
+        public virtual Product Product { get; set; }
+        public virtual Recipe Recipe { get; set; }
     }
 }

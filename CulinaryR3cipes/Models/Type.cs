@@ -8,6 +8,6 @@ namespace CulinaryR3cipes.Models
         public int TypeId { get; set; }
         public string Name { get; set; }
 
-        public ICollection<Recipe> Recipes { get; set; }
+        public virtual ICollection<Recipe> Recipes { get; set; }
     }
 }

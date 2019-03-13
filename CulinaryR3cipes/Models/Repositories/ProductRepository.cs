@@ -1,4 +1,5 @@
 ﻿using CulinaryR3cipes.Models.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,12 @@ namespace CulinaryR3cipes.Models
         {
             context = ctx;
         }
-        public IQueryable<Product> Products => context.Products;
+        public IQueryable<Product> Products => context.Products
+            .Include(product=>product.Ingredients)
+                .ThenInclude(ingredient => ingredient.Product)
+            .Include(product => product.Ingredients)
+                .ThenInclude(ingredient => ingredient.Recipe)
+            .Include(c=>c.Category);
 
         public void AddProduct(Product product)
         {

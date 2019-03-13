@@ -12,7 +12,7 @@ namespace CulinaryR3cipes.Models
         public int? Time { get; set; }
         public byte[] Img { get; set; }
 
-        public Type Type { get; set; }
-        public ICollection<Ingredient> Ingredients { get; set; }
+        public virtual Type Type { get; set; }
+        public virtual ICollection<Ingredient> Ingredients { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace CulinaryR3cipes.Models
         public string Name { get; set; }
         public string Measure { get; set; }
 
-        public Category Category { get; set; }
-        public ICollection<Ingredient> Ingredients { get; set; }
+        public virtual Category Category { get; set; }
+        public virtual ICollection<Ingredient> Ingredients { get; set; }
     }
 }

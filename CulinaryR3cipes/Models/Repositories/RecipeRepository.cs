@@ -16,7 +16,12 @@ namespace CulinaryR3cipes.Models.Repositories
             context = ctx;
         }
 
-        public IQueryable<Recipe> Recipes => context.Recipes.Include(c => c.Ingredients);
+        public IQueryable<Recipe> Recipes => context.Recipes
+             .Include(recipe => recipe.Ingredients)
+                .ThenInclude(ingredient => ingredient.Product)
+            .Include(recipe => recipe.Ingredients)
+                .ThenInclude(ingredient => ingredient.Recipe)
+            .Include(recipe => recipe.Type);
 
         public void AddRecipe(Recipe recipe)
         {

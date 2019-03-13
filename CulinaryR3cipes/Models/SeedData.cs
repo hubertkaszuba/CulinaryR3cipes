@@ -39,12 +39,14 @@ namespace CulinaryR3cipes.Models
                 Category wheatProduct = new Category { Name = "Produkt pszenny" };
                 Category meat = new Category { Name = "Mięso" };
                 Category vegetable = new Category { Name = "Warzywo" };
+                Category spices = new Category { Name = "Przyprawy" };
 
                 categoryRepository.AddCategory(dairyProduct);
                 categoryRepository.AddCategory(vegetable);
                 categoryRepository.AddCategory(fruit);
                 categoryRepository.AddCategory(wheatProduct);
                 categoryRepository.AddCategory(meat);
+                categoryRepository.AddCategory(spices);
 
                 Product eggs = new Product { Name = "Jajka", Measure = "szt.", Category = dairyProduct };
                 Product apple = new Product { Name = "Jabłko", Measure = "szt.", Category = fruit };
@@ -53,6 +55,13 @@ namespace CulinaryR3cipes.Models
                 Product mushrooms = new Product { Name = "Pieczarki", Measure = "g", Category = vegetable };
                 Product sourCream = new Product { Name = "Śmietana", Measure = "ml", Category = dairyProduct };
                 Product carrot = new Product { Name = "Marchew", Measure = "szt.", Category = vegetable };
+                Product milk = new Product { Name = "Mleko", Measure = "ml", Category = dairyProduct };
+                Product flour = new Product { Name = "Mąka", Measure = "g", Category = wheatProduct };
+                Product sugar = new Product { Name = "Cukier", Measure = "g", Category = spices };
+                Product bread = new Product { Name = "Chleb", Measure = "szt.", Category = wheatProduct };
+                Product ham = new Product { Name = "Szynka", Measure = "szt.", Category = meat };
+                Product oatmealFlakes = new Product { Name = "Płatki owsiane", Measure = "g", Category = wheatProduct };
+                Product butter = new Product { Name = "Masło", Measure = "g", Category = dairyProduct };
 
                 productRepository.AddProduct(eggs);
                 productRepository.AddProduct(apple);
@@ -61,16 +70,40 @@ namespace CulinaryR3cipes.Models
                 productRepository.AddProduct(mushrooms);
                 productRepository.AddProduct(sourCream);
                 productRepository.AddProduct(carrot);
+                productRepository.AddProduct(milk);
+                productRepository.AddProduct(flour);
+                productRepository.AddProduct(sugar);
+                productRepository.AddProduct(bread);
+                productRepository.AddProduct(ham);
+                productRepository.AddProduct(oatmealFlakes);
+                productRepository.AddProduct(butter);
 
-                Recipe pastaWithChicken = new Recipe { Name = "Makaron z kurczakiem i pieczarkami", Type = dinner, Description = "Zrób makaron", Time = 30 };
+                Recipe pastaWithChicken = new Recipe { Name = "Makaron z kurczakiem i pieczarkami", Type = dinner, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at mattis dui. Duis vitae rhoncus lacus. Duis luctus eleifend dolor, ut facilisis magna vehicula ac. Vestibulum nec suscipit magna, et gravida sem. Quisque quis malesuada felis, in luctus tortor. Aenean pulvinar id turpis vel volutpat. Nullam libero urna, ultrices a mollis sit amet, ultricies at erat. Mauris nec pharetra neque. Praesent ipsum turpis, dictum vitae massa pulvinar, eleifend rhoncus tellus. Sed interdum elementum rhoncus. Sed ac nisl varius, faucibus sem eget, tempus risus. Maecenas eu leo eu massa consectetur venenatis nec sed lorem.", Time = 30 };
+                Recipe breadWithHam = new Recipe { Name = "Kanapka z szynką", Type = breakfast, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at mattis dui. Duis vitae rhoncus lacus. Duis luctus eleifend dolor, ut facilisis magna vehicula ac. Vestibulum nec suscipit magna, et gravida sem. Quisque quis malesuada felis, in luctus tortor. Aenean pulvinar id turpis vel volutpat. Nullam libero urna, ultrices a mollis sit amet, ultricies at erat. Mauris nec pharetra neque. Praesent ipsum turpis, dictum vitae massa pulvinar, eleifend rhoncus tellus. Sed interdum elementum rhoncus. Sed ac nisl varius, faucibus sem eget, tempus risus. Maecenas eu leo eu massa consectetur venenatis nec sed lorem.", Time = 10 };
+                Recipe pancakes = new Recipe { Name = "Naleśniki", Type = dinner, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at mattis dui. Duis vitae rhoncus lacus. Duis luctus eleifend dolor, ut facilisis magna vehicula ac. Vestibulum nec suscipit magna, et gravida sem. Quisque quis malesuada felis, in luctus tortor. Aenean pulvinar id turpis vel volutpat. Nullam libero urna, ultrices a mollis sit amet, ultricies at erat. Mauris nec pharetra neque. Praesent ipsum turpis, dictum vitae massa pulvinar, eleifend rhoncus tellus. Sed interdum elementum rhoncus. Sed ac nisl varius, faucibus sem eget, tempus risus. Maecenas eu leo eu massa consectetur venenatis nec sed lorem.", Time = 20 };
 
                 recipeRepository.AddRecipe(pastaWithChicken);
+                recipeRepository.AddRecipe(breadWithHam);
+                recipeRepository.AddRecipe(pancakes);
 
                 ingredientRepository.AddIngredients(new List<Ingredient> {
                     new Ingredient { Product = chicken, Quantity = 200, Recipe = pastaWithChicken},
                     new Ingredient { Product = pasta, Quantity = 200, Recipe = pastaWithChicken },
                     new Ingredient { Product = mushrooms, Quantity = 100, Recipe = pastaWithChicken},
                     new Ingredient { Product = sourCream, Quantity = 200, Recipe = pastaWithChicken}
+                });
+
+                ingredientRepository.AddIngredients(new List<Ingredient> {
+                    new Ingredient { Product = bread, Quantity = 3, Recipe = breadWithHam},
+                    new Ingredient { Product = butter, Quantity = 10, Recipe = breadWithHam },
+                    new Ingredient { Product = ham, Quantity = 3, Recipe = breadWithHam}
+                });
+
+                ingredientRepository.AddIngredients(new List<Ingredient> {
+                    new Ingredient { Product = milk, Quantity = 250, Recipe = pancakes},
+                    new Ingredient { Product = eggs, Quantity = 3, Recipe = pancakes },
+                    new Ingredient { Product = flour, Quantity = 200, Recipe = pancakes},
+                    new Ingredient { Product = sugar, Quantity = 10, Recipe = pancakes}
                 });
             }
 

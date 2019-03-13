@@ -11,15 +11,14 @@ namespace CulinaryR3cipes.Models
     {
         private IRecipeRepository repository;
 
-        public HomeController(IRecipeRepository repo)
+        public HomeController(IRecipeRepository repo, IProductRepository repo2)
         {
             repository = repo;
         }
 
         public ViewResult Index()
         {
-            var x = repository.Recipes;
-            return View("Index");
+            return View(repository.Recipes);
         }
     }
 }
