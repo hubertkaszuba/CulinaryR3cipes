@@ -1,0 +1,19 @@
+﻿@model RecipesListViewModel
+
+@{
+    ViewData["Title"] = "_RecipesListPartial";
+}
+
+@foreach (var recipe in Model.Recipes)
+{
+    <div>
+        <h3>@recipe.Name</h3>
+        @recipe.Description
+        @foreach (var i in recipe.Ingredients)
+        {
+            <div>
+                @String.Format("{0} : {1}{2}", i.Product.Name, i.Quantity, i.Product.Measure)
+            </div>
+        }
+    </div>
+}

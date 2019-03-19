@@ -6,18 +6,47 @@
 
 <h2>Index</h2>
 
-@foreach(var recipe in Model.Recipes)
-{
-    <div>
-        <h3>@recipe.Name</h3>
-        @recipe.Description
-        @foreach(var i in recipe.Ingredients)
-        {
-        <div>
-            @String.Format("{0} : {1}{2}", i.Product.Name, i.Quantity, i.Product.Measure)
-        </div>
-        }
-    </div>
-}
+<label for="ddlType">Select Type</label>
+@*@Html.ListBoxFor(model => model.SelectedTypeIds, new MultiSelectList(Model.Types, "TypeId", "Name"), new { id = "typeDropDown", multiple = "multiple" })*@
+
+@Html.DropDownListFor(model => model.SelectedTypeIds, Model.Types.Select(x => new SelectListItem { Text = x.Name, Value = x.TypeId.ToString()}), new { @class = "form-control typeDropDown", multiple = true })
+@*@Html.ListBoxFor(model => model.SelectedIncludedCategoriesIds, new MultiSelectList(Model.Categories, "CategoryId", "Name"), new { id = "categoryIncludedDropDown", multiple = "multiple" })
+@Html.ListBoxFor(model => model.SelectedIncludedCategoriesIds, new MultiSelectList(Model.Categories, "CategoryId", "Name"), new { id = "categoryExcludedDropDown", multiple = "multiple" })*@
+<input id="btnSearch" type="button" class="btn btn-primary" value="Search" />
+
+<div id="viewPlaceHolder"></div>
+
+<script>
+    $(function () {
+        $("#typeDropDown").chosen({
+            width: "50%"
+        });
+    });
+
+    $(function () {
+        $("#categoryIncludedDropDown").chosen({
+            width: "25%"
+        });
+    });
+
+    $(function () {
+        $("#categoryExcludedDropDown").chosen();
+        width: "25%"
+    });
+
+
+    $(document).ready(function () {
+        var selectedTypeIds = $("#typeDropDown").val();
+        $("#viewPlaceHolder").load("/Home/Recipes",
+            { SelectedTypeIds: selectedTypeIds });
+    });
+
+    $("#btnSearch").on("click", function (e) {
+        var selectedTypeIds = $("#typeDropDown").val();
+        $("#viewPlaceHolder").load("/Home/Recipes",
+            { SelectedTypeIds: selectedTypeIds });
+    });
+
+</script>
 
 <div page-model="@Model.PagingInfo" page-action="Index"></div>
