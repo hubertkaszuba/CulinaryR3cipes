@@ -71,21 +71,23 @@ namespace CulinaryR3cipes.Models
             }
 
             List<Ingredient> ingredientsIncluded = ingredientRepository.Ingredients.Where(i => includedCategoryFilter.Contains(i.Product.CategoryId.ToString())).ToList();
-            List<Ingredient> ingredientsExcluded = ingredientRepository.Ingredients.Where(i => includedCategoryFilter.Contains(i.Product.CategoryId.ToString())).ToList();
+            List<Ingredient> ingredientsExcluded = ingredientRepository.Ingredients.Where(i => excludedCategoryFilter.Contains(i.Product.CategoryId.ToString())).ToList();
+
+            IEnumerable<Recipe> recipes = recipeRepository.Recipes
+                .Where(r => (typesFilter.Contains(r.TypeId.ToString()) || typesFilter.Count == 0)
+                && (r.Ingredients.Any(x => ingredientsIncluded.Any(y => y.IngredientId == x.IngredientId)) || includedCategoryFilter.Count == 0)
+                && (!r.Ingredients.Any(x => ingredientsExcluded.Any(y => y.IngredientId == x.IngredientId)) || excludedCategoryFilter.Count == 0));
 
             RecipesListViewModel viewModel = new RecipesListViewModel
             {
-                Recipes = recipeRepository.Recipes
-                .Where(r => (typesFilter.Contains(r.TypeId.ToString()) || typesFilter.Count == 0)
-                && (r.Ingredients.Any(x => ingredientsIncluded.Any(y => y.IngredientId == x.IngredientId)) || includedCategoryFilter.Count == 0))              
-                .OrderBy(r => r.RecipeId)
+                Recipes = recipes.OrderBy(r => r.RecipeId)
                 .Skip((recipePage - 1) * PageSize)
                 .Take(PageSize),
                 PagingInfo = new PagingInfo
                 {
                     CurrentPage = recipePage,
                     ItemsPerPage = PageSize,
-                    TotalItems = recipeRepository.Recipes.Count()
+                    TotalItems = recipes.Count()
                 },
             };
 

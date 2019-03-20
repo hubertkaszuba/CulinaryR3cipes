@@ -4,8 +4,6 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
-
 <label for="ddlType">Select Type</label>
 
 @Html.ListBoxFor(model => model.SelectedTypeIds, new MultiSelectList(Model.Types, "TypeId", "Name"), new { id = "typeDropDown", multiple = "multiple" })
@@ -13,27 +11,25 @@
 @Html.ListBoxFor(model => model.SelectedExcludedCategoriesIds, new MultiSelectList(Model.Categories, "CategoryId", "Name"), new { id = "categoryExcludedDropDown", multiple = "multiple" })
 <input id="btnSearch" type="button" class="btn btn-primary" value="Search" />
 
+
 <div id="viewPlaceHolder"></div>
-@for (int i = 1; i <= Model.PagingInfo.TotalPages; i++)
-{
-    <input class="btnPage" type="button" value="@i" />
-}
+
 <script>
     $(function () {
         $("#typeDropDown").chosen({
-            width: "50%"
+            width: "33%"
         });
     });
 
     $(function () {
         $("#categoryIncludedDropDown").chosen({
-            width: "25%"
+            width: "33%"
         });
     });
 
     $(function () {
         $("#categoryExcludedDropDown").chosen();
-        width: "25%"
+        width: "33%"
     });
 
 
@@ -52,17 +48,12 @@
     $("#btnSearch").on("click", function (e) {
         var selectedTypeIds = $("#typeDropDown").val();
         var includedCategoryIds = $("#categoryIncludedDropDown").val();
+        var excludedCategoryIds = $("#categoryExcludedDropDown").val();
         $("#viewPlaceHolder").load("/Home/Recipes",
-            { SelectedTypeIds: selectedTypeIds, IncludedCategoryIds: includedCategoryIds });
+            { SelectedTypeIds: selectedTypeIds, IncludedCategoryIds: includedCategoryIds, ExcludedCategoryIds: excludedCategoryIds, recipePage: 1 });
     });
 
-    $(".btnPage").on("click", function (e) {
-        var page = $(".btnPage").val();
-        var selectedTypeIds = $("#typeDropDown").val();
-        var includedCategoryIds = $("#categoryIncludedDropDown").val();
-        $("#viewPlaceHolder").load("/Home/Recipes",
-            { SelectedTypeIds: selectedTypeIds, IncludedCategoryIds: includedCategoryIds, recipePage: page });
-    });
+
+
 </script>
 
-<div page-model="@Model.PagingInfo" page-action="Recipes"></div>
