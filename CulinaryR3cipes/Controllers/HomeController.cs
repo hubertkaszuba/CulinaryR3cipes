@@ -13,17 +13,20 @@ namespace CulinaryR3cipes.Models
     {
         private IRecipeRepository recipeRepository;
         private ITypeRepository typeRepository;
+        private ICategoryRepository categoryRepository;
+        private IIngredientRepository ingredientRepository;
         int PageSize = 2;
 
-        public HomeController(IRecipeRepository recipe, ITypeRepository type)
+        public HomeController(IRecipeRepository recipe, ITypeRepository type, ICategoryRepository category, IIngredientRepository ingredient)
         {
             recipeRepository = recipe;
             typeRepository = type;
+            categoryRepository = category;
+            ingredientRepository = ingredient;
         }
 
         public ViewResult Index(int recipePage = 1)
         {
-            ViewBag.Types = typeRepository.Types.Select(r => new SelectListItem { Value = r.TypeId.ToString(), Text = r.Name }).ToList();
             RecipesListViewModel viewModel = new RecipesListViewModel
             {
                 Recipes = recipeRepository.Recipes
@@ -36,13 +39,15 @@ namespace CulinaryR3cipes.Models
                     ItemsPerPage = PageSize,
                     TotalItems = recipeRepository.Recipes.Count()
                 },
-                Types = typeRepository.Types
+                Types = typeRepository.Types,
+                Categories = categoryRepository.Categories                
             };
         
             return View(viewModel);
         }
-        [HttpPost]
-        public IActionResult Recipes(string [] SelectedTypeIds, int recipePage = 1)
+
+        //[HttpPost]
+        public IActionResult Recipes(string [] SelectedTypeIds, string[] IncludedCategoryIds, string [] ExcludedCategoryIds, int recipePage = 1)
         {
             List<string> typesFilter = new List<string> { };
             if (SelectedTypeIds.Any())
@@ -51,13 +56,28 @@ namespace CulinaryR3cipes.Models
                     typesFilter.Add(s);
             }
 
-            //var categoryIncludedFilter = recipesViewModel.SelectedIncludedCategoriesIds.Split(",").ToList();
-            //var categoryExcludedFilter = recipesViewModel.SelectedExcludedCategoriesIds.Split(",").ToList();
+            List<string> includedCategoryFilter = new List<string> { };
+            if (IncludedCategoryIds.Any())
+            {
+                foreach (var s in IncludedCategoryIds)
+                    includedCategoryFilter.Add(s);
+            }
+
+            List<string> excludedCategoryFilter = new List<string> { };
+            if (ExcludedCategoryIds.Any())
+            {
+                foreach (var s in ExcludedCategoryIds)
+                    excludedCategoryFilter.Add(s);
+            }
+
+            List<Ingredient> ingredientsIncluded = ingredientRepository.Ingredients.Where(i => includedCategoryFilter.Contains(i.Product.CategoryId.ToString())).ToList();
+            List<Ingredient> ingredientsExcluded = ingredientRepository.Ingredients.Where(i => includedCategoryFilter.Contains(i.Product.CategoryId.ToString())).ToList();
 
             RecipesListViewModel viewModel = new RecipesListViewModel
             {
                 Recipes = recipeRepository.Recipes
-                .Where(r => typesFilter.Contains(r.TypeId.ToString()) || typesFilter.Count == 0)
+                .Where(r => (typesFilter.Contains(r.TypeId.ToString()) || typesFilter.Count == 0)
+                && (r.Ingredients.Any(x => ingredientsIncluded.Any(y => y.IngredientId == x.IngredientId)) || includedCategoryFilter.Count == 0))              
                 .OrderBy(r => r.RecipeId)
                 .Skip((recipePage - 1) * PageSize)
                 .Take(PageSize),

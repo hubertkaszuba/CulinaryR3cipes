@@ -34,8 +34,7 @@ namespace CulinaryR3cipes.Infrastructure
             for(int i = 1; i <= PageModel.TotalPages; i++)
             {
                 TagBuilder tag = new TagBuilder("a");
-                tag.Attributes["href"] = urlHelper.Action(PageAction,
-                    new { recipePage = i });
+                tag.Attributes["href"] = urlHelper.Action(PageAction);
                 tag.InnerHtml.Append(i.ToString());
                 result.InnerHtml.AppendHtml(tag);
             }
