@@ -12,5 +12,6 @@ namespace CulinaryR3cipes.Models
 
         public virtual Category Category { get; set; }
         public virtual ICollection<Ingredient> Ingredients { get; set; }
+        public virtual ICollection<Fridge> Fridges { get; set; }
     }
 }

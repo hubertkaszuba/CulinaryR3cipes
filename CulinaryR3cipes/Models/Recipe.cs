@@ -14,5 +14,6 @@ namespace CulinaryR3cipes.Models
 
         public virtual Type Type { get; set; }
         public virtual ICollection<Ingredient> Ingredients { get; set; }
+        public virtual ICollection<Rating> Ratings { get; set; }
     }
 }
