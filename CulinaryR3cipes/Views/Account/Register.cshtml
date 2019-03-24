@@ -1,14 +1,11 @@
-﻿@model LoginViewModel
-
+﻿@model RegisterViewModel
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Register";
 }
 
-<h2>
-    Logowanie
-</h2>
+<h2>Rejestracja</h2>
 
-<form asp-action="Login" asp-controller="Account" method="post" class="form-horizontal" role="form">
+<form asp-action="Register" asp-controller="Account" method="post" class="form-horizontal" role="form">
     <div asp-validation-summary="All" class="text-danger"></div>
 
     <div class="form-group">
@@ -27,12 +24,19 @@
         </div>
     </div>
 
-    <a asp-action="Register" asp-controller="Account">Nie masz jeszcze konta? Zarejestruj się!</a>
+    <div class="form-group">
+        <label asp-for="PasswordConfirm" class="col-md-2 custom-control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="PasswordConfirm" class="form-control" />
+            <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
+        </div>
+    </div>
 
     <div class="form-group">
         <div class="col-md-10">
-            <input type="submit" class="btn btn-primary" value="Zaloguj"/>
+            <input type="submit" class="btn btn-primary" value="Zarejestruj się" />
         </div>
     </div>
 
 </form>
+

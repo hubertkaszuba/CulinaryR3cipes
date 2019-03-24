@@ -50,9 +50,18 @@ namespace CulinaryR3cipes.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register(User user)
+        public async Task<IActionResult> Register(RegisterViewModel register)
         {
-            return View();
+            if(ModelState.IsValid)
+            {
+                var user = new User { Email = register.Email };
+                var result = await _userManager.CreateAsync(user, register.Password);
+
+                if (result.Succeeded)
+                    return RedirectToAction("Index", "Home");
+            }
+
+            return View(register);
         }
     }
 }
