@@ -1,4 +1,5 @@
 ﻿using CulinaryR3cipes.Models;
+using CulinaryR3cipes.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -21,15 +22,26 @@ namespace CulinaryR3cipes.Controllers
 
         public IActionResult Login()
         {
-
             return View();
         }
 
         [HttpPost]
-        public IActionResult Login(User user)
+        public async Task<IActionResult> Login(LoginViewModel login)
         {
+            if(!ModelState.IsValid)
+                return View(login);
 
-            return View();
+            var user = await _userManager.FindByEmailAsync(login.Email);
+
+            if(user != null)
+            {
+                var result = await _signInManager.PasswordSignInAsync(user, login.Password, false, false);
+                if (result.Succeeded)
+                    return RedirectToAction("Index", "Home");
+            }
+
+            ModelState.AddModelError("", "Email lub nazwa użytkownika są niepoprawne");
+            return View(login);
         }
 
         public IActionResult Register()
