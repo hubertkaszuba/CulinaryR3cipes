@@ -22,5 +22,6 @@ namespace CulinaryR3cipes.Models
         public DbSet<Type> Types { get; set; }
         public DbSet<Fridge> Fridges { get; set; }
         public DbSet<Rating> Ratings { get; set; }
+        public DbSet<Favourite> Favourites { get; set; }
     }
 }

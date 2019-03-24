@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CulinaryR3cipes.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190324154144_User")]
+    [Migration("20190324191042_User")]
     partial class User
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +32,25 @@ namespace CulinaryR3cipes.Migrations
                     b.HasKey("CategoryId");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("CulinaryR3cipes.Models.Favourite", b =>
+                {
+                    b.Property<int>("FavouriteId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("RecipeId");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("FavouriteId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Favourites");
                 });
 
             modelBuilder.Entity("CulinaryR3cipes.Models.Fridge", b =>
@@ -311,6 +330,18 @@ namespace CulinaryR3cipes.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("CulinaryR3cipes.Models.Favourite", b =>
+                {
+                    b.HasOne("CulinaryR3cipes.Models.Recipe", "Recipe")
+                        .WithMany()
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CulinaryR3cipes.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("CulinaryR3cipes.Models.Fridge", b =>

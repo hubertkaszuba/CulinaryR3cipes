@@ -154,6 +154,32 @@ namespace CulinaryR3cipes.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Favourites",
+                columns: table => new
+                {
+                    FavouriteId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    RecipeId = table.Column<int>(nullable: false),
+                    UserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Favourites", x => x.FavouriteId);
+                    table.ForeignKey(
+                        name: "FK_Favourites_Recipes_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipes",
+                        principalColumn: "RecipeId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Favourites_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Fridges",
                 columns: table => new
                 {
@@ -247,6 +273,16 @@ namespace CulinaryR3cipes.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Favourites_RecipeId",
+                table: "Favourites",
+                column: "RecipeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Favourites_UserId",
+                table: "Favourites",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Fridges_ProductId",
                 table: "Fridges",
                 column: "ProductId");
@@ -283,6 +319,9 @@ namespace CulinaryR3cipes.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Favourites");
 
             migrationBuilder.DropTable(
                 name: "Fridges");
