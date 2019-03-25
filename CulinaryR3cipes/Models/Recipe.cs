@@ -11,7 +11,7 @@ namespace CulinaryR3cipes.Models
         public string Description { get; set; }
         public int? Time { get; set; }
         public byte[] Img { get; set; }
-
+        public bool isSubmitted { get; set; }
         public virtual Type Type { get; set; }
         public virtual ICollection<Ingredient> Ingredients { get; set; }
         public virtual ICollection<Rating> Ratings { get; set; }

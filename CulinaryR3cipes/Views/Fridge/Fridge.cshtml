@@ -1,0 +1,62 @@
+﻿@model FridgeViewModel
+
+@{
+    ViewData["Title"] = "Fridge";
+}
+
+<h2>Fridge</h2>
+
+<form asp-action="AddToFridge" asp-controller="Fridge" method="post" class="form-horizontal" role="form">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="Product" class="col-md-2 custom-control-label"></label>
+        <div class="col-md-10">
+            <select id="selectProduct" asp-for="Product" asp-items="@Model.Products.Select(p => new SelectListItem() { Text = p.Name, Value = p.Name })" class="form-control"><option>Wybierz produkt</option></select>
+            <span asp-validation-for="Product" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Quantity" class="col-md-2 custom-control-label"></label>
+        <div class="col-md-10">
+            <input type="text" asp-for="Quantity" class="form-control" />
+            <div id="measure"></div>
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-10">
+            <input type="submit" class="btn btn-primary" value="+ Dodaj" />
+        </div>
+    </div>
+</form>
+
+<table class="table" style="background-color:coral">
+    <thead>
+        <tr>
+            <th>Nazwa</th>
+            <th>Ilość</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model.Fridges)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Product.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Quantity)@Html.DisplayFor(modelItem => item.Product.Measure)</td>
+                <td>
+                    <a asp-action="Delete" asp-route-Fridge="@item" class="btn btn-success btn-sm">Usuń</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    $("selectProduct").change(function () {
+        var product = $(this).children("option:selected").val();
+        $("#measure").text()
+    })
+</script>

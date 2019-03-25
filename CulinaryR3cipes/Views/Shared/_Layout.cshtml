@@ -12,6 +12,7 @@
     <link rel="stylesheet"
           asp-href-include="lib/bootstrap/dist/**/*.min.css"
           asp-href-exclude="**/*-reboot*,**/*-grid*" />
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -23,16 +24,7 @@
         <div class="collapse navbar-collapse" id="navbarColor02">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <button type="button" class="btn btn-toolbar bg-primary"><a class="nav-link" href="#">Przepisy</a></button>
-                </li>
-                <li class="nav-item mx-2">
-                    <button type="button" class="btn btn-primary"><a class="nav-link" href="#">Lodówka</a></button>
-                </li>
-                <li class="nav-item">
-                    <button type="button" class="btn btn-primary"><a class="nav-link" href="#">Home2</a></button>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Home2</a>
+                    <a class="nav-link" asp-action="Index" asp-controller="Home">Przepisy</a>
                 </li>
                 @if (!_signInManager.IsSignedIn(User))
                 {
@@ -43,14 +35,18 @@
                 else
                 {
                     <li class="nav-item">
-                        <a class="nav-link" asp-action="Logout" asp-controller="">Logout</a>
+                        <a class="nav-link" asp-action="Fridge" asp-controller="Fridge">Lodówka</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-action="Logout" asp-controller="Account">Logout</a>
                     </li>
                 }
             </ul>
-            <form class="form-inline my-2 my-lg-2">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search">
-                <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-            </form>
+            @if (_signInManager.IsSignedIn(User))
+            {
+                <div>Zalogowano jako: @User.Identity.Name</div>
+            }
         </div>
     </nav>
 

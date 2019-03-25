@@ -47,7 +47,7 @@ namespace CulinaryR3cipes.Models
         }
 
         //[HttpPost]
-        public IActionResult Recipes(string [] SelectedTypeIds, string[] IncludedCategoryIds, string [] ExcludedCategoryIds, int recipePage = 1)
+        public IActionResult Recipes(string [] SelectedTypeIds, string[] IncludedCategoryIds, string [] ExcludedCategoryIds, string name, int recipePage = 1)
         {
             List<string> typesFilter = new List<string> { };
             if (SelectedTypeIds.Any())
@@ -76,7 +76,8 @@ namespace CulinaryR3cipes.Models
             IEnumerable<Recipe> recipes = recipeRepository.Recipes
                 .Where(r => (typesFilter.Contains(r.TypeId.ToString()) || typesFilter.Count == 0)
                 && (r.Ingredients.Any(x => ingredientsIncluded.Any(y => y.IngredientId == x.IngredientId)) || includedCategoryFilter.Count == 0)
-                && (!r.Ingredients.Any(x => ingredientsExcluded.Any(y => y.IngredientId == x.IngredientId)) || excludedCategoryFilter.Count == 0));
+                && (!r.Ingredients.Any(x => ingredientsExcluded.Any(y => y.IngredientId == x.IngredientId)) || excludedCategoryFilter.Count == 0)
+                && (r.Name.Contains(name) || name == null));
 
             RecipesListViewModel viewModel = new RecipesListViewModel
             {

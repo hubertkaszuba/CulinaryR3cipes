@@ -9,10 +9,54 @@
 @Html.ListBoxFor(model => model.SelectedTypeIds, new MultiSelectList(Model.Types, "TypeId", "Name"), new { id = "typeDropDown", multiple = "multiple" })
 @Html.ListBoxFor(model => model.SelectedIncludedCategoriesIds, new MultiSelectList(Model.Categories, "CategoryId", "Name"), new { id = "categoryIncludedDropDown", multiple = "multiple" })
 @Html.ListBoxFor(model => model.SelectedExcludedCategoriesIds, new MultiSelectList(Model.Categories, "CategoryId", "Name"), new { id = "categoryExcludedDropDown", multiple = "multiple" })
+<input id="recipeSearch" class="form-control mr-sm-2" type="text" placeholder="Szukaj">
 <input id="btnSearch" type="button" class="btn btn-primary" value="Search" />
 
 
 <div id="viewPlaceHolder"></div>
 
 
+<script>
+    $(function () {
+        $("#typeDropDown").chosen({
+            width: "33%"
+        });
+    });
 
+    $(function () {
+        $("#categoryIncludedDropDown").chosen({
+            width: "33%"
+        });
+    });
+
+    $(function () {
+        $("#categoryExcludedDropDown").chosen();
+        width: "33%"
+    });
+
+
+    $(document).ready(function () {
+        var selectedTypeIds = $("#typeDropDown").val();
+        $("#viewPlaceHolder").load("/Home/Recipes",
+            { SelectedTypeIds: selectedTypeIds });
+    });
+
+    $("#typeDropDown").change(function (e) {
+        var selectedTypeIds = $("#typeDropDown").val();
+        $("#viewPlaceHolder").load("/Home/Recipes",
+            { SelectedTypeIds: selectedTypeIds });
+    });
+
+    $("#recipeSearch").on('change paste input', function () {
+        var recipeName = $("#recipeSearch").val();
+        $("#viewPlaceHolder").load("/Home/Recipes",
+            { name: recipeName})
+    });
+
+    $("#btnSearch").on("click", function (e) {
+        var selectedTypeIds = $("#typeDropDown").val();
+        var includedCategoryIds = $("#categoryIncludedDropDown").val();
+        var excludedCategoryIds = $("#categoryExcludedDropDown").val();
+        $("#viewPlaceHolder").load("/Home/Recipes",
+            { SelectedTypeIds: selectedTypeIds, IncludedCategoryIds: includedCategoryIds, ExcludedCategoryIds: excludedCategoryIds, recipePage: 1 });
+    });</script>

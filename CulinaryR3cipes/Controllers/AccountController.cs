@@ -58,13 +58,12 @@ namespace CulinaryR3cipes.Controllers
                 var result = await _userManager.CreateAsync(user, register.Password);
 
                 if (result.Succeeded)
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Account");
             }
 
             return View(register);
         }
 
-        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
