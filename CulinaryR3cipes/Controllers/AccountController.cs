@@ -54,7 +54,7 @@ namespace CulinaryR3cipes.Controllers
         {
             if(ModelState.IsValid)
             {
-                var user = new User { Email = register.Email };
+                var user = new User { UserName = register.Name, Email = register.Email };
                 var result = await _userManager.CreateAsync(user, register.Password);
 
                 if (result.Succeeded)
@@ -62,6 +62,13 @@ namespace CulinaryR3cipes.Controllers
             }
 
             return View(register);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
     }
 }

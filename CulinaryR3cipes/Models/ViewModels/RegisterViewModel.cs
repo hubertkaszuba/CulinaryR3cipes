@@ -9,6 +9,9 @@ namespace CulinaryR3cipes.Models.ViewModels
     public class RegisterViewModel
     {
         [Required]
+        [Display(Name = "Nazwa użytkownika")]
+        public string Name { get; set; }
+        [Required]
         [Display(Name = "E-mail użytkownika")]
         public string Email { get; set; }
         [Required]
@@ -16,7 +19,7 @@ namespace CulinaryR3cipes.Models.ViewModels
         [DataType(DataType.Password)]
         public string Password { get; set; }
         [Required]
-        [Display(Name = "Hasło")]
+        [Display(Name = "Powtórz hasło")]
         [DataType(DataType.Password)]
         [Compare(nameof(Password))]
         public string PasswordConfirm { get; set; }
