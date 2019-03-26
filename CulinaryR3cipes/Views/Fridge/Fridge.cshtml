@@ -4,28 +4,27 @@
     ViewData["Title"] = "Fridge";
 }
 
-<h2>Fridge</h2>
+<h2>Twoja lodówka</h2>
 
 <form asp-action="AddToFridge" asp-controller="Fridge" method="post" class="form-horizontal" role="form">
     <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label asp-for="ProductId" class="col-form-label"></label>
+            <div>
+                <select id="selectProduct" asp-for="ProductId" asp-items="@(new SelectList(Model.Products,"ProductId", "Name", Model.ProductId)) " class="form-control"><option>Wybierz produkt</option></select>
+                <span asp-validation-for="ProductId" class="text-danger"></span>
+            </div>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="Product" class="col-md-2 custom-control-label"></label>
-        <div class="col-md-10">
-            <select id="selectProduct" asp-for="Product" asp-items="@Model.Products.Select(p => new SelectListItem() { Text = p.Name, Value = p.Name })" class="form-control"><option>Wybierz produkt</option></select>
-            <span asp-validation-for="Product" class="text-danger"></span>
+        <div class="form-group col-md-6">
+            <label asp-for="Quantity" class="col-form-label"></label>
+            <div>
+                <input type="text" asp-for="Quantity" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
         </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="Quantity" class="col-md-2 custom-control-label"></label>
-        <div class="col-md-10">
-            <input type="text" asp-for="Quantity" class="form-control" />
-            <div id="measure"></div>
-            <span asp-validation-for="Quantity" class="text-danger"></span>
-        </div>
-    </div>
-
     <div class="form-group">
         <div class="col-md-10">
             <input type="submit" class="btn btn-primary" value="+ Dodaj" />
@@ -33,21 +32,22 @@
     </div>
 </form>
 
-<table class="table" style="background-color:coral">
+<table class="table" style="background-color:#DF691A">
     <thead>
         <tr>
             <th>Nazwa</th>
             <th>Ilość</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody style="background-color:azure">
         @foreach(var item in Model.Fridges)
         {
-            <tr>
+            <tr style="color:dimgray">
                 <td>@Html.DisplayFor(modelItem => item.Product.Name)</td>
                 <td>@Html.DisplayFor(modelItem => item.Quantity)@Html.DisplayFor(modelItem => item.Product.Measure)</td>
                 <td>
-                    <a asp-action="Delete" asp-route-Fridge="@item" class="btn btn-success btn-sm">Usuń</a>
+                    <a asp-action="Delete" asp-route-id="@item.FridgeId" class="btn btn-success btn-sm">Usuń</a>
+                    <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-success btn-sm">Edytuj</a>
                 </td>
             </tr>
         }
