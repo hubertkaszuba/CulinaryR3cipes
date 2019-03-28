@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace CulinaryR3cipes.Models.Interfaces
 {
     public interface IIngredientRepository
     {
-        IQueryable<Ingredient> Ingredients { get; }
-
+        Task<IEnumerable<Ingredient>> Ingredients();
+        Task<ICollection<Ingredient>> FindAllAsync(Expression<Func<Ingredient, bool>> expression);
+        Task<Ingredient> FindAsync(Expression<Func<Ingredient, bool>> expression);
         void AddIngredients(IEnumerable<Ingredient> ingredients);
         void DeleteIngredient(Ingredient ingredient);
         void UpdateIngredient(Ingredient ingredient);

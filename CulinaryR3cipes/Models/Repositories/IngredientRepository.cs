@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace CulinaryR3cipes.Models.Repositories
@@ -16,9 +17,12 @@ namespace CulinaryR3cipes.Models.Repositories
             context = ctx;
         }
 
-        public IQueryable<Ingredient> Ingredients => context.Ingredients
-            .Include(c=>c.Product)
-            .Include(c=>c.Recipe);
+        public async Task<IEnumerable<Ingredient>> Ingredients()
+        {
+            return await context.Ingredients
+              .Include(c => c.Product)
+              .Include(c => c.Recipe).ToListAsync();
+        }
 
         public void AddIngredients(IEnumerable<Ingredient> ingredients)
         {
@@ -36,6 +40,20 @@ namespace CulinaryR3cipes.Models.Repositories
         {
             context.Update(ingredient);
             context.SaveChanges();
+        }
+
+        public async Task<ICollection<Ingredient>> FindAllAsync(Expression<Func<Ingredient, bool>> expression)
+        {
+            return await context.Ingredients.Where(expression)
+              .Include(c => c.Product)
+              .Include(c => c.Recipe).ToListAsync();
+        }
+
+        public async Task<Ingredient> FindAsync(Expression<Func<Ingredient, bool>> expression)
+        {
+            return await context.Ingredients.Where(expression)
+              .Include(c => c.Product)
+              .Include(c => c.Recipe).FirstOrDefaultAsync();
         }
     }
 }

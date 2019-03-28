@@ -6,6 +6,9 @@ using CulinaryR3cipes.Models.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using CulinaryR3cipes.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using CulinaryR3cipes.Models.Repositories;
+using Microsoft.AspNetCore.Identity;
+using System.Globalization;
 
 namespace CulinaryR3cipes.Models
 {
@@ -15,21 +18,26 @@ namespace CulinaryR3cipes.Models
         private ITypeRepository typeRepository;
         private ICategoryRepository categoryRepository;
         private IIngredientRepository ingredientRepository;
+        private IFridgeRepository fridgeRepository;
+        private readonly SignInManager<User> _signInManager;
         int PageSize = 2;
 
-        public HomeController(IRecipeRepository recipe, ITypeRepository type, ICategoryRepository category, IIngredientRepository ingredient)
+        public HomeController(IRecipeRepository recipe, ITypeRepository type, ICategoryRepository category, IIngredientRepository ingredient, IFridgeRepository fridge, SignInManager<User> signInManager)
         {
             recipeRepository = recipe;
             typeRepository = type;
             categoryRepository = category;
             ingredientRepository = ingredient;
+            fridgeRepository = fridge;
+            _signInManager = signInManager;
         }
 
-        public ViewResult Index(int recipePage = 1)
+        public async Task<IActionResult> Index(int recipePage = 1)
         {
+            IEnumerable<Recipe> recipes = await recipeRepository.Recipes();
             RecipesListViewModel viewModel = new RecipesListViewModel
             {
-                Recipes = recipeRepository.Recipes
+                Recipes = recipes
                 .OrderBy(r => r.RecipeId)
                 .Skip((recipePage - 1) * PageSize)
                 .Take(PageSize),
@@ -37,17 +45,17 @@ namespace CulinaryR3cipes.Models
                 {
                     CurrentPage = recipePage,
                     ItemsPerPage = PageSize,
-                    TotalItems = recipeRepository.Recipes.Count()
+                    TotalItems = recipes.Count()
                 },
-                Types = typeRepository.Types,
-                Categories = categoryRepository.Categories                
+                Types = await typeRepository.Types(),
+                Categories = await categoryRepository.Categories()                
             };
         
             return View(viewModel);
         }
 
         //[HttpPost]
-        public IActionResult Recipes(string [] SelectedTypeIds, string[] IncludedCategoryIds, string [] ExcludedCategoryIds, string name, int recipePage = 1)
+        public async Task<IActionResult> Recipes(string [] SelectedTypeIds, string[] IncludedCategoryIds, string [] ExcludedCategoryIds, string name, int recipePage = 1)
         {
             List<string> typesFilter = new List<string> { };
             if (SelectedTypeIds.Any())
@@ -70,29 +78,56 @@ namespace CulinaryR3cipes.Models
                     excludedCategoryFilter.Add(s);
             }
 
-            List<Ingredient> ingredientsIncluded = ingredientRepository.Ingredients.Where(i => includedCategoryFilter.Contains(i.Product.CategoryId.ToString())).ToList();
-            List<Ingredient> ingredientsExcluded = ingredientRepository.Ingredients.Where(i => excludedCategoryFilter.Contains(i.Product.CategoryId.ToString())).ToList();
+            IEnumerable<Ingredient> ingredientsIncluded = await ingredientRepository.FindAllAsync(i => includedCategoryFilter.Contains(i.Product.CategoryId.ToString()));
+            IEnumerable<Ingredient> ingredientsExcluded = await ingredientRepository.FindAllAsync(i => excludedCategoryFilter.Contains(i.Product.CategoryId.ToString()));
 
-            IEnumerable<Recipe> recipes = recipeRepository.Recipes
-                .Where(r => (typesFilter.Contains(r.TypeId.ToString()) || typesFilter.Count == 0)
+            IEnumerable<Recipe> filteredRecipes = await recipeRepository.FindAllAsync(r => (typesFilter.Contains(r.TypeId.ToString()) || typesFilter.Count == 0)
                 && (r.Ingredients.Any(x => ingredientsIncluded.Any(y => y.IngredientId == x.IngredientId)) || includedCategoryFilter.Count == 0)
                 && (!r.Ingredients.Any(x => ingredientsExcluded.Any(y => y.IngredientId == x.IngredientId)) || excludedCategoryFilter.Count == 0)
-                && (r.Name.Contains(name) || name == null));
+                && (name == null || r.Name.Contains(name, StringComparison.OrdinalIgnoreCase)));
 
             RecipesListViewModel viewModel = new RecipesListViewModel
             {
-                Recipes = recipes.OrderBy(r => r.RecipeId)
+                Recipes = filteredRecipes.OrderBy(r => r.RecipeId)
                 .Skip((recipePage - 1) * PageSize)
                 .Take(PageSize),
                 PagingInfo = new PagingInfo
                 {
                     CurrentPage = recipePage,
                     ItemsPerPage = PageSize,
-                    TotalItems = recipes.Count()
+                    TotalItems = filteredRecipes.Count()
                 },
             };
 
             return PartialView("_RecipesListPartial", viewModel);
+        }
+
+        public async Task<IActionResult> RecipesByFridge(int recipePage = 1)
+        {
+            try
+            {
+                User user = await _signInManager.UserManager.GetUserAsync(User);
+                IEnumerable<Fridge> productsInFridge = await fridgeRepository.GetUserProducts(user);
+                IEnumerable<Recipe> filteredRecipes = await recipeRepository.FindAllAsync(r => r.Ingredients.All(i => productsInFridge.Any(p => (p.ProductId == i.ProductId && (p.Quantity >= i.Quantity)))));
+          
+                RecipesListViewModel viewModel = new RecipesListViewModel
+                {
+                    Recipes = filteredRecipes.OrderBy(r => r.RecipeId)
+                    .Skip((recipePage - 1) * PageSize)
+                    .Take(PageSize),
+                    PagingInfo = new PagingInfo
+                    {
+                        CurrentPage = recipePage,
+                        ItemsPerPage = PageSize,
+                        TotalItems = filteredRecipes.Count()
+                    }
+                };
+                return PartialView("_RecipesListPartial", viewModel);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
     }
 }

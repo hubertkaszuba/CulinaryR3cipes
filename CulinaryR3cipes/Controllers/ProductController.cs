@@ -18,8 +18,7 @@ namespace CulinaryR3cipes.Controllers
 
         public ViewResult ProductList()
         {
-            var x = repository.Products.ToList();
-            return View(repository.Products);
+            return View();
         }
     }
 }

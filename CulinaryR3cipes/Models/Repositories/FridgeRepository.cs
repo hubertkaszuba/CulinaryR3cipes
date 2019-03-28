@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace CulinaryR3cipes.Models.Repositories
@@ -15,9 +16,20 @@ namespace CulinaryR3cipes.Models.Repositories
             context = ctx;
         }
 
-        public IQueryable<Fridge> Fridges => context.Fridges
+        public async Task <IEnumerable<Fridge>> Fridges()
+        {
+            return await context.Fridges
             .Include(x => x.Product)
-            .Include(x => x.User);
+            .Include(x => x.User).ToListAsync();
+        }
+
+        public async Task <IEnumerable<Fridge>> GetUserProducts(User user)
+        {
+            return await context.Fridges
+            .Include(x => x.Product)
+            .Include(x => x.User)
+            .Where(f => f.User == user).ToListAsync();
+        }
 
         public void AddToFridge(Fridge fridge)
         {
@@ -35,6 +47,20 @@ namespace CulinaryR3cipes.Models.Repositories
         {
             context.Update(fridge);
             context.SaveChanges();
+        }
+
+        public async Task<ICollection<Fridge>> FindAllAsync(Expression<Func<Fridge, bool>> expression)
+        {
+            return await context.Fridges.Where(expression)
+            .Include(x => x.Product)
+            .Include(x => x.User).ToListAsync();
+        }
+
+        public async Task<Fridge> FindAsync(Expression<Func<Fridge, bool>> expression)
+        {
+            return await context.Fridges.Where(expression)
+            .Include(x => x.Product)
+            .Include(x => x.User).FirstOrDefaultAsync();
         }
     }
 }

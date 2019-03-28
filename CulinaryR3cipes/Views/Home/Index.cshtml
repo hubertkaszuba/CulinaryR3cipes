@@ -11,6 +11,7 @@
 @Html.ListBoxFor(model => model.SelectedExcludedCategoriesIds, new MultiSelectList(Model.Categories, "CategoryId", "Name"), new { id = "categoryExcludedDropDown", multiple = "multiple" })
 <input id="recipeSearch" class="form-control mr-sm-2" type="text" placeholder="Szukaj">
 <input id="btnSearch" type="button" class="btn btn-primary" value="Search" />
+<input id="btnSearchFridge" type="button" class="btn btn-primary" value="Search by fridge" />
 
 
 <div id="viewPlaceHolder"></div>
@@ -59,4 +60,9 @@
         var excludedCategoryIds = $("#categoryExcludedDropDown").val();
         $("#viewPlaceHolder").load("/Home/Recipes",
             { SelectedTypeIds: selectedTypeIds, IncludedCategoryIds: includedCategoryIds, ExcludedCategoryIds: excludedCategoryIds, recipePage: 1 });
-    });</script>
+    });
+
+    $("#btnSearchFridge").on("click", function (e) {
+        $("#viewPlaceHolder").load("/Home/RecipesByFridge", { recipePage: 1 });
+        });
+</script>
