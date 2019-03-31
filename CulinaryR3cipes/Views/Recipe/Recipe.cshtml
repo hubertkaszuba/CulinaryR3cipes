@@ -5,7 +5,7 @@
 
 <h2>Rejestracja</h2>
 
-<form asp-action="Recipe" asp-controller="Recipe" method="post" class="form-horizontal" role="form">
+<form asp-action="Recipe" enctype="multipart/form-data" asp-controller="Recipe" method="post" class="form-horizontal" role="form">
     <div asp-validation-summary="All" class="text-danger"></div>
 
     <div class="form-group">
@@ -23,7 +23,13 @@
             <span asp-validation-for="Recipe.Description" class="text-danger"></span>
         </div>
     </div>
-
+    <div class="form-group col-md-6">
+        <label asp-for="Types" class="col-form-label"></label>
+        <div>
+            <select id="selectProduct" asp-for="Recipe.TypeId" asp-items="@(new SelectList(Model.Types,"TypeId", "Name", Model.TypeId)) " class="form-control"><option>Wybierz produkt</option></select>
+            <span asp-validation-for="Types" class="text-danger"></span>
+        </div>
+    </div>
     <div class="form-group">
         <label asp-for="Recipe.Time" class="col-md-2 custom-control-label"></label>
         <div class="col-md-10">
@@ -33,8 +39,8 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="Recipe.Img"></label>
-        <input type="file" asp-for="Recipe.Img" />
+        <label asp-for="Image"></label>
+        <input type="file" id="files" asp-for="Image" />
     </div>
 
     <div id="IngredientContainer">
@@ -58,8 +64,8 @@
             var container = $("#IngredientContainer");
             var div = $("<div />");
             var value = "";
-            var select = $("<select></select>").attr("id", "Products[" + i + "].ProductId").attr("name", "Products[" + i + "]").attr("data-val", "true").attr("data-val-required", "Produkt jest wymagany");
-            var text = $("<input />").attr("type", "textbox").attr("id", "Products[" + i +"].Quantity");
+            var select = $("<select></select>").attr("id", "Ingredients[" + i + "]").attr("name", "Ingredients[" + i + "].ProductId").attr("data-val", "true").attr("data-val-required", "Produkt jest wymagany");
+            var text = $("<input />").attr("type", "textbox").attr("id", "Ingredients[" + i + "]_Quantity").attr("name", "Ingredients[" + i + "].Quantity").attr("data-val", "true").attr("data-val-required", "Produkt jest wymagany");
             var options = $("<option>Wybierz produkt</option>");
             select.append(options);
             text.val(value);
