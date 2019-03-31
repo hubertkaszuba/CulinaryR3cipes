@@ -9,6 +9,6 @@ namespace CulinaryR3cipes.Models.ViewModels
     public class RecipeViewModel
     {
         public Recipe Recipe { get; set; }
-        public IEnumerable<Product> Products { get; set; }
+        public List<Product> Products { get; set; }
     }
 }

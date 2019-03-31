@@ -17,14 +17,32 @@ namespace CulinaryR3cipes.Controllers
             productRepository = product;
         }
 
-        public async Task<IActionResult> Recipe()
+        public IActionResult Recipe2()
+        {
+            return View();
+        }
+
+        public IActionResult Recipe()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Recipe (RecipeViewModel model)
         {
 
-            return View(new RecipeViewModel
+            return RedirectToAction("Recipe");
+        }
+
+        public async Task<JsonResult> GetData()
+        {
+            IEnumerable<Product> products = await productRepository.Products();
+            List<Product> productsJson = new List<Product>();
+            foreach(var p in products)
             {
-                Recipe = new Models.Recipe(),
-                Products = await productRepository.Products()
-            });
+                productsJson.Add(new Product { ProductId = p.ProductId, Name = p.Name, Measure = p.Measure});
+            }
+            return Json(productsJson);
         }
     }
 }
