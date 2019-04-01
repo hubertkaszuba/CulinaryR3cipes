@@ -1,0 +1,27 @@
+﻿@model RecipesToSubmitListViewModel
+@{
+    ViewData["Title"] = "RecipesToSubmitList";
+}
+
+<h2>RecipesToSubmitList</h2>
+
+<table class="table" style="background-color:#DF691A">
+    <thead>
+        <tr>
+            <th>Nazwa </th>
+            <th>Akcja</th>
+        </tr>
+    </thead>
+    <tbody style="background-color:azure">
+        @foreach (var item in Model.RecipesToSubmit)
+        {
+            <tr style="color:dimgray">
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.RecipeId" class="btn btn-success btn-sm">Usuń</a>
+                    <a asp-action="Edit" asp-route-id="@item.RecipeId" class="btn btn-success btn-sm">Edytuj</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

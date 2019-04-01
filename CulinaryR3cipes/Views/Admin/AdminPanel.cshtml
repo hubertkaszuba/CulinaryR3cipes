@@ -1,0 +1,31 @@
+﻿
+@{
+    ViewData["Title"] = "AdminPanel";
+}
+
+<h2>AdminPanel</h2>
+
+<div class="row m-1 p-1">
+    <div id="adminNavbar">
+        <a id="btnRecipes" class="btn btn-block btn-secondary">Lista przepisów do zaakceptowania</a>
+        <a id="btnAlerts" class="btn btn-block btn-secondary">Lista alertów</a>
+        <a id="btnUsers" class="btn btn-block btn-secondary">Lista użytkowników</a>
+    </div>
+    <div id="viewPlaceHolder" class="col-9">
+
+    </div>
+</div>
+
+<script>
+    $("#btnRecipes").on("click", function (e) {
+        $("#viewPlaceHolder").load("/Admin/RecipesToSubmit");
+    });
+
+    $("#btnAlerts").on("click", function (e) {
+        $("#viewPlaceHolder").load("/Home/Recipes");
+    });
+
+    $("#btnUsers").on("click", function (e) {
+        $("#viewPlaceHolder").load("/Admin/Users");
+    });
+</script>
