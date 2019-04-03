@@ -1,6 +1,8 @@
 ﻿using CulinaryR3cipes.Models.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -13,7 +15,7 @@ namespace CulinaryR3cipes.Models
 {
     public static class SeedData
     {
-        public static void EnsurePopulated(IApplicationBuilder app)
+        public static async Task EnsurePopulated(IApplicationBuilder app)
         {
             ApplicationDbContext context = app.ApplicationServices
                 .GetRequiredService<ApplicationDbContext>();
@@ -23,7 +25,6 @@ namespace CulinaryR3cipes.Models
             RecipeRepository recipeRepository = new RecipeRepository(context);
             IngredientRepository ingredientRepository = new IngredientRepository(context);
             TypeRepository typeRepository = new TypeRepository(context);
-
             context.Database.Migrate();
 
             if(!context.Recipes.Any())
@@ -108,6 +109,11 @@ namespace CulinaryR3cipes.Models
                     new Ingredient { Product = flour, Quantity = 200, Recipe = pancakes},
                     new Ingredient { Product = sugar, Quantity = 10, Recipe = pancakes}
                 });
+
+                
+                var manager = app.ApplicationServices.GetService<UserManager<User>>();
+                var result = await manager.CreateAsync(new User { UserName = "admin", Email = "admin@admin.pl" }, "Testowe1!");
+
             }
 
 

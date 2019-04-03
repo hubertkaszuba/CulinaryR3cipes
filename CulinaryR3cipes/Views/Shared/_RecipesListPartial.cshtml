@@ -3,24 +3,61 @@
 @{
     ViewData["Title"] = "_RecipesListPartial";
 }
+<head>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
 
 @foreach (var recipe in Model.Recipes)
 {
-    if (recipe.Img != null)
-    {
-        var tmp = "data:image/jpg;base64," + Convert.ToBase64String(recipe.Img, 0, recipe.Img.Length);
-        <img alt="" src="@tmp" style="height:300px;width:300px;" />
-    }
+    <div class="recipeListContainer">
+            @if (recipe.Img != null)
+            {
+                var tmp = "data:image/jpg;base64," + Convert.ToBase64String(@recipe.Img, 0, @recipe.Img.Length);
+                <img alt="" src="@tmp" style="height:300px;width:300px;" />
+            }
 
-    <div>
-        <h3>@recipe.Name</h3>
-        @recipe.Description
-        @foreach (var i in recipe.Ingredients)
-        {
-            <div>
-                @String.Format("{0} : {1}{2}", i.Product.Name, i.Quantity, i.Product.Measure)
+            <div class="form-group">
+                <input asp-for="@recipe.RecipeId" hidden />
             </div>
-        }
+
+            <div class="form-group">
+                <label asp-for="@recipe.Name"></label>
+                <input asp-for="@recipe.Name" class="form-control" style="background-color: #f8f8f8" readonly />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="@recipe.Time"></label>
+                <input asp-for="@recipe.Time" class="form-control" style="background-color: #f8f8f8" readonly />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="@recipe.Type.Name"></label>
+                <input asp-for="@recipe.Type.Name" class="form-control" style="background-color: #f8f8f8" readonly />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="@recipe.Description"></label>
+                <textarea asp-for="@recipe.Description" class="description" readonly></textarea>
+            </div>
+
+            <table class="table" style="background-color:#DF691A">
+                <thead>
+                    <tr>
+                        <th>Nazwa</th>
+                        <th>Ilość</th>
+                    </tr>
+                </thead>
+                <tbody style="background-color:azure">
+                    @foreach (var item in @recipe.Ingredients)
+                    {
+                        <tr style="color:dimgray">
+                            <td>@Html.DisplayFor(modelItem => item.Product.Name)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Quantity)@Html.DisplayFor(modelItem => item.Product.Measure)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
     </div>
 }
 

@@ -37,7 +37,7 @@ namespace CulinaryR3cipes
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public async void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -51,8 +51,8 @@ namespace CulinaryR3cipes
                 routes.MapRoute(name: "pagination", template: "Przepisy/Strona{recipePage}", defaults: new { Controller = "Home", action = "Index" });
                 routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            SeedData.EnsurePopulated(app);
+            
+            await SeedData.EnsurePopulated(app);
         }
     }
 }

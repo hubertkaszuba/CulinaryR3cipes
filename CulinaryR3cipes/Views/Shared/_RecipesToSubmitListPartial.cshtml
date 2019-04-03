@@ -3,8 +3,6 @@
     ViewData["Title"] = "RecipesToSubmitList";
 }
 
-<h2>RecipesToSubmitList</h2>
-
 <table class="table" style="background-color:#DF691A">
     <thead>
         <tr>
@@ -18,10 +16,49 @@
             <tr style="color:dimgray">
                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                 <td>
-                    <a asp-action="Delete" asp-route-id="@item.RecipeId" class="btn btn-success btn-sm">Usuń</a>
-                    <a asp-action="Edit" asp-route-id="@item.RecipeId" class="btn btn-success btn-sm">Edytuj</a>
+                    <button id="@item.RecipeId" type="button" class="btn btn-sm btn-success recipesDelete" data-target="#viewPlaceHolder" data-url="@Url.Action("Delete")">Usuń</button>
+                    <button id="@item.RecipeId" type="button" class="btn btn-sm btn-success recipesSubmit" data-toggle="ajax-modal" data-target="#details" data-url="@Url.Action("Details")">Szczegóły</button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<div id="modal-placeholder"></div>
+
+<script>
+    $(function () {
+        var placeholderElement = $('#modal-placeholder');
+
+        $('.recipesSubmit').click(function (event) {
+            var url = $(this).data('url') + '/' + $(this).attr('id');
+            $.get(url).done(function (data) {
+                placeholderElement.html(data);
+                placeholderElement.find(".modal").modal('show');
+            });
+        });
+
+        placeholderElement.on('click', '#submit', function (event) {
+            event.preventDefault();
+
+            var form = $(this).parents('.modal').find('form');
+            var actionUrl = form.attr('action');
+            var dataToSend = form.serialize();
+
+            $.post(actionUrl, dataToSend).done(function (data) {
+                placeholderElement.find('.modal').modal('hide');
+            });
+        });
+
+        placeholderElement.on('hidden.bs.modal', '#details', function () {
+            $("#viewPlaceHolder").load("/Admin/RecipesToSubmit");
+        });
+
+        $('.recipesDelete').click(function (event) {
+            var url = $(this).data('url') + '/' + $(this).attr('id');
+            $.post(url).done(function (data) {
+                $("#viewPlaceHolder").html(data);
+            });
+        });
+    });
+</script>

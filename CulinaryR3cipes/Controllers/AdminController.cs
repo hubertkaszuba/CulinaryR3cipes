@@ -48,10 +48,33 @@ namespace CulinaryR3cipes.Controllers
             return View();
         }
 
+        [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-
-            return View();
+            recipeRepository.DeleteRecipe(await recipeRepository.FindAsync(x => x.RecipeId == id));
+            return PartialView("_RecipesToSubmitListPartial", new RecipesToSubmitListViewModel
+            {
+                RecipesToSubmit = await recipeRepository.FindAllAsync(r => r.IsSubmitted != true)
+            });
         }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            Recipe recipe = await recipeRepository.FindAsync(r => r.RecipeId == id);
+            return PartialView("_Details", recipe);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Submit(Recipe recipe)
+        {
+            Recipe recipeToSubmitt = await recipeRepository.FindAsync(r => r.RecipeId == recipe.RecipeId);
+            recipeToSubmitt.IsSubmitted = true;
+            recipeRepository.UpdateRecipe(recipeToSubmitt);
+            return PartialView("_RecipesToSubmitListPartial", new RecipesToSubmitListViewModel
+            {
+                RecipesToSubmit = await recipeRepository.FindAllAsync(r => r.IsSubmitted != true)
+            });
+        }
+
     }
 }
