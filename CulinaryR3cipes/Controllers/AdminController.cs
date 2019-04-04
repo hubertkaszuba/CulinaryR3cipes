@@ -61,7 +61,7 @@ namespace CulinaryR3cipes.Controllers
         public async Task<IActionResult> Details(int id)
         {
             Recipe recipe = await recipeRepository.FindAsync(r => r.RecipeId == id);
-            return PartialView("_Details", recipe);
+            return PartialView("_RecipeToSubmitDetails", recipe);
         }
 
         [HttpPost]
@@ -74,6 +74,12 @@ namespace CulinaryR3cipes.Controllers
             {
                 RecipesToSubmit = await recipeRepository.FindAllAsync(r => r.IsSubmitted != true)
             });
+        }
+
+        public IActionResult UserDetails(string id)
+        {
+            User user = _signInManager.UserManager.Users.Where(u => u.Id == id).FirstOrDefault();
+            return PartialView("_UserDetails", user);
         }
 
     }

@@ -18,10 +18,49 @@
             <tr style="color:dimgray">
                 <td>@Html.DisplayFor(modelItem => item.UserName)</td>
                 <td>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-success btn-sm">Usuń</a>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success btn-sm">Edytuj</a>
+                    <button id="@item.Id" type="button" class="btn btn-sm btn-success usersDelete" data-target="#viewPlaceHolder" data-url="@Url.Action("DeleteUser")">Usuń</button>
+                    <button id="@item.Id" type="button" class="btn btn-sm btn-success usersSubmit" data-toggle="ajax-modal" data-target="#details" data-url="@Url.Action("UserDetails")">Szczegóły</button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<div id="modal-placeholder"></div>
+
+<script>
+    $(function () {
+        var placeholderElement = $('#modal-placeholder');
+
+        $('.usersSubmit').click(function (event) {
+            var url = $(this).data('url') + '/' + $(this).attr('id');
+            $.get(url).done(function (data) {
+                placeholderElement.html(data);
+                placeholderElement.find(".modal").modal('show');
+            });
+        });
+
+        placeholderElement.on('click', '#submit', function (event) {
+            event.preventDefault();
+
+            var form = $(this).parents('.modal').find('form');
+            var actionUrl = form.attr('action');
+            var dataToSend = form.serialize();
+
+            $.post(actionUrl, dataToSend).done(function (data) {
+                placeholderElement.find('.modal').modal('hide');
+            });
+        });
+
+        placeholderElement.on('hidden.bs.modal', '#details', function () {
+            $("#viewPlaceHolder").load("/Admin/Users");
+        });
+
+        $('.usersDelete').click(function (event) {
+            var url = $(this).data('url') + '/' + $(this).attr('id');
+            $.post(url).done(function (data) {
+                $("#viewPlaceHolder").html(data);
+            });
+        });
+    });
+</script>
