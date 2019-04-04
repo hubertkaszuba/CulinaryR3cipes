@@ -3,8 +3,6 @@
     ViewData["Title"] = "_UsersListPartial";
 }
 
-<h2>_UsersListPartial</h2>
-
 <table class="table" style="background-color:#DF691A">
     <thead>
         <tr>
@@ -40,7 +38,7 @@
             });
         });
 
-        placeholderElement.on('click', '#submit', function (event) {
+        placeholderElement.on('click', '#setAdminRole', function (event) {
             event.preventDefault();
 
             var form = $(this).parents('.modal').find('form');

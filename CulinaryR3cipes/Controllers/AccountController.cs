@@ -13,11 +13,13 @@ namespace CulinaryR3cipes.Controllers
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AccountController(SignInManager<User> signInManager, UserManager<User> userManager)
+        public AccountController(SignInManager<User> signInManager, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public IActionResult Login()
@@ -58,7 +60,10 @@ namespace CulinaryR3cipes.Controllers
                 var result = await _userManager.CreateAsync(user, register.Password);
 
                 if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, "User");
                     return RedirectToAction("Login", "Account");
+                }
             }
 
             return View(register);

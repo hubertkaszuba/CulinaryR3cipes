@@ -53,6 +53,7 @@ namespace CulinaryR3cipes
             });
             
             await SeedData.EnsurePopulated(app);
+            await SeedData.CreateRoles(app, Configuration);
         }
     }
 }

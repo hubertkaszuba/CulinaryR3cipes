@@ -1,6 +1,7 @@
 ﻿using CulinaryR3cipes.Models;
 using CulinaryR3cipes.Models.Interfaces;
 using CulinaryR3cipes.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace CulinaryR3cipes.Controllers
 {
+    [Authorize]
     public class RecipeController : Controller
     {
         IProductRepository productRepository;

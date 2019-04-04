@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -20,15 +21,16 @@ namespace CulinaryR3cipes.Models
             ApplicationDbContext context = app.ApplicationServices
                 .GetRequiredService<ApplicationDbContext>();
 
-            ProductRepository productRepository = new ProductRepository(context);
-            CategoryRepository categoryRepository = new CategoryRepository(context);
-            RecipeRepository recipeRepository = new RecipeRepository(context);
-            IngredientRepository ingredientRepository = new IngredientRepository(context);
-            TypeRepository typeRepository = new TypeRepository(context);
             context.Database.Migrate();
 
             if(!context.Recipes.Any())
             {
+                ProductRepository productRepository = new ProductRepository(context);
+                CategoryRepository categoryRepository = new CategoryRepository(context);
+                RecipeRepository recipeRepository = new RecipeRepository(context);
+                IngredientRepository ingredientRepository = new IngredientRepository(context);
+                TypeRepository typeRepository = new TypeRepository(context);
+
                 Type breakfast = new Type { Name = "Śniadanie" };
                 Type dinner = new Type { Name = "Obiad" };
                 Type supper = new Type { Name = "Kolacja" };
@@ -108,15 +110,46 @@ namespace CulinaryR3cipes.Models
                     new Ingredient { Product = eggs, Quantity = 3, Recipe = pancakes },
                     new Ingredient { Product = flour, Quantity = 200, Recipe = pancakes},
                     new Ingredient { Product = sugar, Quantity = 10, Recipe = pancakes}
-                });
-
-                
-                var manager = app.ApplicationServices.GetService<UserManager<User>>();
-                var result = await manager.CreateAsync(new User { UserName = "admin", Email = "admin@admin.pl" }, "Testowe1!");
-
+                });             
             }
+        }
 
+        public static async Task CreateRoles(IApplicationBuilder app, IConfiguration configuration)
+        {
+            var userManager = app.ApplicationServices.GetService<UserManager<User>>();
+            var roleManager = app.ApplicationServices.GetService<RoleManager<IdentityRole>>();
 
+            if (!roleManager.Roles.Any())
+            {
+                string[] roleNames = { "Admin", "User" };
+                IdentityResult roleResult;
+
+                foreach (var roleName in roleNames)
+                {
+                    var roleExist = await roleManager.RoleExistsAsync(roleName);
+
+                    if (!roleExist)
+                        roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+                }
+
+                var admin = new User
+                {
+                    UserName = configuration["UserSettings:UserEmail"],
+                    Email = configuration["UserSettings:UserEmail"]
+                };
+
+                string userPassword = configuration["UserSettings:UserPassword"];
+
+                var user = await userManager.FindByEmailAsync(configuration["UserSettings:UserEmail"]);
+
+                if (user == null)
+                {
+                    var createAdmin = await userManager.CreateAsync(admin, userPassword);
+
+                    if (createAdmin.Succeeded)
+                        await userManager.AddToRoleAsync(admin, "Admin");
+                }
+            }
         }
     }
 }

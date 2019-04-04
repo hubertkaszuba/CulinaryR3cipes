@@ -7,9 +7,11 @@ using CulinaryR3cipes.Models.ViewModels;
 using CulinaryR3cipes.Models.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using CulinaryR3cipes.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CulinaryR3cipes.Controllers
 {
+    [Authorize(Roles = ("Admin"))]
     public class AdminController : Controller
     {
         IRecipeRepository recipeRepository;
@@ -42,14 +44,8 @@ namespace CulinaryR3cipes.Controllers
             });
         }
 
-        public async Task<IActionResult> Edit(int id)
-        {
-
-            return View();
-        }
-
         [HttpPost]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteRecipe(int id)
         {
             recipeRepository.DeleteRecipe(await recipeRepository.FindAsync(x => x.RecipeId == id));
             return PartialView("_RecipesToSubmitListPartial", new RecipesToSubmitListViewModel
@@ -58,14 +54,14 @@ namespace CulinaryR3cipes.Controllers
             });
         }
 
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> RecipeDetails(int id)
         {
             Recipe recipe = await recipeRepository.FindAsync(r => r.RecipeId == id);
             return PartialView("_RecipeToSubmitDetails", recipe);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Submit(Recipe recipe)
+        public async Task<IActionResult> SubmitRecipe(Recipe recipe)
         {
             Recipe recipeToSubmitt = await recipeRepository.FindAsync(r => r.RecipeId == recipe.RecipeId);
             recipeToSubmitt.IsSubmitted = true;
@@ -82,5 +78,29 @@ namespace CulinaryR3cipes.Controllers
             return PartialView("_UserDetails", user);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            await _signInManager.UserManager.DeleteAsync(_signInManager.UserManager.Users.Where(u => u.Id == id).FirstOrDefault());
+
+            return PartialView("_UsersListPartial", new UsersListViewModel
+            {
+                Users = _signInManager.UserManager.Users
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetAdminRole(User user)
+        {
+            User newAdmin = _signInManager.UserManager.Users.Where(u => u.Id == user.Id).FirstOrDefault();
+
+            if (newAdmin != null)
+                await _signInManager.UserManager.AddToRoleAsync(newAdmin, "Admin");
+
+            return PartialView("_UsersListPartial", new UsersListViewModel
+            {
+                Users = _signInManager.UserManager.Users
+            });
+        }
     }
 }

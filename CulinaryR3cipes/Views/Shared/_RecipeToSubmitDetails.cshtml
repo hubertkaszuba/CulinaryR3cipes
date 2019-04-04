@@ -13,7 +13,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form asp-action="Submit">
+                <form asp-action="SubmitRecipe">
                     @if (@Model.Img != null)
                     {
                         var tmp = "data:image/jpg;base64," + Convert.ToBase64String(Model.Img, 0, Model.Img.Length);

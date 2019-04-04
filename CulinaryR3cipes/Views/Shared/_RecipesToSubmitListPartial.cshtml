@@ -16,8 +16,8 @@
             <tr style="color:dimgray">
                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                 <td>
-                    <button id="@item.RecipeId" type="button" class="btn btn-sm btn-success recipesDelete" data-target="#viewPlaceHolder" data-url="@Url.Action("Delete")">Usuń</button>
-                    <button id="@item.RecipeId" type="button" class="btn btn-sm btn-success recipesSubmit" data-toggle="ajax-modal" data-target="#details" data-url="@Url.Action("Details")">Szczegóły</button>
+                    <button id="@item.RecipeId" type="button" class="btn btn-sm btn-success recipesDelete" data-target="#viewPlaceHolder" data-url="@Url.Action("DeleteRecipe")">Usuń</button>
+                    <button id="@item.RecipeId" type="button" class="btn btn-sm btn-success recipesSubmit" data-toggle="ajax-modal" data-target="#details" data-url="@Url.Action("RecipeDetails")">Szczegóły</button>
                 </td>
             </tr>
         }
