@@ -51,6 +51,19 @@
             }
         </tbody>
     </table>
+
+    @for (int i = 0; i < 10; i++)
+    {
+        if (i == Model.AverageRate)
+        {
+            <input type="radio" asp-for="Rating.RatingValue" value="@i" checked readonly />@i
+        }
+        else
+        {
+            <input type="radio" asp-for="Rating.RatingValue" value="@i" readonly />@i
+        }
+    }
+
     @if (!Model.DidUserRate)
     {
         @for (int i = 0; i < 10; i++)
@@ -113,6 +126,7 @@
                 <button id="submit" type="button" class="btn btn-primary">Zaakceptuj</button>
             </div>
 
+
 <script>
     //# sourceURL=_RecipesDetails.cshtml
     $('#addComment').on('click', function (event) {
@@ -126,4 +140,11 @@
             $('#modal-placeholder').html(data);
         });        
     });
+
+    $(".star").click(function () {
+        $(".star").removeClass('active');
+        $(this).addClass('active');
+        var starValue = $(this).data("value");
+        $("#Rating").val(starValue);
+    })
 </script>

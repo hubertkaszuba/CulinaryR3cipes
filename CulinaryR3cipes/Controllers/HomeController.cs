@@ -133,8 +133,10 @@ namespace CulinaryR3cipes.Models
         public async Task<IActionResult> Details(int id)
         {
             var user = await _signInManager.UserManager.GetUserAsync(User);
-            Recipe recipe = await recipeRepository.FindAsync(r => r.RecipeId == id);
-            return PartialView("_RecipeDetails", new RecipeDetailsViewModel { Recipe = recipe, DidUserRate = recipe.Ratings.Any(rating => rating.User == user)  });
+            Recipe recipe = await recipeRepository.FindAsync(r => r.RecipeId == id);            
+            return PartialView("_RecipeDetails", new RecipeDetailsViewModel { Recipe = recipe,
+                DidUserRate = recipe.Ratings.Any(rating => rating.User == user),
+                AverageRate = (int)Math.Floor(recipe.Ratings.Average(ratings => ratings.RatingValue))});
         }
 
         public async Task<IActionResult> SetRating(RecipeDetailsViewModel recipeDetailsViewModel)
