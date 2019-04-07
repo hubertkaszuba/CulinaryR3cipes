@@ -129,5 +129,29 @@ namespace CulinaryR3cipes.Models
                 throw e;
             }
         }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var user = await _signInManager.UserManager.GetUserAsync(User);
+            Recipe recipe = await recipeRepository.FindAsync(r => r.RecipeId == id);
+            return PartialView("_RecipeDetails", new RecipeDetailsViewModel { Recipe = recipe, DidUserRate = recipe.Ratings.Any(rating => rating.User == user)  });
+        }
+
+        public async Task<IActionResult> SetRating(RecipeDetailsViewModel recipeDetailsViewModel)
+        {
+            Recipe recipe = await recipeRepository.FindAsync(r => r.RecipeId == recipeDetailsViewModel.Recipe.RecipeId);
+            var user = await _signInManager.UserManager.GetUserAsync(User);
+            Rating rating = new Rating
+            {
+                Recipe = recipe,
+                Comment = recipeDetailsViewModel.Rating.Comment,
+                RatingValue = recipeDetailsViewModel.Rating.RatingValue,
+                User = user
+            };
+            recipe.Ratings.Add(rating);
+            recipeRepository.UpdateRecipe(recipe);
+
+            return PartialView("_RecipeDetails", new RecipeDetailsViewModel { Recipe = await recipeRepository.FindAsync(r => r.RecipeId == recipeDetailsViewModel.Recipe.RecipeId), DidUserRate = true });
+        }
     }
 }

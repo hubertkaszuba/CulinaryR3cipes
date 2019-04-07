@@ -22,6 +22,7 @@ namespace CulinaryR3cipes.Models
         public byte[] Img { get; set; }
         public bool IsSubmitted { get; set; }
         public int ReportsCounter { get; set; }
+
         public virtual Type Type { get; set; }
         public virtual ICollection<Ingredient> Ingredients { get; set; }
         public virtual ICollection<Rating> Ratings { get; set; }

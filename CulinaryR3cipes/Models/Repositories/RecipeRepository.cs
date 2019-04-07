@@ -20,10 +20,12 @@ namespace CulinaryR3cipes.Models.Repositories
         public async Task<IEnumerable<Recipe>> Recipes()
         {
             return await context.Recipes
-               .Include(recipe => recipe.Ingredients)
+              .Include(recipe => recipe.Ingredients)
                   .ThenInclude(ingredient => ingredient.Product)
               .Include(recipe => recipe.Ingredients)
                   .ThenInclude(ingredient => ingredient.Recipe)
+              .Include(recipe => recipe.Ratings)
+                  .ThenInclude(users => users.User)
               .Include(recipe => recipe.Type).ToListAsync();
         }
 
@@ -52,6 +54,8 @@ namespace CulinaryR3cipes.Models.Repositories
                   .ThenInclude(ingredient => ingredient.Product)
               .Include(recipe => recipe.Ingredients)
                   .ThenInclude(ingredient => ingredient.Recipe)
+              .Include(recipe => recipe.Ratings)
+                  .ThenInclude(users => users.User)
               .Include(recipe => recipe.Type).ToListAsync();
         }
 
@@ -62,6 +66,8 @@ namespace CulinaryR3cipes.Models.Repositories
                   .ThenInclude(ingredient => ingredient.Product)
               .Include(recipe => recipe.Ingredients)
                   .ThenInclude(ingredient => ingredient.Recipe)
+              .Include(recipe => recipe.Ratings)
+                  .ThenInclude(users => users.User)
               .Include(recipe => recipe.Type).FirstOrDefaultAsync();
         }
     }

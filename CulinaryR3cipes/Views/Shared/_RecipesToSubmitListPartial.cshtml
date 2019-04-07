@@ -17,7 +17,7 @@
                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                 <td>
                     <button id="@item.RecipeId" type="button" class="btn btn-sm btn-success recipesDelete" data-target="#viewPlaceHolder" data-url="@Url.Action("DeleteRecipe")">Usuń</button>
-                    <button id="@item.RecipeId" type="button" class="btn btn-sm btn-success recipesSubmit" data-toggle="ajax-modal" data-target="#details" data-url="@Url.Action("RecipeDetails")">Szczegóły</button>
+                    <button id="@item.RecipeId" type="button" class="btn btn-sm btn-success recipesDetails" data-toggle="ajax-modal" data-target="#details" data-url="@Url.Action("RecipeDetails")">Szczegóły</button>
                 </td>
             </tr>
         }
@@ -30,7 +30,7 @@
     $(function () {
         var placeholderElement = $('#modal-placeholder');
 
-        $('.recipesSubmit').click(function (event) {
+        $('.recipesDetails').click(function (event) {
             var url = $(this).data('url') + '/' + $(this).attr('id');
             $.get(url).done(function (data) {
                 placeholderElement.html(data);

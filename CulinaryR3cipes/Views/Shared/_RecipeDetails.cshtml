@@ -1,0 +1,129 @@
+﻿@model RecipeDetailsViewModel
+<!-- Modal -->
+<head>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<form asp-action="SetRating">
+    @if (@Model.Recipe.Img != null)
+    {
+        var tmp = "data:image/jpg;base64," + Convert.ToBase64String(Model.Recipe.Img, 0, Model.Recipe.Img.Length);
+        <img alt="" src="@tmp" style="height:300px;width:300px;" />
+    }
+
+    <div class="form-group">
+        <input asp-for="Recipe.RecipeId" hidden />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Recipe.Name"></label>
+        <input asp-for="Recipe.Name" class="form-control" style="background-color: #f8f8f8" readonly />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Recipe.Time"></label>
+        <input asp-for="Recipe.Time" class="form-control" style="background-color: #f8f8f8" readonly />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Recipe.Type.Name"></label>
+        <input asp-for="Recipe.Type.Name" class="form-control" style="background-color: #f8f8f8" readonly />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Recipe.Description"></label>
+        <textarea asp-for="Recipe.Description" class="description" readonly></textarea>
+    </div>
+
+    <table class="table" style="background-color:#DF691A">
+        <thead>
+            <tr>
+                <th>Nazwa</th>
+                <th>Ilość</th>
+            </tr>
+        </thead>
+        <tbody style="background-color:azure">
+            @foreach (var item in Model.Recipe.Ingredients)
+            {
+                <tr style="color:dimgray">
+                    <td>@Html.DisplayFor(modelItem => item.Product.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Quantity)@Html.DisplayFor(modelItem => item.Product.Measure)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.DidUserRate)
+    {
+        @for (int i = 0; i < 10; i++)
+        {
+            <input type="radio" asp-for="Rating.RatingValue" value="@i" />@i
+        }
+
+        <div class="form-group">
+            <label asp-for="Rating.Comment"></label>
+            <textarea asp-for="Rating.Comment" class="description"></textarea>
+        </div>
+
+        <button id="addComment" type="button" class="btn btn-secondary">Dodaj komentarz</button>
+    }
+    else
+    {
+        <div>Już oceniłeś ten przepis</div>
+    }
+
+
+
+    <div class="form-group">
+        <h1>Komentarze</h1>
+        @if (Model.Recipe.Ratings.Any())
+        {
+            @foreach (var rating in Model.Recipe.Ratings)
+            {
+                <div>
+                    @rating.User
+                </div>
+                <div>
+                    @rating.RatingValue
+                </div>
+
+                @if (rating.Comment != null)
+                {
+                    <div>
+                        @rating.Comment
+                    </div>
+                }
+                else
+                {
+                    <div>
+                        Brak komentarza
+                    </div>
+                }
+
+            }
+        }
+        else
+        {
+            <div>Brak komentarzy</div>
+        }
+    </div>
+
+
+</form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                <button id="submit" type="button" class="btn btn-primary">Zaakceptuj</button>
+            </div>
+
+<script>
+    //# sourceURL=_RecipesDetails.cshtml
+    $('#addComment').on('click', function (event) {
+        event.preventDefault();
+
+        var form = $(this).parents('.modal').find('form');
+        var actionUrl = form.attr('action');
+        var dataToSend = form.serialize();
+
+        $.post(actionUrl, dataToSend).done(function (data) {    
+            $('#modal-placeholder').html(data);
+        });        
+    });
+</script>
