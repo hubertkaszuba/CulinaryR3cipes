@@ -51,25 +51,44 @@
             }
         </tbody>
     </table>
+    <div class="form-group">
+        <label asp-for="AverageRate" class="col-lg-2 col-sm-2 control-label">Średnia ocena</label>
+        <div class="col-lg-8">
+            <span class="rating">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    var starClass = "starAv";
 
-    @for (int i = 0; i < 10; i++)
-    {
-        if (i == Model.AverageRate)
-        {
-            <input type="radio" asp-for="Rating.RatingValue" value="@i" checked readonly />@i
-        }
-        else
-        {
-            <input type="radio" asp-for="Rating.RatingValue" value="@i" readonly />@i
-        }
-    }
+                    if (Model.AverageRate == 6 - i)
+                    {
+                        starClass += " active";
+                    }
+                    <span data-value="@(6 - i)" class="@starClass"></span>
+                }
+            </span>
+        </div>
+    </div>
 
     @if (!Model.DidUserRate)
     {
-        @for (int i = 0; i < 10; i++)
-        {
-            <input type="radio" asp-for="Rating.RatingValue" value="@i" />@i
-        }
+        <div class="form-group">
+            <label asp-for="Rating" class="col-lg-2 col-sm-2 control-label">Rating</label>
+            <div class="col-lg-8">
+                <span class="rating">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        var starClass = "star";
+
+                        if (Model.AverageRate == 6 - i)
+                        {
+                            starClass += " active";
+                        }
+                        <span data-value="@(6 - i)" class="@starClass"></span>
+                    }
+                </span>
+            </div>
+            <input asp-for="Rating.RatingValue" />
+        </div>
 
         <div class="form-group">
             <label asp-for="Rating.Comment"></label>
@@ -145,6 +164,6 @@
         $(".star").removeClass('active');
         $(this).addClass('active');
         var starValue = $(this).data("value");
-        $("#Rating").val(starValue);
+        $("#Rating_RatingValue").val(starValue);
     })
 </script>

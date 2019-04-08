@@ -136,7 +136,7 @@ namespace CulinaryR3cipes.Models
             Recipe recipe = await recipeRepository.FindAsync(r => r.RecipeId == id);            
             return PartialView("_RecipeDetails", new RecipeDetailsViewModel { Recipe = recipe,
                 DidUserRate = recipe.Ratings.Any(rating => rating.User == user),
-                AverageRate = (int)Math.Floor(recipe.Ratings.Average(ratings => ratings.RatingValue))});
+                AverageRate = recipe.Ratings.Any() ? (int)Math.Floor(recipe.Ratings.Average(ratings => ratings.RatingValue)) : 0});
         }
 
         public async Task<IActionResult> SetRating(RecipeDetailsViewModel recipeDetailsViewModel)
