@@ -103,41 +103,8 @@
     }
 
 
-
-    <div class="form-group">
-        <h1>Komentarze</h1>
-        @if (Model.Recipe.Ratings.Any())
-        {
-            @foreach (var rating in Model.Recipe.Ratings)
-            {
-                <div>
-                    @rating.User
-                </div>
-                <div>
-                    @rating.RatingValue
-                </div>
-
-                @if (rating.Comment != null)
-                {
-                    <div>
-                        @rating.Comment
-                    </div>
-                }
-                else
-                {
-                    <div>
-                        Brak komentarza
-                    </div>
-                }
-
-            }
-        }
-        else
-        {
-            <div>Brak komentarzy</div>
-        }
-    </div>
-
+    <div id="commentsViewPlaceHolder"></div>
+    <button id="showComments" type="button" class="btn btn-secondary">Pokaż komentarze</button>
 
 </form>
             <div class="modal-footer">
@@ -165,5 +132,11 @@
         $(this).addClass('active');
         var starValue = $(this).data("value");
         $("#Rating_RatingValue").val(starValue);
-    })
+    });
+
+    $('#showComments').on('click', function () {
+        var recipeId = @Model.Recipe.RecipeId;
+        $("#commentsViewPlaceHolder").load("/Home/Comments",
+            { id : recipeId });
+    });
 </script>

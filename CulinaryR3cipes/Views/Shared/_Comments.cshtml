@@ -1,0 +1,108 @@
+﻿@model CommentsViewModel
+
+<div class="form-group">
+    <h1>Komentarze</h1>
+    @if (Model.Ratings.Any())
+    {
+        @foreach (var rating in Model.Ratings)
+        {
+            <div>
+                @rating.User
+            </div>
+            <div>
+                @rating.RatingValue
+            </div>
+
+            @if (rating.Comment != null)
+            {
+                <div>
+                    @rating.Comment
+                </div>
+            }
+            else
+            {
+                <div>
+                    Brak komentarza
+                </div>
+            }
+
+        }
+    }
+    else
+    {
+        <div>Brak komentarzy</div>
+    }
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination pg-blue">
+
+            @if (Model.PagingInfo.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a id="prevCommentsPage" class="page-link">Previous</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <a id="prevCommentsPage" class="page-link">Previous</a>
+                </li>
+            }
+
+            @if (Model.PagingInfo.TotalPages > 2)
+            {
+                for (int i = 1; i <= Model.PagingInfo.TotalPages; i++)
+                {
+                    if (i == Model.PagingInfo.CurrentPage)
+                    {
+                        <li class="page-item active">
+                            <a id="@i " class="page-link commentsPage">@i</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a id="@i" class="page-link commentsPage">@i</a>
+                        </li>
+                    }
+                }
+            }
+
+            @if (Model.PagingInfo.CurrentPage < Model.PagingInfo.TotalPages)
+            {
+                <li class="page-item">
+                    <a id="nextCommentsPage" class="page-link">Next</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <a id="nextCommentsPage" class="page-link">Next</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
+
+<script>
+    $("#nextCommentsPage").on("click", function (e) {
+        var page = @Model.PagingInfo.CurrentPage + 1;
+        var recipeId = @Model.RecipeId;
+        $("#commentsViewPlaceHolder").load("/Home/Comments",
+            { id: recipeId, commentPage: page});
+    });
+
+    $("#prevCommentsPage").on("click", function (e) {
+        var page = @Model.PagingInfo.CurrentPage - 1;
+        var recipeId = @Model.RecipeId;
+        $("#commentsViewPlaceHolder").load("/Home/Comments",
+            { id: recipeId, commentPage: page});
+    });
+
+    $(".commentsPage").on("click", function (e) {
+        var page = $(this).attr('id');
+        var recipeId = @Model.RecipeId;
+        $("#commentsViewPlaceHolder").load("/Home/Comments",
+            { id: recipeId, commentPage: page});
+    });
+</script>

@@ -20,7 +20,8 @@ namespace CulinaryR3cipes.Models
         private IIngredientRepository ingredientRepository;
         private IFridgeRepository fridgeRepository;
         private readonly SignInManager<User> _signInManager;
-        int PageSize = 2;
+        int PageSize = 1;
+        int CommentsPageSize = 2;
 
         public HomeController(IRecipeRepository recipe, ITypeRepository type, ICategoryRepository category, IIngredientRepository ingredient, IFridgeRepository fridge, SignInManager<User> signInManager)
         {
@@ -154,6 +155,13 @@ namespace CulinaryR3cipes.Models
             recipeRepository.UpdateRecipe(recipe);
 
             return PartialView("_RecipeDetails", new RecipeDetailsViewModel { Recipe = await recipeRepository.FindAsync(r => r.RecipeId == recipeDetailsViewModel.Recipe.RecipeId), DidUserRate = true });
+        }
+
+        public async Task <IActionResult> Comments (int id, int commentPage = 1)
+        {
+            var user = await _signInManager.UserManager.GetUserAsync(User);
+            Recipe recipe = await recipeRepository.FindAsync(r => r.RecipeId == id);
+            return PartialView("_Comments", new CommentsViewModel { RecipeId = id, Ratings = recipe.Ratings.OrderBy(rating => rating.RatingId).Skip((commentPage-1)*CommentsPageSize).Take(CommentsPageSize).ToList(), PagingInfo = new PagingInfo { CurrentPage = commentPage, ItemsPerPage = CommentsPageSize, TotalItems = recipe.Ratings.Count } });
         }
     }
 }

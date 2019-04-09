@@ -75,15 +75,56 @@
     </div>
 </div>
 }
+<nav aria-label="Page navigation example">
+    <ul class="pagination pg-blue">
 
-@if (Model.PagingInfo.CurrentPage > 1)
-{
-    <input id="prevPage" type="button" value="Prev" />
-}
-@if (Model.PagingInfo.CurrentPage < Model.PagingInfo.TotalPages)
-{
-    <input id="nextPage" type="button" value="Next" />
-}
+        @if (Model.PagingInfo.CurrentPage > 1)
+        {
+            <li class="page-item">
+                <a id="prevPage" class="page-link">Previous</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled">
+                <a id="prevPage" class="page-link">Previous</a>
+            </li>
+        }
+
+        @if (Model.PagingInfo.TotalPages > 2)
+        {
+            for (int i = 1; i <= Model.PagingInfo.TotalPages; i++)
+            {
+                if (i == Model.PagingInfo.CurrentPage)
+                {
+                    <li class="page-item active">
+                        <a id="@i " class="page-link page">@i</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a id="@i" class="page-link page">@i</a>
+                    </li>
+                }
+            }
+        }
+
+        @if (Model.PagingInfo.CurrentPage < Model.PagingInfo.TotalPages)
+        {
+            <li class="page-item">
+                <a id="nextPage" class="page-link">Next</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled">
+                <a id="nextPage" class="page-link">Next</a>
+            </li>
+        }
+    </ul>
+</nav>
+
 
 <script>
     $("#nextPage").on("click", function (e) {
@@ -96,6 +137,14 @@
 
     $("#prevPage").on("click", function (e) {
         var page = @Model.PagingInfo.CurrentPage - 1;
+        var selectedTypeIds = $("#typeDropDown").val();
+        var includedCategoryIds = $("#categoryIncludedDropDown").val();
+        $("#viewPlaceHolder").load("/Home/Recipes",
+            { SelectedTypeIds: selectedTypeIds, IncludedCategoryIds: includedCategoryIds, recipePage: page});
+    });
+
+    $(".page").on("click", function (e) {
+        var page = $(this).attr('id');
         var selectedTypeIds = $("#typeDropDown").val();
         var includedCategoryIds = $("#categoryIncludedDropDown").val();
         $("#viewPlaceHolder").load("/Home/Recipes",
