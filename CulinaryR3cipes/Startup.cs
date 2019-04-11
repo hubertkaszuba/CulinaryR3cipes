@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CulinaryR3cipes.Email;
 using CulinaryR3cipes.Models;
 using CulinaryR3cipes.Models.Interfaces;
 using CulinaryR3cipes.Models.Repositories;
@@ -31,6 +32,7 @@ namespace CulinaryR3cipes
             services.AddTransient<ITypeRepository, TypeRepository>();
             services.AddTransient<IIngredientRepository, IngredientRepository>();
             services.AddTransient<IFridgeRepository, FridgeRepository>();
+            services.AddTransient<ISendGridEmailSender, SendGridEmailSender>();
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
             services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();

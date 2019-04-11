@@ -1,4 +1,5 @@
 ﻿using CulinaryR3cipes.Models;
+using CulinaryR3cipes.Models.Interfaces;
 using CulinaryR3cipes.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +15,14 @@ namespace CulinaryR3cipes.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private ISendGridEmailSender _sendGridEmailSender;
 
-        public AccountController(SignInManager<User> signInManager, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public AccountController(SignInManager<User> signInManager, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, ISendGridEmailSender sendGridEmailSender)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleManager;
+            _sendGridEmailSender = sendGridEmailSender;
         }
 
         public IActionResult Login()
@@ -61,6 +64,8 @@ namespace CulinaryR3cipes.Controllers
 
                 if (result.Succeeded)
                 {
+                    var emailVerifiactionCode = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    await _sendGridEmailSender.SendMail(emailVerifiactionCode);
                     await _userManager.AddToRoleAsync(user, "User");
                     return RedirectToAction("Login", "Account");
                 }
