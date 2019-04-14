@@ -1,0 +1,39 @@
+﻿@model AlertsListViewModel
+@{
+    ViewData["Title"] = "_AlertsList";
+}
+
+<h2>_AlertsList</h2>
+
+<table class="table" style="background-color:#DF691A">
+    <thead>
+        <tr>
+            <th>Nazwa użytkownika </th>
+            <th>Treść</th>
+            <th>Akcja</th>
+        </tr>
+    </thead>
+    <tbody style="background-color:azure">
+        @foreach (var item in Model.Ratings)
+        {
+        <tr style="color:dimgray">
+            <td>@Html.DisplayFor(modelItem => item.User.UserName)</td>
+            <td>@Html.DisplayFor(modelItem => item.Comment)</td>
+            <td>
+                <button id="@item.User.Id" type="button" class="btn btn-sm btn-success delete" data-target="#viewPlaceHolder" data-url="@Url.Action("DeleteUserFromAlerts")">Usuń użytkownika</button>
+                <button id="@item.RatingId" type="button" class="btn btn-sm btn-success delete"  data-target="#viewPlaceHolder" data-url="@Url.Action("DeleteComment")">Usuń komentarz</button>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    $('.delete').click(function (event) {
+        var url = $(this).data('url') + '/' + $(this).attr('id');
+        var isFromAlerts = true;
+        $.post(url, isFromAlerts).done(function (data) {
+            $("#viewPlaceHolder").html(data);
+        });
+    });
+</script>

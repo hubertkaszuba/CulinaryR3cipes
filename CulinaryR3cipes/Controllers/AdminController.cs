@@ -15,11 +15,14 @@ namespace CulinaryR3cipes.Controllers
     public class AdminController : Controller
     {
         IRecipeRepository recipeRepository;
+        IRatingRepository ratingRepository;
         private readonly SignInManager<User> _signInManager;
+        private const int _reportsLimit = 5;
 
-        public AdminController(IRecipeRepository recipe, SignInManager<User> signInManager)
+        public AdminController(IRecipeRepository recipe, IRatingRepository rating, SignInManager<User> signInManager)
         {
             recipeRepository = recipe;
+            ratingRepository = rating;
             _signInManager = signInManager;
         }
 
@@ -82,10 +85,38 @@ namespace CulinaryR3cipes.Controllers
         public async Task<IActionResult> DeleteUser(string id)
         {
             await _signInManager.UserManager.DeleteAsync(_signInManager.UserManager.Users.Where(u => u.Id == id).FirstOrDefault());
-
             return PartialView("_UsersListPartial", new UsersListViewModel
             {
                 Users = _signInManager.UserManager.Users
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteUserFromAlerts(string id)
+        {
+            await _signInManager.UserManager.DeleteAsync(_signInManager.UserManager.Users.Where(u => u.Id == id).FirstOrDefault());
+            return PartialView("_AlertsList", new UsersListViewModel
+            {
+                Users = _signInManager.UserManager.Users
+            });
+        }
+
+        public async Task<IActionResult> Alerts()
+        {
+            return PartialView("_AlertsList", new AlertsListViewModel
+            {
+                Ratings = await ratingRepository.FindAllAsync(rating => rating.ReportsCounter >= _reportsLimit)
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteComment(string id)
+        {
+            ratingRepository.DeleteRating(rating => rating.RatingId == Convert.ToInt32(id));
+
+            return PartialView("_AlertsList", new AlertsListViewModel
+            {
+                Ratings = await ratingRepository.FindAllAsync(rating => rating.ReportsCounter >= _reportsLimit)
             });
         }
 

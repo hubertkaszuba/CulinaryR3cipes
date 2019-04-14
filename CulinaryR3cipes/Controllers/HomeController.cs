@@ -159,9 +159,17 @@ namespace CulinaryR3cipes.Models
 
         public async Task <IActionResult> Comments (int id, int commentPage = 1)
         {
-            var user = await _signInManager.UserManager.GetUserAsync(User);
             Recipe recipe = await recipeRepository.FindAsync(r => r.RecipeId == id);
             return PartialView("_Comments", new CommentsViewModel { RecipeId = id, Ratings = recipe.Ratings.OrderBy(rating => rating.RatingId).Skip((commentPage-1)*CommentsPageSize).Take(CommentsPageSize).ToList(), PagingInfo = new PagingInfo { CurrentPage = commentPage, ItemsPerPage = CommentsPageSize, TotalItems = recipe.Ratings.Count } });
+        }
+
+        public async Task<IActionResult> ReportComment(int id, int commentPage, int reportId)
+        {
+            Recipe recipe = await recipeRepository.FindAsync(r => r.RecipeId == id);
+            recipe.Ratings.Where(rating => rating.RatingId == reportId).First().ReportsCounter++;
+
+            recipeRepository.UpdateRecipe(recipe);
+            return PartialView("_Comments", new CommentsViewModel { RecipeId = id, Ratings = recipe.Ratings.OrderBy(rating => rating.RatingId).Skip((commentPage - 1) * CommentsPageSize).Take(CommentsPageSize).ToList(), PagingInfo = new PagingInfo { CurrentPage = commentPage, ItemsPerPage = CommentsPageSize, TotalItems = recipe.Ratings.Count }, ReportedCommentId = reportId });
         }
     }
 }

@@ -32,6 +32,7 @@ namespace CulinaryR3cipes
             services.AddTransient<ITypeRepository, TypeRepository>();
             services.AddTransient<IIngredientRepository, IngredientRepository>();
             services.AddTransient<IFridgeRepository, FridgeRepository>();
+            services.AddTransient<IRatingRepository, RatingRepository>();
             services.AddTransient<ISendGridEmailSender, SendGridEmailSender>();
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));

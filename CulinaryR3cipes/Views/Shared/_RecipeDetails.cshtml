@@ -77,17 +77,11 @@
                 <span class="rating">
                     @for (int i = 1; i <= 5; i++)
                     {
-                        var starClass = "star";
-
-                        if (Model.AverageRate == 6 - i)
-                        {
-                            starClass += " active";
-                        }
-                        <span data-value="@(6 - i)" class="@starClass"></span>
+                        <span data-value="@(6 - i)" class="star"></span>
                     }
                 </span>
             </div>
-            <input asp-for="Rating.RatingValue" />
+            <input asp-for="Rating.RatingValue" hidden/>
         </div>
 
         <div class="form-group">

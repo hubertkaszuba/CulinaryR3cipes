@@ -25,6 +25,14 @@
                     Brak komentarza
                 </div>
             }
+            @if (Model.ReportedCommentId == rating.RatingId)
+            {
+                <input type="button" id="@rating.RatingId" class="btn btn-danger reportComment" value="Zgłoszono" disabled/>
+            }
+            else
+            {
+                <input type="button" id="@rating.RatingId" class="btn btn-danger reportComment" value="Zgłoś" />
+            }
 
         }
     }
@@ -104,5 +112,13 @@
         var recipeId = @Model.RecipeId;
         $("#commentsViewPlaceHolder").load("/Home/Comments",
             { id: recipeId, commentPage: page});
+    });
+
+    $(".reportComment").on("click", function (e) {
+        var comment = $(this).attr('id');
+        var page = @Model.PagingInfo.CurrentPage;
+        var recipeId = @Model.RecipeId;
+        $("#commentsViewPlaceHolder").load("/Home/ReportComment",
+            { id: recipeId, commentPage: page, reportId: comment});
     });
 </script>
