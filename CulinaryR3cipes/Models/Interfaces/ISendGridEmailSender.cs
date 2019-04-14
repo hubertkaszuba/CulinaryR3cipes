@@ -7,6 +7,6 @@ namespace CulinaryR3cipes.Models.Interfaces
 {
     public interface ISendGridEmailSender
     {
-        Task SendMail(string Token);
+        Task SendMail(string email, string subject, string message);
     }
 }

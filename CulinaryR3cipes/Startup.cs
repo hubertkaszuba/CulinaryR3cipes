@@ -35,7 +35,7 @@ namespace CulinaryR3cipes
             services.AddTransient<ISendGridEmailSender, SendGridEmailSender>();
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
-            services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+            services.AddIdentity<User, IdentityRole>(config => config.SignIn.RequireConfirmedEmail = true).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

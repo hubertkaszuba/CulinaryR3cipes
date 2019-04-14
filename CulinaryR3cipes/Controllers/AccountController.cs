@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace CulinaryR3cipes.Controllers
@@ -32,13 +33,20 @@ namespace CulinaryR3cipes.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel login)
-        {
+        {    
             if(!ModelState.IsValid)
                 return View(login);
 
             var user = await _userManager.FindByEmailAsync(login.Email);
 
-            if(user != null)
+            if (!_userManager.IsEmailConfirmedAsync(user).Result)
+            {
+                ModelState.AddModelError("",
+                "Email not confirmed!");
+                return View(login);
+            }
+
+            if (user != null)
             {
                 var result = await _signInManager.PasswordSignInAsync(user, login.Password, false, false);
                 if (result.Succeeded)
@@ -65,7 +73,12 @@ namespace CulinaryR3cipes.Controllers
                 if (result.Succeeded)
                 {
                     var emailVerifiactionCode = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    await _sendGridEmailSender.SendMail(emailVerifiactionCode);
+                    var callbackUrl = Url.Action(
+                        "ConfirmEmail",
+                        "Account",
+                        values: new { userId = user.Id, code = emailVerifiactionCode },
+                        protocol: Request.Scheme);
+                    await _sendGridEmailSender.SendMail(user.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
                     await _userManager.AddToRoleAsync(user, "User");
                     return RedirectToAction("Login", "Account");
                 }
@@ -78,6 +91,77 @@ namespace CulinaryR3cipes.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult ConfirmEmail(string userid, string code)
+        {
+            User user = _userManager.FindByIdAsync(userid).Result;
+            IdentityResult result = _userManager.
+                        ConfirmEmailAsync(user, code).Result;
+            if (result.Succeeded)
+            {
+                ViewBag.Message = "Email confirmed successfully!";
+                return View();
+            }
+            else
+            {
+                ViewBag.Message = "Error while confirming your email!";
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel forgotPasswordViewModel)
+        {
+            if (!ModelState.IsValid)
+                return View(forgotPasswordViewModel);
+
+            User user =  _userManager.Users.Where(u => u.Email == forgotPasswordViewModel.Email).FirstOrDefault();
+
+            if(user != null)
+            {
+                var passowordResetCode = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var callbackUrl = Url.Action(
+                    "ResetPassword",
+                    "Account",
+                    values: new { userId = user.Id, code = passowordResetCode },
+                    protocol: Request.Scheme);
+                await _sendGridEmailSender.SendMail(user.Email, "Reset hasła", $"Aby zresetować hasło do swojego konta, <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>kliknij tutaj</a>.");
+            }
+
+            return RedirectToAction("Login");
+        }
+
+        public IActionResult ResetPassword(string userid, string code)
+        {
+            return View(new ResetPasswordViewModel { Code = code } );
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel resetPasswordViewModel)
+        {
+            if (!ModelState.IsValid)
+                return View(resetPasswordViewModel);
+
+            User user = _userManager.Users.Where(u => u.Email == resetPasswordViewModel.Email).FirstOrDefault();
+
+            if(user != null)
+            {
+                IdentityResult result = await _userManager.ResetPasswordAsync(user, resetPasswordViewModel.Code, resetPasswordViewModel.Password);
+
+                if (result.Succeeded)
+                    return RedirectToAction("Login");
+                else
+                    return View();
+            }
+            else
+                return View();
         }
     }
 }

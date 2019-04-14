@@ -18,16 +18,12 @@ namespace CulinaryR3cipes.Email
             _configuration = configuration;
         }
 
-        public async Task SendMail(string token)
+        public async Task SendMail(string email, string subject, string message)
         {
             var apiKey = _configuration["SendGridKey"];
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("CulinaryR3cipes@example.com");
-            var subject = "Potwierdzenia rejestracji";
-            var to = new EmailAddress("hubert.kaszuba@gmail.com");
-            var plainTextContent = "Potwierdź: ";
-            var htmlContent = String.Format("<strong>{0}</strong>", token);
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+            var msg = MailHelper.CreateSingleEmail(from, new EmailAddress(email), subject, message, message);
             var response = await client.SendEmailAsync(msg);
         }
     }
