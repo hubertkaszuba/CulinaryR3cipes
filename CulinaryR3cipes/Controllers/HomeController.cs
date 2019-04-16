@@ -39,6 +39,7 @@ namespace CulinaryR3cipes.Models
             RecipesListViewModel viewModel = new RecipesListViewModel
             {
                 Recipes = recipes
+                .Where(recipe => recipe.IsSubmitted)
                 .OrderBy(r => r.RecipeId)
                 .Skip((recipePage - 1) * PageSize)
                 .Take(PageSize),
@@ -89,14 +90,16 @@ namespace CulinaryR3cipes.Models
 
             RecipesListViewModel viewModel = new RecipesListViewModel
             {
-                Recipes = filteredRecipes.OrderBy(r => r.RecipeId)
+                Recipes = filteredRecipes
+                .Where(recipe => recipe.IsSubmitted)
+                .OrderBy(r => r.RecipeId)
                 .Skip((recipePage - 1) * PageSize)
                 .Take(PageSize),
                 PagingInfo = new PagingInfo
                 {
                     CurrentPage = recipePage,
                     ItemsPerPage = PageSize,
-                    TotalItems = filteredRecipes.Count()
+                    TotalItems = filteredRecipes.Where(recipe => recipe.IsSubmitted).Count()
                 },
             };
 
@@ -137,7 +140,7 @@ namespace CulinaryR3cipes.Models
             Recipe recipe = await recipeRepository.FindAsync(r => r.RecipeId == id);            
             return PartialView("_RecipeDetails", new RecipeDetailsViewModel { Recipe = recipe,
                 DidUserRate = recipe.Ratings.Any(rating => rating.User == user),
-                AverageRate = recipe.Ratings.Any() ? (int)Math.Floor(recipe.Ratings.Average(ratings => ratings.RatingValue)) : 0});
+                AverageRate = (int)Math.Floor(recipe.AverageRating) });
         }
 
         public async Task<IActionResult> SetRating(RecipeDetailsViewModel recipeDetailsViewModel)
@@ -152,6 +155,7 @@ namespace CulinaryR3cipes.Models
                 User = user
             };
             recipe.Ratings.Add(rating);
+            recipe.AverageRating = recipe.Ratings.Average(r => r.RatingValue);
             recipeRepository.UpdateRecipe(recipe);
 
             return PartialView("_RecipeDetails", new RecipeDetailsViewModel { Recipe = await recipeRepository.FindAsync(r => r.RecipeId == recipeDetailsViewModel.Recipe.RecipeId), DidUserRate = true });

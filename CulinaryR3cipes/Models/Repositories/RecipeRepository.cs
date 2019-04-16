@@ -47,7 +47,7 @@ namespace CulinaryR3cipes.Models.Repositories
             context.SaveChanges();
         }
 
-        public async Task<ICollection<Recipe>> FindAllAsync(Expression<Func<Recipe, bool>> expression)
+        public async Task<IEnumerable<Recipe>> FindAllAsync(Expression<Func<Recipe, bool>> expression)
         {
             return await context.Recipes.Where(expression)
               .Include(recipe => recipe.Ingredients)

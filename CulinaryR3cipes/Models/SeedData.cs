@@ -145,7 +145,9 @@ namespace CulinaryR3cipes.Models
                 if (user == null)
                 {
                     var createAdmin = await userManager.CreateAsync(admin, userPassword);
+                    var emailVerifiactionCode = await userManager.GenerateEmailConfirmationTokenAsync(admin);
 
+                    await userManager.ConfirmEmailAsync(admin, emailVerifiactionCode);
                     if (createAdmin.Succeeded)
                         await userManager.AddToRoleAsync(admin, "Admin");
                 }

@@ -43,7 +43,7 @@ namespace CulinaryR3cipes.Controllers
         {
             return PartialView("_UsersListPartial", new UsersListViewModel
             {
-                Users = _signInManager.UserManager.Users
+                Users = _signInManager.UserManager.Users.Where(user => !user.isBanned)
             });
         }
 
@@ -82,9 +82,16 @@ namespace CulinaryR3cipes.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteUser(string id)
+        public async Task<IActionResult> BanUser(string id)
         {
-            await _signInManager.UserManager.DeleteAsync(_signInManager.UserManager.Users.Where(u => u.Id == id).FirstOrDefault());
+            User user = _signInManager.UserManager.Users.Where(u => u.Id == id).FirstOrDefault();
+
+            if (user != null)
+            {
+                user.isBanned = true;
+                await _signInManager.UserManager.UpdateAsync(user);
+            }
+            
             return PartialView("_UsersListPartial", new UsersListViewModel
             {
                 Users = _signInManager.UserManager.Users
@@ -92,18 +99,34 @@ namespace CulinaryR3cipes.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteUserFromAlerts(string id)
+        public async Task<IActionResult> BanUserFromAlerts(string id)
         {
-            await _signInManager.UserManager.DeleteAsync(_signInManager.UserManager.Users.Where(u => u.Id == id).FirstOrDefault());
-            return PartialView("_AlertsList", new UsersListViewModel
+            User user = _signInManager.UserManager.Users.Where(u => u.Id == id).FirstOrDefault();
+
+            if (user != null)
             {
-                Users = _signInManager.UserManager.Users
+                var recipes = await recipeRepository.FindAllAsync(r => r.Ratings.All(ra => ra.User == user));
+                
+                foreach (var recipe in recipes)
+                {
+                    recipe.Ratings.Remove(recipe.Ratings.Where(r => r.User == user).First());
+                    recipe.AverageRating = recipe.Ratings.Any() ? recipe.Ratings.Average(r => r.RatingValue) : 0;
+                    recipeRepository.UpdateRecipe(recipe);
+                }
+                    
+                user.isBanned = true;
+                await _signInManager.UserManager.UpdateAsync(user);
+            }
+
+            return PartialView("_AlertsListPartial", new UsersListViewModel
+            {
+                Users = _signInManager.UserManager.Users.Where(u => !u.isBanned)
             });
         }
 
         public async Task<IActionResult> Alerts()
         {
-            return PartialView("_AlertsList", new AlertsListViewModel
+            return PartialView("_AlertsListPartial", new AlertsListViewModel
             {
                 Ratings = await ratingRepository.FindAllAsync(rating => rating.ReportsCounter >= _reportsLimit)
             });
@@ -112,9 +135,16 @@ namespace CulinaryR3cipes.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteComment(string id)
         {
-            ratingRepository.DeleteRating(rating => rating.RatingId == Convert.ToInt32(id));
+            Rating ratingToDelete = await ratingRepository.FindAsync(r => r.RatingId == Convert.ToInt32(id));
 
-            return PartialView("_AlertsList", new AlertsListViewModel
+            Recipe recipeToUpdate = ratingToDelete.Recipe;
+
+            ratingRepository.Delete(ratingToDelete);
+
+            recipeToUpdate.AverageRating = recipeToUpdate.Ratings.Any() ? recipeToUpdate.Ratings.Average(r => r.RatingValue) : 0;
+            recipeRepository.UpdateRecipe(recipeToUpdate);
+
+            return PartialView("_AlertsListPartial", new AlertsListViewModel
             {
                 Ratings = await ratingRepository.FindAllAsync(rating => rating.ReportsCounter >= _reportsLimit)
             });

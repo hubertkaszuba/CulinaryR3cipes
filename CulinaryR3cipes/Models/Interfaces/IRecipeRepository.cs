@@ -9,7 +9,7 @@ namespace CulinaryR3cipes.Models.Interfaces
     public interface IRecipeRepository
     {
         Task<IEnumerable<Recipe>> Recipes();
-        Task<ICollection<Recipe>> FindAllAsync(Expression<Func<Recipe, bool>> expression);
+        Task<IEnumerable<Recipe>> FindAllAsync(Expression<Func<Recipe, bool>> expression);
         Task<Recipe> FindAsync(Expression<Func<Recipe, bool>> expression);
         void AddRecipe(Recipe recipe);
         void DeleteRecipe(Recipe recipe);

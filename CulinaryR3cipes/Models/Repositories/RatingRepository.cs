@@ -17,6 +17,12 @@ namespace CulinaryR3cipes.Models.Repositories
             _context = context;
         }
 
+        public void Delete(Rating rating)
+        {
+            _context.Remove(rating);
+            _context.SaveChanges();
+        }
+
         public void DeleteRating(Expression<Func<Rating, bool>> expression)
         {
             _context.Remove(_context.Ratings.Where(expression).FirstOrDefault());
@@ -28,6 +34,13 @@ namespace CulinaryR3cipes.Models.Repositories
             return await _context.Ratings.Where(expression)
              .Include(rating => rating.Recipe)
              .Include(rating => rating.User).ToListAsync();
+        }
+
+        public async Task<Rating> FindAsync(Expression<Func<Rating, bool>> expression)
+        {
+            return await _context.Ratings.Where(expression)
+             .Include(rating => rating.Recipe)
+             .Include(rating => rating.User).FirstOrDefaultAsync();
         }
 
         public async Task<List<Rating>> Ratings()

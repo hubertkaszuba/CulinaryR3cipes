@@ -39,6 +39,13 @@ namespace CulinaryR3cipes.Controllers
 
             var user = await _userManager.FindByEmailAsync(login.Email);
 
+
+            if (user.isBanned)
+            {
+                ModelState.AddModelError(string.Empty, "Użytkownik został zablokowany przez administratora");
+                return View(login);
+            }
+
             if (!_userManager.IsEmailConfirmedAsync(user).Result)
             {
                 ModelState.AddModelError("",
