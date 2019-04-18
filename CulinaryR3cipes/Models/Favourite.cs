@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace CulinaryR3cipes.Models
 {
-    public class Favourite
+    public class Favourite : BaseModel
     {
-        public int FavouriteId { get; set; }
         public int RecipeId { get; set; }
         
         public Recipe Recipe { get; set; }
