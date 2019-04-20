@@ -8,46 +8,24 @@ using System.Threading.Tasks;
 
 namespace CulinaryR3cipes.Models.Repositories
 {
-    public class TypeRepository : ITypeRepository
+    public class TypeRepository : BaseRepository<Type>, ITypeRepository
     {
-        ApplicationDbContext context;
-
-        public TypeRepository(ApplicationDbContext ctx)
-        {
-            context = ctx;
-        }
+        public TypeRepository(ApplicationDbContext context) : base(context) { }
 
         public async Task<IEnumerable<Type>> Types()
         {
-            return await context.Types.Include(c => c.Recipes).ToListAsync();
-        }
-        public void AddType(Type type)
-        {
-            context.Add(type);
-            context.SaveChanges();
-        }
-
-        public void DeleteType(Type type)
-        {
-            context.Remove(type);
-            context.SaveChanges();
-        }
-
-        public void UpdateType(Type type)
-        {
-            context.Update(type);
-            context.SaveChanges();
+            return await Context.Types.Include(c => c.Recipes).ToListAsync();
         }
 
         public async Task<ICollection<Type>> FindAllAsync(Expression<Func<Type, bool>> expression)
         {
-            return await context.Types.Where(expression)
+            return await Context.Types.Where(expression)
               .Include(c => c.Recipes).ToListAsync();
         }
 
         public async Task<Type> FindAsync(Expression<Func<Type, bool>> expression)
         {
-            return await context.Types.Where(expression)
+            return await Context.Types.Where(expression)
                 .Include(c => c.Recipes).FirstOrDefaultAsync();
         }
     }

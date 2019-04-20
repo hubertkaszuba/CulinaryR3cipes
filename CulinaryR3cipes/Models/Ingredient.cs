@@ -3,11 +3,8 @@ using System.Collections.Generic;
 
 namespace CulinaryR3cipes.Models
 {
-    public partial class Ingredient
+    public class Ingredient : BaseModel
     {
-        public int IngredientId { get; set; }
-        public int ProductId { get; set; }
-        public int RecipeId { get; set; }
         public int Quantity { get; set; }
 
         public virtual Product Product { get; set; }

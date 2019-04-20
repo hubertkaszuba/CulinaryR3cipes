@@ -48,14 +48,14 @@ namespace CulinaryR3cipes.Controllers
                     }
                 }
             }
-            IEnumerable<Product> productsToIngredients = await productRepository.FindAllAsync(p => model.Ingredients.Any(i => i.ProductId == p.ProductId));
+            IEnumerable<Product> productsToIngredients = await productRepository.FindAllAsync(p => model.Ingredients.Any(i => i.Id == p.Id));
             model.Recipe.Ingredients = new List<Ingredient>();
             foreach(var product in productsToIngredients)
             {
-                model.Recipe.Ingredients.Add(new Ingredient { Product = product, Quantity = model.Ingredients.Where(i => i.ProductId == product.ProductId).First().Quantity });
+                model.Recipe.Ingredients.Add(new Ingredient { Product = product, Quantity = model.Ingredients.Where(i => i.Id == product.Id).First().Quantity });
             }
 
-            recipeRepository.AddRecipe(model.Recipe);
+            recipeRepository.Add(model.Recipe);
             return RedirectToAction("Recipe");
         }
 
@@ -65,7 +65,7 @@ namespace CulinaryR3cipes.Controllers
             List<Product> productsJson = new List<Product>();
             foreach(var p in products)
             {
-                productsJson.Add(new Product { ProductId = p.ProductId, Name = p.Name, Measure = p.Measure});
+                productsJson.Add(new Product { Id = p.Id, Name = p.Name, Measure = p.Measure});
             }
             return Json(productsJson);
         }

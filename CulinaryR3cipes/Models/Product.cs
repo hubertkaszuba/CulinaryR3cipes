@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 namespace CulinaryR3cipes.Models
 {
-    public class Product
+    public class Product : BaseModel
     {
-        public int ProductId { get; set; }
-        public int CategoryId { get; set; }
         public string Name { get; set; }
         public string Measure { get; set; }
 

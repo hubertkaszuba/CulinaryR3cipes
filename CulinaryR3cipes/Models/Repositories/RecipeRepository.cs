@@ -8,18 +8,13 @@ using System.Threading.Tasks;
 
 namespace CulinaryR3cipes.Models.Repositories
 {
-    public class RecipeRepository : IRecipeRepository
+    public class RecipeRepository : BaseRepository<Recipe>, IRecipeRepository
     {
-        ApplicationDbContext context;
-
-        public RecipeRepository(ApplicationDbContext ctx)
-        {
-            context = ctx;
-        }
+        public RecipeRepository(ApplicationDbContext context) : base(context) { }
 
         public async Task<IEnumerable<Recipe>> Recipes()
         {
-            return await context.Recipes
+            return await Context.Recipes
               .Include(recipe => recipe.Ingredients)
                   .ThenInclude(ingredient => ingredient.Product)
               .Include(recipe => recipe.Ingredients)
@@ -29,27 +24,9 @@ namespace CulinaryR3cipes.Models.Repositories
               .Include(recipe => recipe.Type).ToListAsync();
         }
 
-        public void AddRecipe(Recipe recipe)
-        {
-            context.Add(recipe);
-            context.SaveChanges();
-        }
-
-        public void DeleteRecipe(Recipe recipe)
-        {
-            context.Remove(recipe);
-            context.SaveChanges();
-        }
-
-        public void UpdateRecipe(Recipe recipe)
-        {
-            context.Update(recipe);
-            context.SaveChanges();
-        }
-
         public async Task<IEnumerable<Recipe>> FindAllAsync(Expression<Func<Recipe, bool>> expression)
         {
-            return await context.Recipes.Where(expression)
+            return await Context.Recipes.Where(expression)
               .Include(recipe => recipe.Ingredients)
                   .ThenInclude(ingredient => ingredient.Product)
               .Include(recipe => recipe.Ingredients)
@@ -61,7 +38,7 @@ namespace CulinaryR3cipes.Models.Repositories
 
         public async Task<Recipe> FindAsync(Expression<Func<Recipe, bool>> expression)
         {
-            return await context.Recipes.Where(expression)
+            return await Context.Recipes.Where(expression)
               .Include(recipe => recipe.Ingredients)
                   .ThenInclude(ingredient => ingredient.Product)
               .Include(recipe => recipe.Ingredients)

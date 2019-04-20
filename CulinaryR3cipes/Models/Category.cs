@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace CulinaryR3cipes.Models
 {
-    public class Category
+    public class Category : BaseModel
     {
-        public int CategoryId { get; set; }
         public string Name { get; set; }
 
         public virtual ICollection<Product> Products { get; set; }

@@ -8,44 +8,33 @@ using System.Threading.Tasks;
 
 namespace CulinaryR3cipes.Models.Repositories
 {
-    public class RatingRepository : IRatingRepository
+    public class RatingRepository : BaseRepository<Rating>, IRatingRepository
     {
-        private ApplicationDbContext _context;
-
-        public RatingRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
-        public void Delete(Rating rating)
-        {
-            _context.Remove(rating);
-            _context.SaveChanges();
-        }
+        public RatingRepository(ApplicationDbContext context) : base(context) { }
 
         public void DeleteRating(Expression<Func<Rating, bool>> expression)
         {
-            _context.Remove(_context.Ratings.Where(expression).FirstOrDefault());
-            _context.SaveChanges();
+            Context.Remove(Context.Ratings.Where(expression).FirstOrDefault());
+            Context.SaveChanges();
         }
 
         public async Task<ICollection<Rating>> FindAllAsync(Expression<Func<Rating, bool>> expression)
         {
-            return await _context.Ratings.Where(expression)
+            return await Context.Ratings.Where(expression)
              .Include(rating => rating.Recipe)
              .Include(rating => rating.User).ToListAsync();
         }
 
         public async Task<Rating> FindAsync(Expression<Func<Rating, bool>> expression)
         {
-            return await _context.Ratings.Where(expression)
+            return await Context.Ratings.Where(expression)
              .Include(rating => rating.Recipe)
              .Include(rating => rating.User).FirstOrDefaultAsync();
         }
 
         public async Task<List<Rating>> Ratings()
         {
-            return await _context.Ratings
+            return await Context.Ratings
                 .Include(rating => rating.Recipe)
                 .Include(rating => rating.User).ToListAsync();
         }

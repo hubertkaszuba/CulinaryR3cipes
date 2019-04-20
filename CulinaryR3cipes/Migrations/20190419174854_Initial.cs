@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CulinaryR3cipes.Migrations
 {
-    public partial class User : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,11 +40,36 @@ namespace CulinaryR3cipes.Migrations
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false)
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    isBanned = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Types",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Types", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -154,27 +179,46 @@ namespace CulinaryR3cipes.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Favourites",
+                name: "Products",
                 columns: table => new
                 {
-                    FavouriteId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    RecipeId = table.Column<int>(nullable: false),
-                    UserId = table.Column<string>(nullable: true)
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Measure = table.Column<string>(nullable: true),
+                    CategoryId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Favourites", x => x.FavouriteId);
+                    table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Favourites_Recipes_RecipeId",
-                        column: x => x.RecipeId,
-                        principalTable: "Recipes",
-                        principalColumn: "RecipeId",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_Products_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Recipes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    Description = table.Column<string>(nullable: false),
+                    Time = table.Column<int>(nullable: false),
+                    Img = table.Column<byte[]>(nullable: false),
+                    IsSubmitted = table.Column<bool>(nullable: false),
+                    ReportsCounter = table.Column<int>(nullable: false),
+                    AverageRating = table.Column<decimal>(nullable: false),
+                    TypeId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Recipes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Favourites_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_Recipes_Types_TypeId",
+                        column: x => x.TypeId,
+                        principalTable: "Types",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -183,20 +227,20 @@ namespace CulinaryR3cipes.Migrations
                 name: "Fridges",
                 columns: table => new
                 {
-                    FridgeId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ProductId = table.Column<int>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false),
+                    Quantity = table.Column<int>(nullable: false),
+                    ProductId = table.Column<Guid>(nullable: true),
                     UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Fridges", x => x.FridgeId);
+                    table.PrimaryKey("PK_Fridges", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Fridges_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
-                        principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Fridges_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -206,25 +250,76 @@ namespace CulinaryR3cipes.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Ratings",
+                name: "Favourites",
                 columns: table => new
                 {
-                    RatingId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Comment = table.Column<string>(nullable: true),
-                    RatingValue = table.Column<decimal>(nullable: false),
-                    RecipeId = table.Column<int>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false),
+                    RecipeId = table.Column<Guid>(nullable: true),
                     UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Ratings", x => x.RatingId);
+                    table.PrimaryKey("PK_Favourites", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Favourites_Recipes_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Favourites_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ingredients",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Quantity = table.Column<int>(nullable: false),
+                    ProductId = table.Column<Guid>(nullable: true),
+                    RecipeId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ingredients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Ingredients_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Ingredients_Recipes_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ratings",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Comment = table.Column<string>(nullable: true),
+                    RatingValue = table.Column<decimal>(nullable: false),
+                    ReportsCounter = table.Column<int>(nullable: false),
+                    RecipeId = table.Column<Guid>(nullable: true),
+                    UserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ratings", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Ratings_Recipes_RecipeId",
                         column: x => x.RecipeId,
                         principalTable: "Recipes",
-                        principalColumn: "RecipeId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Ratings_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -293,6 +388,21 @@ namespace CulinaryR3cipes.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Ingredients_ProductId",
+                table: "Ingredients",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ingredients_RecipeId",
+                table: "Ingredients",
+                column: "RecipeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_CategoryId",
+                table: "Products",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Ratings_RecipeId",
                 table: "Ratings",
                 column: "RecipeId");
@@ -301,6 +411,11 @@ namespace CulinaryR3cipes.Migrations
                 name: "IX_Ratings_UserId",
                 table: "Ratings",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Recipes_TypeId",
+                table: "Recipes",
+                column: "TypeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -327,13 +442,28 @@ namespace CulinaryR3cipes.Migrations
                 name: "Fridges");
 
             migrationBuilder.DropTable(
+                name: "Ingredients");
+
+            migrationBuilder.DropTable(
                 name: "Ratings");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Recipes");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Types");
         }
     }
 }

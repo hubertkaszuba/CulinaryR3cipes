@@ -48,27 +48,27 @@ namespace CulinaryR3cipes.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteRecipe(int id)
+        public async Task<IActionResult> DeleteRecipe(Guid id)
         {
-            recipeRepository.DeleteRecipe(await recipeRepository.FindAsync(x => x.RecipeId == id));
+            recipeRepository.Remove(await recipeRepository.FindAsync(x => x.Id == id));
             return PartialView("_RecipesToSubmitListPartial", new RecipesToSubmitListViewModel
             {
                 RecipesToSubmit = await recipeRepository.FindAllAsync(r => r.IsSubmitted != true)
             });
         }
 
-        public async Task<IActionResult> RecipeDetails(int id)
+        public async Task<IActionResult> RecipeDetails(Guid id)
         {
-            Recipe recipe = await recipeRepository.FindAsync(r => r.RecipeId == id);
+            Recipe recipe = await recipeRepository.FindAsync(r => r.Id == id);
             return PartialView("_RecipeToSubmitDetails", recipe);
         }
 
         [HttpPost]
         public async Task<IActionResult> SubmitRecipe(Recipe recipe)
         {
-            Recipe recipeToSubmitt = await recipeRepository.FindAsync(r => r.RecipeId == recipe.RecipeId);
+            Recipe recipeToSubmitt = await recipeRepository.FindAsync(r => r.Id == recipe.Id);
             recipeToSubmitt.IsSubmitted = true;
-            recipeRepository.UpdateRecipe(recipeToSubmitt);
+            recipeRepository.Update(recipeToSubmitt);
             return PartialView("_RecipesToSubmitListPartial", new RecipesToSubmitListViewModel
             {
                 RecipesToSubmit = await recipeRepository.FindAllAsync(r => r.IsSubmitted != true)
@@ -111,7 +111,7 @@ namespace CulinaryR3cipes.Controllers
                 {
                     recipe.Ratings.Remove(recipe.Ratings.Where(r => r.User == user).First());
                     recipe.AverageRating = recipe.Ratings.Any() ? recipe.Ratings.Average(r => r.RatingValue) : 0;
-                    recipeRepository.UpdateRecipe(recipe);
+                    recipeRepository.Update(recipe);
                 }
                     
                 user.isBanned = true;
@@ -133,16 +133,16 @@ namespace CulinaryR3cipes.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteComment(string id)
+        public async Task<IActionResult> DeleteComment(Guid id)
         {
-            Rating ratingToDelete = await ratingRepository.FindAsync(r => r.RatingId == Convert.ToInt32(id));
+            Rating ratingToDelete = await ratingRepository.FindAsync(r => r.Id == id);
 
             Recipe recipeToUpdate = ratingToDelete.Recipe;
 
-            ratingRepository.Delete(ratingToDelete);
+            ratingRepository.Remove(ratingToDelete);
 
             recipeToUpdate.AverageRating = recipeToUpdate.Ratings.Any() ? recipeToUpdate.Ratings.Average(r => r.RatingValue) : 0;
-            recipeRepository.UpdateRecipe(recipeToUpdate);
+            recipeRepository.Update(recipeToUpdate);
 
             return PartialView("_AlertsListPartial", new AlertsListViewModel
             {

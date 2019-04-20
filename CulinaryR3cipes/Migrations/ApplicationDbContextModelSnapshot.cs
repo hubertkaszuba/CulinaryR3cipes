@@ -15,34 +15,32 @@ namespace CulinaryR3cipes.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("ProductVersion", "2.1.8-servicing-32085")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("CulinaryR3cipes.Models.Category", b =>
                 {
-                    b.Property<int>("CategoryId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name");
 
-                    b.HasKey("CategoryId");
+                    b.HasKey("Id");
 
                     b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("CulinaryR3cipes.Models.Favourite", b =>
                 {
-                    b.Property<int>("FavouriteId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
 
-                    b.Property<int>("RecipeId");
+                    b.Property<Guid?>("RecipeId");
 
                     b.Property<string>("UserId");
 
-                    b.HasKey("FavouriteId");
+                    b.HasKey("Id");
 
                     b.HasIndex("RecipeId");
 
@@ -53,17 +51,16 @@ namespace CulinaryR3cipes.Migrations
 
             modelBuilder.Entity("CulinaryR3cipes.Models.Fridge", b =>
                 {
-                    b.Property<int>("FridgeId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
 
-                    b.Property<int>("ProductId");
+                    b.Property<Guid?>("ProductId");
 
                     b.Property<int>("Quantity");
 
                     b.Property<string>("UserId");
 
-                    b.HasKey("FridgeId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ProductId");
 
@@ -74,17 +71,16 @@ namespace CulinaryR3cipes.Migrations
 
             modelBuilder.Entity("CulinaryR3cipes.Models.Ingredient", b =>
                 {
-                    b.Property<int>("IngredientId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
 
-                    b.Property<int>("ProductId");
+                    b.Property<Guid?>("ProductId");
 
                     b.Property<int>("Quantity");
 
-                    b.Property<int>("RecipeId");
+                    b.Property<Guid?>("RecipeId");
 
-                    b.HasKey("IngredientId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ProductId");
 
@@ -95,17 +91,16 @@ namespace CulinaryR3cipes.Migrations
 
             modelBuilder.Entity("CulinaryR3cipes.Models.Product", b =>
                 {
-                    b.Property<int>("ProductId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
 
-                    b.Property<int>("CategoryId");
+                    b.Property<Guid?>("CategoryId");
 
                     b.Property<string>("Measure");
 
                     b.Property<string>("Name");
 
-                    b.HasKey("ProductId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
@@ -114,21 +109,20 @@ namespace CulinaryR3cipes.Migrations
 
             modelBuilder.Entity("CulinaryR3cipes.Models.Rating", b =>
                 {
-                    b.Property<int>("RatingId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Comment");
 
                     b.Property<decimal>("RatingValue");
 
-                    b.Property<int>("RecipeId");
+                    b.Property<Guid?>("RecipeId");
 
                     b.Property<int>("ReportsCounter");
 
                     b.Property<string>("UserId");
 
-                    b.HasKey("RatingId");
+                    b.HasKey("Id");
 
                     b.HasIndex("RecipeId");
 
@@ -139,9 +133,8 @@ namespace CulinaryR3cipes.Migrations
 
             modelBuilder.Entity("CulinaryR3cipes.Models.Recipe", b =>
                 {
-                    b.Property<int>("RecipeId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<decimal>("AverageRating");
 
@@ -161,9 +154,9 @@ namespace CulinaryR3cipes.Migrations
                     b.Property<int?>("Time")
                         .IsRequired();
 
-                    b.Property<int>("TypeId");
+                    b.Property<Guid?>("TypeId");
 
-                    b.HasKey("RecipeId");
+                    b.HasKey("Id");
 
                     b.HasIndex("TypeId");
 
@@ -172,13 +165,12 @@ namespace CulinaryR3cipes.Migrations
 
             modelBuilder.Entity("CulinaryR3cipes.Models.Type", b =>
                 {
-                    b.Property<int>("TypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name");
 
-                    b.HasKey("TypeId");
+                    b.HasKey("Id");
 
                     b.ToTable("Types");
                 });
@@ -350,8 +342,7 @@ namespace CulinaryR3cipes.Migrations
                 {
                     b.HasOne("CulinaryR3cipes.Models.Recipe", "Recipe")
                         .WithMany("Favourites")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("RecipeId");
 
                     b.HasOne("CulinaryR3cipes.Models.User", "User")
                         .WithMany("Favourites")
@@ -362,8 +353,7 @@ namespace CulinaryR3cipes.Migrations
                 {
                     b.HasOne("CulinaryR3cipes.Models.Product", "Product")
                         .WithMany("Fridges")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ProductId");
 
                     b.HasOne("CulinaryR3cipes.Models.User", "User")
                         .WithMany("Fridges")
@@ -374,29 +364,25 @@ namespace CulinaryR3cipes.Migrations
                 {
                     b.HasOne("CulinaryR3cipes.Models.Product", "Product")
                         .WithMany("Ingredients")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ProductId");
 
                     b.HasOne("CulinaryR3cipes.Models.Recipe", "Recipe")
                         .WithMany("Ingredients")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("RecipeId");
                 });
 
             modelBuilder.Entity("CulinaryR3cipes.Models.Product", b =>
                 {
                     b.HasOne("CulinaryR3cipes.Models.Category", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CategoryId");
                 });
 
             modelBuilder.Entity("CulinaryR3cipes.Models.Rating", b =>
                 {
                     b.HasOne("CulinaryR3cipes.Models.Recipe", "Recipe")
                         .WithMany("Ratings")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("RecipeId");
 
                     b.HasOne("CulinaryR3cipes.Models.User", "User")
                         .WithMany("Ratings")
@@ -407,8 +393,7 @@ namespace CulinaryR3cipes.Migrations
                 {
                     b.HasOne("CulinaryR3cipes.Models.Type", "Type")
                         .WithMany("Recipes")
-                        .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("TypeId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

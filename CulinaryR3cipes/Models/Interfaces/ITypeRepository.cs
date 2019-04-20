@@ -6,13 +6,10 @@ using System.Threading.Tasks;
 
 namespace CulinaryR3cipes.Models.Interfaces
 {
-    public interface ITypeRepository
+    public interface ITypeRepository : IBaseRepository<Type>
     {
         Task<IEnumerable<Type>> Types();
         Task<ICollection<Type>> FindAllAsync(Expression<Func<Type, bool>> expression);
         Task<Type> FindAsync(Expression<Func<Type, bool>> expression);
-        void AddType(Type type);
-        void DeleteType(Type type);
-        void UpdateType(Type type);
     }
 }

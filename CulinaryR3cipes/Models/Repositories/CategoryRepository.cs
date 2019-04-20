@@ -7,48 +7,26 @@ using System.Threading.Tasks;
 
 namespace CulinaryR3cipes.Models.Repositories
 {
-    public class CategoryRepository : ICategoryRepository
+    public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
     {
-        private ApplicationDbContext context;
 
-        public CategoryRepository(ApplicationDbContext ctx)
-        {
-            context = ctx;
-        }
+        public CategoryRepository(ApplicationDbContext context) : base(context) { }
 
 
         public async Task<IEnumerable<Category>> Categories()
         {
-            return await context.Categories.Include(x => x.Products).ToListAsync();
-        }
-
-        public void AddCategory(Category category)
-        {
-            context.Categories.Add(category);
-            context.SaveChanges();
-        }
-
-        public void DeleteCategoryt(Category category)
-        {
-            context.Categories.Remove(category);
-            context.SaveChanges();
-        }
-
-        public void UpdateCategory(Category category)
-        {
-            context.Categories.Update(category);
-            context.SaveChanges();
+            return await Context.Categories.Include(x => x.Products).ToListAsync();
         }
 
         public async Task<ICollection<Category>> FindAllAsync(Expression<Func<Category, bool>> expression)
         {
-            return await context.Categories
+            return await Context.Categories
                 .Where(expression).Include(x => x.Products).ToListAsync();
         }
 
         public async Task<Category> FindAsync(Expression<Func<Category, bool>> expression)
         {
-            return await context.Categories
+            return await Context.Categories
                 .Where(expression).Include(x => x.Products).FirstOrDefaultAsync();
         }
     }

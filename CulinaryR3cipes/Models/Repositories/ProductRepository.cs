@@ -8,44 +8,22 @@ using System.Threading.Tasks;
 
 namespace CulinaryR3cipes.Models
 {
-    public class ProductRepository : IProductRepository
+    public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
-        private ApplicationDbContext context;
-        
-        public ProductRepository(ApplicationDbContext ctx)
-        {
-            context = ctx;
-        }
+        public ProductRepository(ApplicationDbContext context) : base(context) { }
         public async Task<IEnumerable<Product>>Products()
         {
-            return await context.Products
+            return await Context.Products
               .Include(product => product.Ingredients)
                   .ThenInclude(ingredient => ingredient.Product)
               .Include(product => product.Ingredients)
                   .ThenInclude(ingredient => ingredient.Recipe)
               .Include(c => c.Category).ToListAsync();
         }
-        public void AddProduct(Product product)
-        {
-            context.Products.Add(product);
-            context.SaveChanges();
-        }
-
-        public void DeleteProduct(Product product)
-        {
-            context.Products.Remove(product);
-            context.SaveChanges();
-        }
-
-        public void UpdateProduct(Product product)
-        {
-            context.Products.Update(product);
-            context.SaveChanges();
-        }
 
         public async Task<ICollection<Product>> FindAllAsync(Expression<Func<Product, bool>> expression)
         {
-            return await context.Products.Where(expression)
+            return await Context.Products.Where(expression)
               .Include(product => product.Ingredients)
                   .ThenInclude(ingredient => ingredient.Product)
               .Include(product => product.Ingredients)
@@ -55,7 +33,7 @@ namespace CulinaryR3cipes.Models
 
         public async Task<Product> FindAsync(Expression<Func<Product, bool>> expression)
         {
-            return await context.Products.Where(expression)
+            return await Context.Products.Where(expression)
               .Include(product => product.Ingredients)
                   .ThenInclude(ingredient => ingredient.Product)
               .Include(product => product.Ingredients)

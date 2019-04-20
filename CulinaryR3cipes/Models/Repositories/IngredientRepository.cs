@@ -8,50 +8,33 @@ using System.Threading.Tasks;
 
 namespace CulinaryR3cipes.Models.Repositories
 {
-    public class IngredientRepository : IIngredientRepository
+    public class IngredientRepository : BaseRepository<Ingredient>, IIngredientRepository
     {
-        ApplicationDbContext context;
-
-        public IngredientRepository(ApplicationDbContext ctx)
-        {
-            context = ctx;
-        }
+        public IngredientRepository(ApplicationDbContext context) : base(context) { }
 
         public async Task<IEnumerable<Ingredient>> Ingredients()
         {
-            return await context.Ingredients
+            return await Context.Ingredients
               .Include(c => c.Product)
               .Include(c => c.Recipe).ToListAsync();
         }
 
         public void AddIngredients(IEnumerable<Ingredient> ingredients)
         {
-            context.AddRange(ingredients);
-            context.SaveChanges();
-        }
-
-        public void DeleteIngredient(Ingredient ingredient)
-        {
-            context.Remove(ingredient);
-            context.SaveChanges();
-        }
-
-        public void UpdateIngredient(Ingredient ingredient)
-        {
-            context.Update(ingredient);
-            context.SaveChanges();
+            Context.AddRange(ingredients);
+            Context.SaveChanges();
         }
 
         public async Task<ICollection<Ingredient>> FindAllAsync(Expression<Func<Ingredient, bool>> expression)
         {
-            return await context.Ingredients.Where(expression)
+            return await Context.Ingredients.Where(expression)
               .Include(c => c.Product)
               .Include(c => c.Recipe).ToListAsync();
         }
 
         public async Task<Ingredient> FindAsync(Expression<Func<Ingredient, bool>> expression)
         {
-            return await context.Ingredients.Where(expression)
+            return await Context.Ingredients.Where(expression)
               .Include(c => c.Product)
               .Include(c => c.Recipe).FirstOrDefaultAsync();
         }

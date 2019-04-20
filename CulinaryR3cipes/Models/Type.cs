@@ -4,9 +4,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CulinaryR3cipes.Models
 {
-    public partial class Type
+    public class Type : BaseModel
     {
-        public int TypeId { get; set; }
         [Display(Name = "Typ")]
         public string Name { get; set; }
 

@@ -10,7 +10,7 @@ namespace CulinaryR3cipes.Models.ViewModels
     public class FridgeViewModel
     {
         [Required]
-        public string ProductId { get; set; }
+        public Guid ProductId { get; set; }
         [Required]
         public int Quantity { get; set; }
 

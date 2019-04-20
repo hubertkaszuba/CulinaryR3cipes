@@ -26,7 +26,7 @@
     <div class="form-group col-md-6">
         <label asp-for="Types" class="col-form-label"></label>
         <div>
-            <select id="selectProduct" asp-for="Recipe.TypeId" asp-items="@(new SelectList(Model.Types,"TypeId", "Name", Model.TypeId)) " class="form-control"><option>Wybierz produkt</option></select>
+            <select id="selectProduct" asp-for="Recipe.Id" asp-items="@(new SelectList(Model.Types,"Id", "Name", Model.TypeId)) " class="form-control"><option>Wybierz produkt</option></select>
             <span asp-validation-for="Types" class="text-danger"></span>
         </div>
     </div>
@@ -64,7 +64,7 @@
             var container = $("#IngredientContainer");
             var div = $("<div />");
             var value = "";
-            var select = $("<select></select>").attr("id", "Ingredients[" + i + "]").attr("name", "Ingredients[" + i + "].ProductId").attr("data-val", "true").attr("data-val-required", "Produkt jest wymagany");
+            var select = $("<select></select>").attr("id", "Ingredients[" + i + "]").attr("name", "Ingredients[" + i + "].Id").attr("data-val", "true").attr("data-val-required", "Produkt jest wymagany");
             var text = $("<input />").attr("type", "textbox").attr("id", "Ingredients[" + i + "]_Quantity").attr("name", "Ingredients[" + i + "].Quantity").attr("data-val", "true").attr("data-val-required", "Produkt jest wymagany");
             var options = $("<option>Wybierz produkt</option>");
             select.append(options);

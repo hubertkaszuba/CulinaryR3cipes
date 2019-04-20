@@ -12,7 +12,7 @@
         <div class="form-group col-md-6">
             <label asp-for="ProductId" class="col-form-label"></label>
             <div>
-                <select id="selectProduct" asp-for="ProductId" asp-items="@(new SelectList(Model.Products,"ProductId", "Name", Model.ProductId)) " class="form-control"><option>Wybierz produkt</option></select>
+                <select id="selectProduct" asp-for="ProductId" asp-items="@(new SelectList(Model.Products,"Id", "Name", Model.ProductId)) " class="form-control"><option>Wybierz produkt</option></select>
                 <span asp-validation-for="ProductId" class="text-danger"></span>
             </div>
         </div>
@@ -46,8 +46,8 @@
                 <td>@Html.DisplayFor(modelItem => item.Product.Name)</td>
                 <td>@Html.DisplayFor(modelItem => item.Quantity)@Html.DisplayFor(modelItem => item.Product.Measure)</td>
                 <td>
-                    <a asp-action="Delete" asp-route-id="@item.FridgeId" class="btn btn-success btn-sm">Usuń</a>
-                    <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-success btn-sm">Edytuj</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-success btn-sm">Usuń</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success btn-sm">Edytuj</a>
                 </td>
             </tr>
         }

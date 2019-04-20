@@ -35,14 +35,14 @@ namespace CulinaryR3cipes.Controllers
             });
         }
 
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(Guid id)
         {
             var user = await _signInManager.UserManager.GetUserAsync(User);
-            Fridge productInFridge = await fridgeRepository.FindAsync(f => f.ProductId == id && f.User == user);
+            Fridge productInFridge = await fridgeRepository.FindAsync(f => f.Id == id && f.User == user);
 
             return View("Fridge", new FridgeViewModel
             {
-                ProductId = id.ToString(),
+                ProductId = id,
                 Quantity = productInFridge.Quantity,
                 Products = await productRepository.Products(),
                 Fridges = await fridgeRepository.GetUserProducts(user)
@@ -52,25 +52,25 @@ namespace CulinaryR3cipes.Controllers
         public async Task<IActionResult> AddToFridge(FridgeViewModel fridge)
         {
             User user = await _signInManager.UserManager.GetUserAsync(User);
-            Product product = await productRepository.FindAsync(p => p.ProductId == Convert.ToInt64(fridge.ProductId));
+            Product product = await productRepository.FindAsync(p => p.Id == fridge.ProductId);
 
-            Fridge productInFridge = await fridgeRepository.FindAsync(f => f.ProductId == product.ProductId && f.User.Id == user.Id);
+            Fridge productInFridge = await fridgeRepository.FindAsync(f => f.Id == product.Id && f.User.Id == user.Id);
 
             if (productInFridge != null)
             {
                 productInFridge.Quantity = fridge.Quantity;
-                fridgeRepository.UpdateFridge(productInFridge);
+                fridgeRepository.Update(productInFridge);
             }
             else
-                fridgeRepository.AddToFridge(new Fridge { Product = product, User = user, Quantity = fridge.Quantity });
+                fridgeRepository.Add(new Fridge { Product = product, User = user, Quantity = fridge.Quantity });
 
             return RedirectToAction("Fridge");
         }
 
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            Fridge fridge = await fridgeRepository.FindAsync(x => x.FridgeId == id);
-            fridgeRepository.DeleteFromFridge(fridge);
+            Fridge fridge = await fridgeRepository.FindAsync(x => x.Id == id);
+            fridgeRepository.Remove(fridge);
             return RedirectToAction("Fridge");
         }
     }

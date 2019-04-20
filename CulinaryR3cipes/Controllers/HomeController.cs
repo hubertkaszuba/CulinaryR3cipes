@@ -40,7 +40,7 @@ namespace CulinaryR3cipes.Models
             {
                 Recipes = recipes
                 .Where(recipe => recipe.IsSubmitted)
-                .OrderBy(r => r.RecipeId)
+                .OrderBy(r => r.AverageRating)
                 .Skip((recipePage - 1) * PageSize)
                 .Take(PageSize),
                 PagingInfo = new PagingInfo
@@ -56,43 +56,18 @@ namespace CulinaryR3cipes.Models
             return View(viewModel);
         }
 
-        //[HttpPost]
-        public async Task<IActionResult> Recipes(string [] SelectedTypeIds, string[] IncludedCategoryIds, string [] ExcludedCategoryIds, string name, int recipePage = 1)
+        public async Task<IActionResult> Recipes(Guid [] SelectedTypeIds, Guid[] IncludedCategoryIds, Guid [] ExcludedCategoryIds, string name, int recipePage = 1)
         {
-            List<string> typesFilter = new List<string> { };
-            if (SelectedTypeIds.Any())
-            {
-                foreach (var s in SelectedTypeIds)
-                    typesFilter.Add(s);
-            }
-
-            List<string> includedCategoryFilter = new List<string> { };
-            if (IncludedCategoryIds.Any())
-            {
-                foreach (var s in IncludedCategoryIds)
-                    includedCategoryFilter.Add(s);
-            }
-
-            List<string> excludedCategoryFilter = new List<string> { };
-            if (ExcludedCategoryIds.Any())
-            {
-                foreach (var s in ExcludedCategoryIds)
-                    excludedCategoryFilter.Add(s);
-            }
-
-            IEnumerable<Ingredient> ingredientsIncluded = await ingredientRepository.FindAllAsync(i => includedCategoryFilter.Contains(i.Product.CategoryId.ToString()));
-            IEnumerable<Ingredient> ingredientsExcluded = await ingredientRepository.FindAllAsync(i => excludedCategoryFilter.Contains(i.Product.CategoryId.ToString()));
-
-            IEnumerable<Recipe> filteredRecipes = await recipeRepository.FindAllAsync(r => (typesFilter.Contains(r.TypeId.ToString()) || typesFilter.Count == 0)
-                && (r.Ingredients.Any(x => ingredientsIncluded.Any(y => y.IngredientId == x.IngredientId)) || includedCategoryFilter.Count == 0)
-                && (!r.Ingredients.Any(x => ingredientsExcluded.Any(y => y.IngredientId == x.IngredientId)) || excludedCategoryFilter.Count == 0)
+            IEnumerable<Recipe> filteredRecipes = await recipeRepository.FindAllAsync(r => (SelectedTypeIds.Contains(r.Type.Id) || SelectedTypeIds.Count() == 0)
+                && (r.Ingredients.Any(x => IncludedCategoryIds.Any(y => y == x.Product.Category.Id)) || IncludedCategoryIds.Count() == 0)
+                && (!r.Ingredients.Any(x => ExcludedCategoryIds.Any(y => y == x.Product.Category.Id)) || ExcludedCategoryIds.Count() == 0)
                 && (name == null || r.Name.Contains(name, StringComparison.OrdinalIgnoreCase)));
 
             RecipesListViewModel viewModel = new RecipesListViewModel
             {
                 Recipes = filteredRecipes
                 .Where(recipe => recipe.IsSubmitted)
-                .OrderBy(r => r.RecipeId)
+                .OrderBy(r => r.AverageRating)
                 .Skip((recipePage - 1) * PageSize)
                 .Take(PageSize),
                 PagingInfo = new PagingInfo
@@ -112,11 +87,11 @@ namespace CulinaryR3cipes.Models
             {
                 User user = await _signInManager.UserManager.GetUserAsync(User);
                 IEnumerable<Fridge> productsInFridge = await fridgeRepository.GetUserProducts(user);
-                IEnumerable<Recipe> filteredRecipes = await recipeRepository.FindAllAsync(r => r.Ingredients.All(i => productsInFridge.Any(p => (p.ProductId == i.ProductId && (p.Quantity >= i.Quantity)))));
+                IEnumerable<Recipe> filteredRecipes = await recipeRepository.FindAllAsync(r => r.Ingredients.All(i => productsInFridge.Any(p => (p.Id == i.Id && (p.Quantity >= i.Quantity)))));
           
                 RecipesListViewModel viewModel = new RecipesListViewModel
                 {
-                    Recipes = filteredRecipes.OrderBy(r => r.RecipeId)
+                    Recipes = filteredRecipes.OrderBy(r => r.AverageRating)
                     .Skip((recipePage - 1) * PageSize)
                     .Take(PageSize),
                     PagingInfo = new PagingInfo
@@ -134,10 +109,10 @@ namespace CulinaryR3cipes.Models
             }
         }
 
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(Guid id)
         {
             var user = await _signInManager.UserManager.GetUserAsync(User);
-            Recipe recipe = await recipeRepository.FindAsync(r => r.RecipeId == id);            
+            Recipe recipe = await recipeRepository.FindAsync(r => r.Id == id);            
             return PartialView("_RecipeDetails", new RecipeDetailsViewModel { Recipe = recipe,
                 DidUserRate = recipe.Ratings.Any(rating => rating.User == user),
                 AverageRate = (int)Math.Floor(recipe.AverageRating) });
@@ -145,7 +120,7 @@ namespace CulinaryR3cipes.Models
 
         public async Task<IActionResult> SetRating(RecipeDetailsViewModel recipeDetailsViewModel)
         {
-            Recipe recipe = await recipeRepository.FindAsync(r => r.RecipeId == recipeDetailsViewModel.Recipe.RecipeId);
+            Recipe recipe = await recipeRepository.FindAsync(r => r.Id == recipeDetailsViewModel.Recipe.Id);
             var user = await _signInManager.UserManager.GetUserAsync(User);
             Rating rating = new Rating
             {
@@ -156,24 +131,24 @@ namespace CulinaryR3cipes.Models
             };
             recipe.Ratings.Add(rating);
             recipe.AverageRating = recipe.Ratings.Average(r => r.RatingValue);
-            recipeRepository.UpdateRecipe(recipe);
+            recipeRepository.Update(recipe);
 
-            return PartialView("_RecipeDetails", new RecipeDetailsViewModel { Recipe = await recipeRepository.FindAsync(r => r.RecipeId == recipeDetailsViewModel.Recipe.RecipeId), DidUserRate = true });
+            return PartialView("_RecipeDetails", new RecipeDetailsViewModel { Recipe = await recipeRepository.FindAsync(r => r.Id == recipeDetailsViewModel.Recipe.Id), DidUserRate = true });
+        }
+        
+        public async Task <IActionResult> Comments (Guid id, int commentPage = 1)
+        {
+            Recipe recipe = await recipeRepository.FindAsync(r => r.Id == id);
+            return PartialView("_Comments", new CommentsViewModel { RecipeId = id, Ratings = recipe.Ratings.OrderBy(rating => rating.Id).Skip((commentPage-1)*CommentsPageSize).Take(CommentsPageSize).ToList(), PagingInfo = new PagingInfo { CurrentPage = commentPage, ItemsPerPage = CommentsPageSize, TotalItems = recipe.Ratings.Count } });
         }
 
-        public async Task <IActionResult> Comments (int id, int commentPage = 1)
+        public async Task<IActionResult> ReportComment(Guid id, int commentPage, Guid reportId)
         {
-            Recipe recipe = await recipeRepository.FindAsync(r => r.RecipeId == id);
-            return PartialView("_Comments", new CommentsViewModel { RecipeId = id, Ratings = recipe.Ratings.OrderBy(rating => rating.RatingId).Skip((commentPage-1)*CommentsPageSize).Take(CommentsPageSize).ToList(), PagingInfo = new PagingInfo { CurrentPage = commentPage, ItemsPerPage = CommentsPageSize, TotalItems = recipe.Ratings.Count } });
-        }
+            Recipe recipe = await recipeRepository.FindAsync(r => r.Id == id);
+            recipe.Ratings.Where(rating => rating.Id == reportId).First().ReportsCounter++;
 
-        public async Task<IActionResult> ReportComment(int id, int commentPage, int reportId)
-        {
-            Recipe recipe = await recipeRepository.FindAsync(r => r.RecipeId == id);
-            recipe.Ratings.Where(rating => rating.RatingId == reportId).First().ReportsCounter++;
-
-            recipeRepository.UpdateRecipe(recipe);
-            return PartialView("_Comments", new CommentsViewModel { RecipeId = id, Ratings = recipe.Ratings.OrderBy(rating => rating.RatingId).Skip((commentPage - 1) * CommentsPageSize).Take(CommentsPageSize).ToList(), PagingInfo = new PagingInfo { CurrentPage = commentPage, ItemsPerPage = CommentsPageSize, TotalItems = recipe.Ratings.Count }, ReportedCommentId = reportId });
+            recipeRepository.Update(recipe);
+            return PartialView("_Comments", new CommentsViewModel { RecipeId = id, Ratings = recipe.Ratings.OrderBy(rating => rating.Id).Skip((commentPage - 1) * CommentsPageSize).Take(CommentsPageSize).ToList(), PagingInfo = new PagingInfo { CurrentPage = commentPage, ItemsPerPage = CommentsPageSize, TotalItems = recipe.Ratings.Count }, ReportedCommentId = reportId });
         }
     }
 }

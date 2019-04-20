@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace CulinaryR3cipes.Models.Interfaces
 {
-    public interface IRatingRepository
+    public interface IRatingRepository : IBaseRepository<Rating>
     {
         Task<List<Rating>> Ratings();
         Task<ICollection<Rating>> FindAllAsync(Expression<Func<Rating, bool>> expression);
         Task<Rating> FindAsync(Expression<Func<Rating, bool>> expression);
         void DeleteRating(Expression<Func<Rating, bool>> expression);
-        void Delete(Rating rating);
     }
 }

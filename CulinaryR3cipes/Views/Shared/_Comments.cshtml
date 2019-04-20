@@ -25,13 +25,13 @@
                     Brak komentarza
                 </div>
             }
-            @if (Model.ReportedCommentId == rating.RatingId)
+            @if (Model.ReportedCommentId == rating.Id)
             {
-                <input type="button" id="@rating.RatingId" class="btn btn-danger reportComment" value="Zgłoszono" disabled/>
+                <input type="button" id="@rating.Id" class="btn btn-danger reportComment" value="Zgłoszono" disabled/>
             }
             else
             {
-                <input type="button" id="@rating.RatingId" class="btn btn-danger reportComment" value="Zgłoś" />
+                <input type="button" id="@rating.Id" class="btn btn-danger reportComment" value="Zgłoś" />
             }
 
         }
@@ -93,32 +93,30 @@
 </div>
 
 <script>
+    //# sourceURL=_Comments.cshtml
     $("#nextCommentsPage").on("click", function (e) {
         var page = @Model.PagingInfo.CurrentPage + 1;
-        var recipeId = @Model.RecipeId;
-        $("#commentsViewPlaceHolder").load("/Home/Comments",
-            { id: recipeId, commentPage: page});
+        var path = '@Url.Action("Comments", "Home", new { id = Model.RecipeId })';
+        $("#commentsViewPlaceHolder").load(path, { commentPage: page });
     });
 
     $("#prevCommentsPage").on("click", function (e) {
         var page = @Model.PagingInfo.CurrentPage - 1;
-        var recipeId = @Model.RecipeId;
-        $("#commentsViewPlaceHolder").load("/Home/Comments",
-            { id: recipeId, commentPage: page});
+        var path = '@Url.Action("Comments", "Home", new { id = Model.RecipeId })';
+        $("#commentsViewPlaceHolder").load(path, { commentPage: page });
     });
 
     $(".commentsPage").on("click", function (e) {
         var page = $(this).attr('id');
-        var recipeId = @Model.RecipeId;
-        $("#commentsViewPlaceHolder").load("/Home/Comments",
-            { id: recipeId, commentPage: page});
+        var path = '@Url.Action("Comments", "Home", new { id = Model.RecipeId })';
+        $("#commentsViewPlaceHolder").load(path, { commentPage: page });
     });
 
     $(".reportComment").on("click", function (e) {
-        var comment = $(this).attr('id');
         var page = @Model.PagingInfo.CurrentPage;
-        var recipeId = @Model.RecipeId;
-        $("#commentsViewPlaceHolder").load("/Home/ReportComment",
-            { id: recipeId, commentPage: page, reportId: comment});
+        var comment = $(this).attr('id');
+        var path = '@Url.Action("ReportComment", "Home", new { id = Model.RecipeId })';
+        $("#commentsViewPlaceHolder").load(path,
+            { commentPage: page, reportId: comment});
     });
 </script>

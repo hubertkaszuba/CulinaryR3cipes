@@ -11,7 +11,7 @@
     }
 
     <div class="form-group">
-        <input asp-for="Recipe.RecipeId" hidden />
+        <input asp-for="Recipe.Id" hidden />
     </div>
 
     <div class="form-group">
@@ -69,7 +69,7 @@
         </div>
     </div>
 
-    @if (!Model.DidUserRate)
+    @if (Model.DidUserRate)
     {
         <div class="form-group">
             <label asp-for="Rating" class="col-lg-2 col-sm-2 control-label">Rating</label>
@@ -98,7 +98,7 @@
 
 
     <div id="commentsViewPlaceHolder"></div>
-    <button id="showComments" type="button" class="btn btn-secondary">Pokaż komentarze</button>
+    <button id="@Model.Recipe.Id" type="button" class="btn btn-secondary show" data-url="@Url.Action("Comments", "Home")">Pokaż komentarze</button>
 
 </form>
             <div class="modal-footer">
@@ -128,9 +128,8 @@
         $("#Rating_RatingValue").val(starValue);
     });
 
-    $('#showComments').on('click', function () {
-        var recipeId = @Model.Recipe.RecipeId;
-        $("#commentsViewPlaceHolder").load("/Home/Comments",
-            { id : recipeId });
+    $('.show').on('click', function () {
+        var path = '@Url.Action("Comments", "Home", new { id=Model.Recipe.Id })';
+        $("#commentsViewPlaceHolder").load(path);
     });
 </script>

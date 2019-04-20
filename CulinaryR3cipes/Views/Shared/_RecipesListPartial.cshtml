@@ -17,7 +17,7 @@
     }
 
     <div class="form-group">
-        <input asp-for="@recipe.RecipeId" hidden />
+        <input asp-for="@recipe.Id" hidden />
     </div>
 
     <div class="form-group">
@@ -58,7 +58,7 @@
         </tbody>
     </table>
 
-    <button id="@recipe.RecipeId" type="button" class="btn btn-sm btn-success recipeDetails" data-toggle="ajax-modal" data-target="#details" data-url="@Url.Action("Details")">Szczegóły</button>
+    <button id="@recipe.Id" type="button" class="btn btn-sm btn-success recipeDetails" data-toggle="ajax-modal" data-target="#details" data-url="@Url.Action("Details")">Szczegóły</button>
 
     <div class="modal fade" id="details" tabindex="-1" role="dialog" aria-labelledby="submitRecipeLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">

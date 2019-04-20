@@ -10,7 +10,7 @@ namespace CulinaryR3cipes.Models.ViewModels
     public class RecipeViewModel
     {
         public Recipe Recipe { get; set; }
-        public int TypeId { get; set; }
+        public Guid TypeId { get; set; }
         public List<Ingredient> Ingredients { get; set; }
         public List<IFormFile> Image { get; set; }
         public IEnumerable<Type> Types { get; set; }

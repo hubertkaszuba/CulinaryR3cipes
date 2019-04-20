@@ -6,9 +6,9 @@
 <script type="text/javascript" src="~/js/Index.js"></script>
 <label for="ddlType">Select Type</label>
 
-@Html.ListBoxFor(model => model.SelectedTypeIds, new MultiSelectList(Model.Types, "TypeId", "Name"), new { id = "typeDropDown", multiple = "multiple" })
-@Html.ListBoxFor(model => model.SelectedIncludedCategoriesIds, new MultiSelectList(Model.Categories, "CategoryId", "Name"), new { id = "categoryIncludedDropDown", multiple = "multiple" })
-@Html.ListBoxFor(model => model.SelectedExcludedCategoriesIds, new MultiSelectList(Model.Categories, "CategoryId", "Name"), new { id = "categoryExcludedDropDown", multiple = "multiple" })
+@Html.ListBoxFor(model => model.SelectedTypeIds, new MultiSelectList(Model.Types, "Id", "Name"), new { id = "typeDropDown", multiple = "multiple" })
+@Html.ListBoxFor(model => model.SelectedIncludedCategoriesIds, new MultiSelectList(Model.Categories, "Id", "Name"), new { id = "categoryIncludedDropDown", multiple = "multiple" })
+@Html.ListBoxFor(model => model.SelectedExcludedCategoriesIds, new MultiSelectList(Model.Categories, "Id", "Name"), new { id = "categoryExcludedDropDown", multiple = "multiple" })
 <input id="recipeSearch" class="form-control mr-sm-2" type="text" placeholder="Szukaj">
 <input id="btnSearch" type="button" class="btn btn-primary" value="Search" />
 <input id="btnSearchFridge" type="button" class="btn btn-primary" value="Search by fridge" />
