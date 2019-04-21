@@ -1,4 +1,6 @@
 ﻿@model RecipeDetailsViewModel
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<User> _signInManager;
 <!-- Modal -->
 <head>
     <link rel="stylesheet" href="~/css/site.css" />
@@ -52,14 +54,14 @@
         </tbody>
     </table>
     <div class="form-group">
-        <label asp-for="AverageRate" class="col-lg-2 col-sm-2 control-label">Średnia ocena</label>
+        <label asp-for="Recipe.AverageRating" class="col-lg-2 col-sm-2 control-label">Średnia ocena</label>
         <div class="col-lg-8">
             <span class="rating">
                 @for (int i = 1; i <= 5; i++)
                 {
                     var starClass = "starAv";
 
-                    if (Model.AverageRate == 6 - i)
+                    if (Math.Floor(Model.Recipe.AverageRating) == 6 - i)
                     {
                         starClass += " active";
                     }
@@ -69,7 +71,7 @@
         </div>
     </div>
 
-    @if (Model.DidUserRate)
+    @if (!Model.DidUserRate)
     {
         <div class="form-group">
             <label asp-for="Rating" class="col-lg-2 col-sm-2 control-label">Rating</label>
@@ -81,7 +83,7 @@
                     }
                 </span>
             </div>
-            <input asp-for="Rating.RatingValue" hidden/>
+            <input asp-for="Rating.RatingValue" hidden />
         </div>
 
         <div class="form-group">
@@ -101,10 +103,21 @@
     <button id="@Model.Recipe.Id" type="button" class="btn btn-secondary show" data-url="@Url.Action("Comments", "Home")">Pokaż komentarze</button>
 
 </form>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
-                <button id="submit" type="button" class="btn btn-primary">Zaakceptuj</button>
-            </div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+    @if (_signInManager.IsSignedIn(User))
+    {
+        if (!Model.IsInUserFavourites)
+        {
+            <button id="add" type="button" class="btn btn-primary">Dodaj do ulubionych</button>
+        }
+        else
+        {
+            <button id="remove" type="button" class="btn btn-primary">Usuń z ulubionych</button>
+        }
+    }
+
+</div>
 
 
 <script>
@@ -116,9 +129,9 @@
         var actionUrl = form.attr('action');
         var dataToSend = form.serialize();
 
-        $.post(actionUrl, dataToSend).done(function (data) {    
+        $.post(actionUrl, dataToSend).done(function (data) {
             $('#modal-placeholder').html(data);
-        });        
+        });
     });
 
     $(".star").click(function () {
@@ -131,5 +144,14 @@
     $('.show').on('click', function () {
         var path = '@Url.Action("Comments", "Home", new { id=Model.Recipe.Id })';
         $("#commentsViewPlaceHolder").load(path);
+    });
+
+    $('#add').on('click', function () {
+        var path = '@Url.Action("AddToFavourite", "Home", new { id=Model.Recipe.Id })';
+        $("#modal-placeholder").load(path);
+    });
+    $('#remove').on('click', function () {
+        var path = '@Url.Action("RemoveFromFavourite", "Home", new { id=Model.Recipe.Id })';
+        $("#modal-placeholder").load(path);
     });
 </script>

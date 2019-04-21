@@ -21,7 +21,9 @@ namespace CulinaryR3cipes.Models.Repositories
                   .ThenInclude(ingredient => ingredient.Recipe)
               .Include(recipe => recipe.Ratings)
                   .ThenInclude(users => users.User)
-              .Include(recipe => recipe.Type).ToListAsync();
+              .Include(recipe => recipe.Type)
+              .Include(recipe => recipe.Favourites)
+                .ThenInclude(users => users.User).ToListAsync();
         }
 
         public async Task<IEnumerable<Recipe>> FindAllAsync(Expression<Func<Recipe, bool>> expression)
@@ -33,7 +35,9 @@ namespace CulinaryR3cipes.Models.Repositories
                   .ThenInclude(ingredient => ingredient.Recipe)
               .Include(recipe => recipe.Ratings)
                   .ThenInclude(users => users.User)
-              .Include(recipe => recipe.Type).ToListAsync();
+              .Include(recipe => recipe.Type)
+              .Include(recipe => recipe.Favourites)
+                .ThenInclude(users => users.User).ToListAsync();
         }
 
         public async Task<Recipe> FindAsync(Expression<Func<Recipe, bool>> expression)
@@ -45,7 +49,9 @@ namespace CulinaryR3cipes.Models.Repositories
                   .ThenInclude(ingredient => ingredient.Recipe)
               .Include(recipe => recipe.Ratings)
                   .ThenInclude(users => users.User)
-              .Include(recipe => recipe.Type).FirstOrDefaultAsync();
+              .Include(recipe => recipe.Type)
+              .Include(recipe => recipe.Favourites)
+                .ThenInclude(users => users.User).FirstOrDefaultAsync();
         }
     }
 }

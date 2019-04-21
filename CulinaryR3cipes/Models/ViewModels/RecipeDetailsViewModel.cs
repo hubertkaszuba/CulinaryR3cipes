@@ -10,6 +10,6 @@ namespace CulinaryR3cipes.Models.ViewModels
         public Recipe Recipe { get; set; }
         public Rating Rating { get; set; }
         public bool DidUserRate { get; set; }
-        public int AverageRate { get; set; }
+        public bool IsInUserFavourites { get; set; }
     }
 }
