@@ -19,17 +19,19 @@ namespace CulinaryR3cipes.Models
         private ICategoryRepository categoryRepository;
         private IIngredientRepository ingredientRepository;
         private IFridgeRepository fridgeRepository;
+        private IFavouriteRepository favouriteRepository;
         private readonly SignInManager<User> _signInManager;
         int PageSize = 1;
         int CommentsPageSize = 2;
 
-        public HomeController(IRecipeRepository recipe, ITypeRepository type, ICategoryRepository category, IIngredientRepository ingredient, IFridgeRepository fridge, SignInManager<User> signInManager)
+        public HomeController(IRecipeRepository recipe, ITypeRepository type, ICategoryRepository category, IIngredientRepository ingredient, IFridgeRepository fridge, IFavouriteRepository favourite, SignInManager<User> signInManager)
         {
             recipeRepository = recipe;
             typeRepository = type;
             categoryRepository = category;
             ingredientRepository = ingredient;
             fridgeRepository = fridge;
+            favouriteRepository = favourite;
             _signInManager = signInManager;
         }
 
@@ -191,10 +193,10 @@ namespace CulinaryR3cipes.Models
             Recipe recipe = await recipeRepository.FindAsync(r => r.Id == id);
             User user = await _signInManager.UserManager.GetUserAsync(User);
             Favourite favourite = recipe.Favourites.Where(f => f.User == user).FirstOrDefault();
+
             if(favourite != null)
             {
-                recipe.Favourites.Remove(favourite);
-                recipeRepository.Update(recipe);
+                favouriteRepository.Remove(favourite);
             }
 
             return PartialView("_RecipeDetails", new RecipeDetailsViewModel

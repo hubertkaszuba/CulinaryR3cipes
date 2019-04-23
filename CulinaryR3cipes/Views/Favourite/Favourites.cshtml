@@ -1,0 +1,14 @@
+﻿
+@{
+    ViewData["Title"] = "Favourites";
+}
+
+<h2>Favourites</h2>
+
+<div id="viewPlaceHolder"></div>
+
+<script>
+    $(document).ready(function () {
+        $("#viewPlaceHolder").load("/Favourite/FavouriteRecipes");
+    });
+</script>
