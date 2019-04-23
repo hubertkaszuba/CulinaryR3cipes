@@ -100,7 +100,7 @@
 
 
     <div id="commentsViewPlaceHolder"></div>
-    <button id="@Model.Recipe.Id" type="button" class="btn btn-secondary show" data-url="@Url.Action("Comments", "Home")">Pokaż komentarze</button>
+    @*<button id="@Model.Recipe.Id" type="button" class="btn btn-secondary show" data-url="@Url.Action("Comments", "Home")">Pokaż komentarze</button>*@
 
 </form>
 <div class="modal-footer">
@@ -122,6 +122,11 @@
 
 <script>
     //# sourceURL=_RecipesDetails.cshtml
+    $(document).ready(function () {
+        var path = '@Url.Action("Comments", "Home", new { id=Model.Recipe.Id })';
+        $("#commentsViewPlaceHolder").load(path);
+    });
+
     $('#addComment').on('click', function (event) {
         event.preventDefault();
 
@@ -141,11 +146,6 @@
         $("#Rating_RatingValue").val(starValue);
     });
 
-    $('.show').on('click', function () {
-        var path = '@Url.Action("Comments", "Home", new { id=Model.Recipe.Id })';
-        $("#commentsViewPlaceHolder").load(path);
-    });
-
     $('#add').on('click', function () {
         var path = '@Url.Action("AddToFavourite", "Home", new { id=Model.Recipe.Id })';
         $("#modal-placeholder").load(path);
@@ -154,4 +154,6 @@
         var path = '@Url.Action("RemoveFromFavourite", "Home", new { id=Model.Recipe.Id })';
         $("#modal-placeholder").load(path);
     });
+
+
 </script>

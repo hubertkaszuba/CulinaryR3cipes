@@ -3,8 +3,6 @@
     ViewData["Title"] = "_FavouriteRecipesPartial";
 }
 
-<h2>_FavouriteRecipesPartial</h2>
-
 <table class="table" style="background-color:#DF691A">
     <thead>
         <tr>
@@ -18,15 +16,27 @@
             <tr style="color:dimgray">
                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                 <td>
-                    <button id="@item.Id" type="button" class="btn btn-sm btn-success recipesDelete" data-target="#viewPlaceHolder" data-url="@Url.Action("DeleteRecipe")">Usuń</button>
-                    <button id="@item.Id" type="button" class="btn btn-sm btn-success recipesDetails" data-toggle="ajax-modal" data-target="#details" data-url="@Url.Action("RecipeDetails")">Szczegóły</button>
+                    <button id="@item.Id" type="button" class="btn btn-sm btn-success recipesDelete" data-target="#viewPlaceHolder" data-url="@Url.Action("RemoveFromFavourite")">Usuń z ulubionych</button>
+                    <button id="@item.Id" type="button" class="btn btn-sm btn-success recipesDetails" data-toggle="ajax-modal" data-target="#details" data-url="@Url.Action("Details", "Home")">Szczegóły</button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-<div id="modal-placeholder"></div>
+<div class="modal fade" id="details" tabindex="-1" role="dialog" aria-labelledby="submitRecipeLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="submitRecipeLabel">Zaakceptuj przepis</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-placeholder"></div>
+        </div>
+    </div>
+</div>
 
 <script>
     $(function () {
@@ -36,24 +46,8 @@
             var url = $(this).data('url') + '/' + $(this).attr('id');
             $.get(url).done(function (data) {
                 placeholderElement.html(data);
-                placeholderElement.find(".modal").modal('show');
+                $("#details").modal('show');
             });
-        });
-
-        placeholderElement.on('click', '#submit', function (event) {
-            event.preventDefault();
-
-            var form = $(this).parents('.modal').find('form');
-            var actionUrl = form.attr('action');
-            var dataToSend = form.serialize();
-
-            $.post(actionUrl, dataToSend).done(function (data) {
-                placeholderElement.find('.modal').modal('hide');
-            });
-        });
-
-        placeholderElement.on('hidden.bs.modal', '#details', function () {
-            $("#viewPlaceHolder").load("/Admin/RecipesToSubmit");
         });
 
         $('.recipesDelete').click(function (event) {
@@ -61,6 +55,10 @@
             $.post(url).done(function (data) {
                 $("#viewPlaceHolder").html(data);
             });
+        });
+
+        $("#details").on('hidden.bs.modal', function () {
+            $("#viewPlaceHolder").load("/Favourite/FavouriteRecipes");
         });
     });
 </script>

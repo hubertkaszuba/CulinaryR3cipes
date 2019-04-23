@@ -9,9 +9,12 @@ namespace CulinaryR3cipes.Models.ViewModels
 {
     public class FridgeViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "Należy wybrać produkt")]
+        [Display(Name = "Produkt")]
         public Guid ProductId { get; set; }
         [Required]
+        [Display(Name = "Ilość")]
+        [Range(1, int.MaxValue, ErrorMessage = "Ilość musi być większa niż 0")]
         public int Quantity { get; set; }
 
         public IEnumerable<Fridge> Fridges { get; set; }

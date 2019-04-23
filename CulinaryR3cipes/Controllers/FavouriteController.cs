@@ -13,11 +13,13 @@ namespace CulinaryR3cipes.Controllers
     public class FavouriteController : Controller
     {
         private IRecipeRepository recipeRepository;
+        private IFavouriteRepository favouriteRepository;
         private readonly SignInManager<User> _signInManager;
 
-        public FavouriteController(IRecipeRepository recipe, SignInManager<User> signInManager)
+        public FavouriteController(IRecipeRepository recipe, IFavouriteRepository favourite, SignInManager<User> signInManager)
         {
             recipeRepository = recipe;
+            favouriteRepository = favourite;
             _signInManager = signInManager;
         }
 
@@ -40,6 +42,23 @@ namespace CulinaryR3cipes.Controllers
             {
                 throw;
             }
+        }
+
+        public async Task<IActionResult> RemoveFromFavourite(Guid id)
+        {
+            Recipe recipe = await recipeRepository.FindAsync(r => r.Id == id);
+            User user = await _signInManager.UserManager.GetUserAsync(User);
+            Favourite favourite = recipe.Favourites.Where(f => f.User == user).FirstOrDefault();
+
+            if (favourite != null)
+            {
+                favouriteRepository.Remove(favourite);
+            }
+
+            return PartialView("_FavouriteRecipesPartial", new FavouritesViewModel
+            {
+                FavouriteRecipes = await recipeRepository.FindAllAsync(r => r.Favourites.Any(f => f.User == user))
+            });
         }
     }
 }

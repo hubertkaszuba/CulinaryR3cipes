@@ -39,22 +39,21 @@ namespace CulinaryR3cipes.Controllers
 
             var user = await _userManager.FindByEmailAsync(login.Email);
 
-
-            if (user.isBanned)
-            {
-                ModelState.AddModelError(string.Empty, "Użytkownik został zablokowany przez administratora");
-                return View(login);
-            }
-
-            if (!_userManager.IsEmailConfirmedAsync(user).Result)
-            {
-                ModelState.AddModelError("",
-                "Email not confirmed!");
-                return View(login);
-            }
-
             if (user != null)
             {
+                if (!_userManager.IsEmailConfirmedAsync(user).Result)
+                {
+                    ModelState.AddModelError("",
+                    "Email not confirmed!");
+                    return View(login);
+                }
+
+                if (user.isBanned)
+                {
+                    ModelState.AddModelError(string.Empty, "Użytkownik został zablokowany przez administratora");
+                    return View(login);
+                }
+
                 var result = await _signInManager.PasswordSignInAsync(user, login.Password, false, false);
                 if (result.Succeeded)
                     return RedirectToAction("Index", "Home");
