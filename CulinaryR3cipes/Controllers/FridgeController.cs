@@ -44,7 +44,7 @@ namespace CulinaryR3cipes.Controllers
 
             return View("Fridge", new FridgeViewModel
             {
-                ProductId = id,
+                Id = productInFridge.Product.Id,
                 Quantity = productInFridge.Quantity,
                 Products = await productRepository.Products(),
                 Fridges = await fridgeRepository.GetUserProducts(user)
@@ -57,11 +57,11 @@ namespace CulinaryR3cipes.Controllers
 
             if (!ModelState.IsValid)
             {
-                if(ModelState["ProductId"] != null)
+                if(ModelState["Id"].Errors.Count != 0)
                 {
-                    ModelState.Remove("ProductId");
-                    ModelState.SetModelValue("ProductId", new ValueProviderResult("Należy wybrać produkt", CultureInfo.InvariantCulture));
-                    ModelState.AddModelError("ProductId", "Należy wybrać produkt");
+                    ModelState.Remove("Id");
+                    ModelState.SetModelValue("Id", new ValueProviderResult("Należy wybrać produkt", CultureInfo.InvariantCulture));
+                    ModelState.AddModelError("Id", "Należy wybrać produkt");
                 }
 
                 fridge.Products = await productRepository.Products();
@@ -69,18 +69,19 @@ namespace CulinaryR3cipes.Controllers
                 return View("Fridge", fridge);
             }
                 
-            Product product = await productRepository.FindAsync(p => p.Id == fridge.ProductId);
-
-            Fridge productInFridge = await fridgeRepository.FindAsync(f => f.Id == product.Id && f.User.Id == user.Id);
+            Fridge productInFridge = await fridgeRepository.FindAsync(f => f.Product.Id == fridge.Id && f.User.Id == user.Id);
 
             if (productInFridge != null)
             {
-                productInFridge.Quantity = fridge.Quantity;
+                productInFridge.Quantity = (int)fridge.Quantity;
                 fridgeRepository.Update(productInFridge);
             }
             else
-                fridgeRepository.Add(new Fridge { Product = product, User = user, Quantity = fridge.Quantity });
-
+            {
+                Product product = await productRepository.FindAsync(p => p.Id == fridge.Id);
+                fridgeRepository.Add(new Fridge { Product = product, User = user, Quantity = (int)fridge.Quantity });
+            }
+            
             return RedirectToAction("Fridge");
         }
 

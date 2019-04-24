@@ -11,11 +11,11 @@ namespace CulinaryR3cipes.Models.ViewModels
     {
         [Required(ErrorMessage = "Należy wybrać produkt")]
         [Display(Name = "Produkt")]
-        public Guid ProductId { get; set; }
-        [Required]
+        public Guid Id { get; set; }
+        [Required(ErrorMessage = "Należy podać ilość")]
         [Display(Name = "Ilość")]
         [Range(1, int.MaxValue, ErrorMessage = "Ilość musi być większa niż 0")]
-        public int Quantity { get; set; }
+        public int? Quantity { get; set; }
 
         public IEnumerable<Fridge> Fridges { get; set; }
         public IEnumerable<Product> Products { get; set; }

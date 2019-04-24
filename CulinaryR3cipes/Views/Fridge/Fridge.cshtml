@@ -10,10 +10,35 @@
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="row">
         <div class="form-group col-md-6">
-            <label asp-for="ProductId" class="col-form-label"></label>
+            <label asp-for="Id" class="col-form-label"></label>
             <div>
-                <select id="selectProduct" asp-for="ProductId" asp-items="@(new SelectList(Model.Products,"Id", "Name", Model.ProductId)) " class="form-control"><option>Wybierz produkt</option></select>
-                <span asp-validation-for="ProductId" class="text-danger"></span>
+                @{
+                    var x = Model.Products.Select(p => new SelectListItem
+                    {
+                        Text = p.Name,
+                        Value = Convert.ToString(p.Id),
+                        Selected = (p.Id == Model.Id)
+                    });
+
+                    var pom = new SelectList(Model.Products, "Id", "Name", Convert.ToString(Model.Id));
+                    int i = 0;
+
+                }
+                <select id="selectProduct" asp-for="Id" class="form-control">
+                    <option>Wybierz produkt</option>
+                    @foreach (var product in Model.Products)
+                    {
+                        if (product.Id == Model.Id)
+                        {
+                            <option value="@product.Id" selected>@product.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@product.Id">@product.Name</option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="Id" class="text-danger"></span>
             </div>
         </div>
 
@@ -57,6 +82,5 @@
 <script>
     $("selectProduct").change(function () {
         var product = $(this).children("option:selected").val();
-        $("#measure").text()
     })
 </script>
