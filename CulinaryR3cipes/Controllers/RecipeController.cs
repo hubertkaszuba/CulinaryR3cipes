@@ -4,8 +4,10 @@ using CulinaryR3cipes.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -34,6 +36,21 @@ namespace CulinaryR3cipes.Controllers
         [HttpPost]
         public async Task<IActionResult> Recipe (RecipeViewModel model)
         {
+            if (model.Ingredients == null)
+                ModelState.AddModelError("Ingredients", "Należy dodać chociażby jeden składnik");
+            if(!ModelState.IsValid)
+            {
+                if (ModelState["TypeId"].Errors.Count != 0)
+                {
+                    ModelState.Remove("TypeId");
+                    ModelState.SetModelValue("TypeId", new ValueProviderResult("Należy wybrać typ przepisu", CultureInfo.InvariantCulture));
+                    ModelState.AddModelError("TypeId", "Należy wybrać typ przepisu");
+                }
+
+                model.Types = await typeRepository.Types();
+                return View("Recipe", model);
+            }
+
             if (model.Image != null)
             {
                 foreach (var item in model.Image)
@@ -48,13 +65,14 @@ namespace CulinaryR3cipes.Controllers
                     }
                 }
             }
+
             IEnumerable<Product> productsToIngredients = await productRepository.FindAllAsync(p => model.Ingredients.Any(i => i.Id == p.Id));
             model.Recipe.Ingredients = new List<Ingredient>();
             foreach(var product in productsToIngredients)
             {
                 model.Recipe.Ingredients.Add(new Ingredient { Product = product, Quantity = model.Ingredients.Where(i => i.Id == product.Id).First().Quantity });
             }
-
+            model.Recipe.Type = await typeRepository.FindAsync(t => t.Id == model.TypeId);
             recipeRepository.Add(model.Recipe);
             return RedirectToAction("Recipe");
         }

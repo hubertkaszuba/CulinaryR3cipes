@@ -4,15 +4,48 @@
     ViewData["Title"] = "Index";
 }
 <script type="text/javascript" src="~/js/Index.js"></script>
-<label for="ddlType">Select Type</label>
-
-@Html.ListBoxFor(model => model.SelectedTypeIds, new MultiSelectList(Model.Types, "Id", "Name"), new { id = "typeDropDown", multiple = "multiple" })
-@Html.ListBoxFor(model => model.SelectedIncludedCategoriesIds, new MultiSelectList(Model.Categories, "Id", "Name"), new { id = "categoryIncludedDropDown", multiple = "multiple" })
-@Html.ListBoxFor(model => model.SelectedExcludedCategoriesIds, new MultiSelectList(Model.Categories, "Id", "Name"), new { id = "categoryExcludedDropDown", multiple = "multiple" })
-<input id="recipeSearch" class="form-control mr-sm-2" type="text" placeholder="Szukaj">
-<input id="btnSearch" type="button" class="btn btn-primary" value="Search" />
-<input id="btnSearchFridge" type="button" class="btn btn-primary" value="Search by fridge" />
-
+<div class="row filterContainer justify-content-center">
+    <div class="col-lg-5 filterSection">
+        <div class="row text-center">
+            <div class="col-lg-4 filterLabel">
+                <label for="typeDropDown">Typ posiłku:</label>
+            </div>
+            <div class="col-lg-8">
+                @Html.ListBoxFor(model => model.SelectedTypeIds, new MultiSelectList(Model.Types, "Id", "Name"), new { id = "typeDropDown", multiple = "multiple" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 filterLabel">
+                <label for="categoryIncludedDropDown">Posiłki, które zawierają:</label>
+            </div>
+            <div class="col-lg-8">
+                @Html.ListBoxFor(model => model.SelectedIncludedCategoriesIds, new MultiSelectList(Model.Categories, "Id", "Name"), new { id = "categoryIncludedDropDown", multiple = "multiple" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 filterLabel">
+                <label for="categoryExcludedDropDown">Posiłki, które nie zawierają:</label>
+            </div>
+            <div class="col-lg-8">
+                @Html.ListBoxFor(model => model.SelectedExcludedCategoriesIds, new MultiSelectList(Model.Categories, "Id", "Name"), new { id = "categoryExcludedDropDown", multiple = "multiple" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 filterLabel">
+                <label for="categoryExcludedDropDown">Nazwa:</label>
+            </div>
+            <div class="col-lg-8">
+                <input id="recipeSearch" class="form-control mr-sm-2" type="text" placeholder="Szukaj">
+            </div>
+        </div>
+        <div class="col-lg-12 text-center">
+            <input id="btnSearch" type="button" class="btn btn-primary" value="Wyszukaj" />
+        </div>
+    </div>
+    <div class="col-md-5 text-center searchByFrige filterSection">
+        <input id="btnSearchFridge" type="button" class="btn btn-primary" value="Wyszukaj po produktach z lodówki" />
+    </div>
+</div>
 
 <div id="viewPlaceHolder"></div>
 
@@ -20,19 +53,20 @@
 <script>
     $(function () {
         $("#typeDropDown").chosen({
-            width: "33%"
+            width: "100%"
         });
     });
 
     $(function () {
         $("#categoryIncludedDropDown").chosen({
-            width: "33%"
+            width: "100%"
         });
     });
 
     $(function () {
-        $("#categoryExcludedDropDown").chosen();
-        width: "33%"
+        $("#categoryExcludedDropDown").chosen({
+            width: "100%"
+        });
     });
 
 

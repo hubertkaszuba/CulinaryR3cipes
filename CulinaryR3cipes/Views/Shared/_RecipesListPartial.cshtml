@@ -6,124 +6,99 @@
 <head>
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-
-@foreach (var recipe in Model.Recipes)
-{
-<div class="recipeListContainer">
-    @if (recipe.Img != null)
+<div class="row  justify-content-center">
+    @foreach (var recipe in Model.Recipes)
     {
-        var tmp = "data:image/jpg;base64," + Convert.ToBase64String(@recipe.Img, 0, @recipe.Img.Length);
-        <img alt="" src="@tmp" style="height:300px;width:300px;" />
-    }
-
-    <div class="form-group">
-        <input asp-for="@recipe.Id" hidden />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="@recipe.Name"></label>
-        <input asp-for="@recipe.Name" class="form-control" style="background-color: #f8f8f8" readonly />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="@recipe.Time"></label>
-        <input asp-for="@recipe.Time" class="form-control" style="background-color: #f8f8f8" readonly />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="@recipe.Type.Name"></label>
-        <input asp-for="@recipe.Type.Name" class="form-control" style="background-color: #f8f8f8" readonly />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="@recipe.Description"></label>
-        <textarea asp-for="@recipe.Description" class="description" readonly></textarea>
-    </div>
-
-    <table class="table" style="background-color:#DF691A">
-        <thead>
-            <tr>
-                <th>Nazwa</th>
-                <th>Ilość</th>
-            </tr>
-        </thead>
-        <tbody style="background-color:azure">
-            @foreach (var item in @recipe.Ingredients)
-            {
-                <tr style="color:dimgray">
-                    <td>@Html.DisplayFor(modelItem => item.Product.Name)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Quantity)@Html.DisplayFor(modelItem => item.Product.Measure)</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <button id="@recipe.Id" type="button" class="btn btn-sm btn-success recipeDetails" data-toggle="ajax-modal" data-target="#details" data-url="@Url.Action("Details")">Szczegóły</button>
-
-    <div class="modal fade" id="details" tabindex="-1" role="dialog" aria-labelledby="submitRecipeLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="submitRecipeLabel">Zaakceptuj przepis</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
+        <div class="col-md-3 justify-content-center" style="margin: 10px">
+            <div class="card bg-dark h-100">
+                @if (recipe.Img != null)
+                {
+                    var tmp = "data:image/jpg;base64," + Convert.ToBase64String(@recipe.Img, 0, @recipe.Img.Length);
+                <div class="card-body">
+                    <img alt="" src="@tmp" class="img-fluid" style="height:200px;width:200px;" />
                 </div>
-                <div class="modal-body" id="modal-placeholder"></div>         
+                }
+
+                <div class="card-header text-center">
+                    <h4>@recipe.Name</h4>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <input asp-for="@recipe.Id" hidden />
+                    </div>
+                    <div class="text-center">
+                        <button id="@recipe.Id" type="button" class="btn btn-lg btn-light recipeDetails" data-toggle="ajax-modal" data-target="#details" data-url="@Url.Action("Details")">Szczegóły</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+
+        <div class="modal fade" id="details" tabindex="-1" role="dialog" aria-labelledby="submitRecipeLabel" aria-hidden="true">
+            <div class="modal-dialog customModal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="submitRecipeLabel">@recipe.Name</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body " id="modal-placeholder"></div>
+                </div>
+            </div>
+        </div>
+    }
 </div>
-}
-<nav aria-label="Page navigation example">
-    <ul class="pagination pg-blue">
 
-        @if (Model.PagingInfo.CurrentPage > 1)
-        {
-            <li class="page-item">
-                <a id="prevPage" class="page-link">Previous</a>
-            </li>
-        }
-        else
-        {
-            <li class="page-item disabled">
-                <a id="prevPage" class="page-link">Previous</a>
-            </li>
-        }
+<div class="paginationContainer">
+        <ul class="pagination pg-blue justify-content-center">
 
-        @if (Model.PagingInfo.TotalPages > 1)
-        {
-            for (int i = 1; i <= Model.PagingInfo.TotalPages; i++)
+            @if (Model.PagingInfo.CurrentPage > 1)
             {
-                if (i == Model.PagingInfo.CurrentPage)
+                <li class="page-item inline-block">
+                    <button id="prevPage" class="btn page-link"><<</button>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled inline-block">
+                    <a id="prevPage" class="btn page-link"><<</a>
+                </li>
+            }
+
+            @if (Model.PagingInfo.TotalPages > 1)
+            {
+                for (int i = 1; i <= Model.PagingInfo.TotalPages; i++)
                 {
-                    <li class="page-item active">
-                        <a id="@i " class="page-link page">@i</a>
-                    </li>
-                }
-                else
-                {
-                    <li class="page-item">
-                        <a id="@i" class="page-link page">@i</a>
-                    </li>
+                    if (i == Model.PagingInfo.CurrentPage)
+                    {
+                        <li class="page-item active inline-block">
+                            <button id="@i " class="btn page-link page">@i</button>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item inline-block">
+                            <button id="@i" class="btn page-link page">@i</button>
+                        </li>
+                    }
                 }
             }
-        }
 
-        @if (Model.PagingInfo.CurrentPage < Model.PagingInfo.TotalPages)
-        {
-            <li class="page-item">
-                <a id="nextPage" class="page-link">Next</a>
-            </li>
-        }
-        else
-        {
-            <li class="page-item disabled">
-                <a id="nextPage" class="page-link">Next</a>
-            </li>
-        }
-    </ul>
-</nav>
+            @if (Model.PagingInfo.CurrentPage < Model.PagingInfo.TotalPages)
+            {
+                <li class="page-item">
+                    <button id="nextPage" class="btn page-link inline-block">>></button>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <button id="nextPage" class="btn page-link inline-block">>></button>
+                </li>
+            }
+        </ul>
+</div>
+
 
 
 <script>

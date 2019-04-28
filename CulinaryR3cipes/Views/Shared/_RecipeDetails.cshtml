@@ -6,101 +6,114 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <form asp-action="SetRating">
-    @if (@Model.Recipe.Img != null)
-    {
-        var tmp = "data:image/jpg;base64," + Convert.ToBase64String(Model.Recipe.Img, 0, Model.Recipe.Img.Length);
-        <img alt="" src="@tmp" style="height:300px;width:300px;" />
-    }
+    <div class="row">
+        @if (@Model.Recipe.Img != null)
+        {
+            var tmp = "data:image/jpg;base64," + Convert.ToBase64String(Model.Recipe.Img, 0, Model.Recipe.Img.Length);
+            <div class="col-lg-6">
+                <img alt="" src="@tmp" style="height:300px;width:300px;" />
+            </div>
+        }
+        <div class="col-lg-6">
+
+            <div class="form-group">
+                <label asp-for="Recipe.Time"></label>
+                <input asp-for="Recipe.Time" class="form-control" style="background-color: #f8f8f8" readonly />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Recipe.Type.Name"></label>
+                <input asp-for="Recipe.Type.Name" class="form-control" style="background-color: #f8f8f8" readonly />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Recipe.AverageRating" class="control-label">Średnia ocena</label>
+                <div>
+                    <span class="rating">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            var starClass = "starAv";
+
+                            if (Math.Floor(Model.Recipe.AverageRating) == 6 - i)
+                            {
+                                starClass += " active";
+                            }
+                            <span data-value="@(6 - i)" class="@starClass"></span>
+                        }
+                    </span>
+                </div>
+            </div>
+        </div>
+
+    </div>
 
     <div class="form-group">
         <input asp-for="Recipe.Id" hidden />
     </div>
-
-    <div class="form-group">
-        <label asp-for="Recipe.Name"></label>
-        <input asp-for="Recipe.Name" class="form-control" style="background-color: #f8f8f8" readonly />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Recipe.Time"></label>
-        <input asp-for="Recipe.Time" class="form-control" style="background-color: #f8f8f8" readonly />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Recipe.Type.Name"></label>
-        <input asp-for="Recipe.Type.Name" class="form-control" style="background-color: #f8f8f8" readonly />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Recipe.Description"></label>
-        <textarea asp-for="Recipe.Description" class="description" readonly></textarea>
-    </div>
-
-    <table class="table" style="background-color:#DF691A">
-        <thead>
-            <tr>
-                <th>Nazwa</th>
-                <th>Ilość</th>
-            </tr>
-        </thead>
-        <tbody style="background-color:azure">
-            @foreach (var item in Model.Recipe.Ingredients)
-            {
-                <tr style="color:dimgray">
-                    <td>@Html.DisplayFor(modelItem => item.Product.Name)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Quantity)@Html.DisplayFor(modelItem => item.Product.Measure)</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <div class="form-group">
-        <label asp-for="Recipe.AverageRating" class="col-lg-2 col-sm-2 control-label">Średnia ocena</label>
-        <div class="col-lg-8">
-            <span class="rating">
-                @for (int i = 1; i <= 5; i++)
-                {
-                    var starClass = "starAv";
-
-                    if (Math.Floor(Model.Recipe.AverageRating) == 6 - i)
+    <div class="row">
+        <div class="form-group col-lg-6">
+            <label asp-for="Recipe.Description"></label>
+            <textarea asp-for="Recipe.Description" class="description" readonly></textarea>
+        </div>
+        <div class="col-lg-6">
+            <label for="ingredients">Składniki</label>
+            <table id="ingredients" class="table" style="background-color:#DF691A">
+                <thead>
+                    <tr>
+                        <th>Nazwa</th>
+                        <th>Ilość</th>
+                    </tr>
+                </thead>
+                <tbody style="background-color:azure">
+                    @foreach (var item in Model.Recipe.Ingredients)
                     {
-                        starClass += " active";
+                        <tr style="color:dimgray">
+                            <td>@Html.DisplayFor(modelItem => item.Product.Name)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Quantity)@Html.DisplayFor(modelItem => item.Product.Measure)</td>
+                        </tr>
                     }
-                    <span data-value="@(6 - i)" class="@starClass"></span>
-                }
-            </span>
+                </tbody>
+            </table>
         </div>
     </div>
 
     @if (!Model.DidUserRate)
     {
-        <div class="form-group">
-            <label asp-for="Rating" class="col-lg-2 col-sm-2 control-label">Rating</label>
-            <div class="col-lg-8">
-                <span class="rating">
-                    @for (int i = 1; i <= 5; i++)
-                    {
-                        <span data-value="@(6 - i)" class="star"></span>
-                    }
-                </span>
+        <div class="row">
+            <div class="form-group col-lg-6">
+                <label asp-for="Rating" class="control-label">Twoja ocena</label>
+                <div>
+                    <span class="rating">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <span data-value="@(6 - i)" class="star"></span>
+                        }
+                    </span>
+                </div>
+                <input asp-for="Rating.RatingValue" hidden />
             </div>
-            <input asp-for="Rating.RatingValue" hidden />
-        </div>
 
-        <div class="form-group">
-            <label asp-for="Rating.Comment"></label>
-            <textarea asp-for="Rating.Comment" class="description"></textarea>
+            <div class="form-group col-lg-6">
+                <label asp-for="Rating.Comment">Twój komentarz</label>
+                <textarea asp-for="Rating.Comment" class="description"></textarea>
+            </div>
         </div>
-
-        <button id="addComment" type="button" class="btn btn-secondary">Dodaj komentarz</button>
+        <div class="row text-center addCommentDiv">
+            <div class="col-lg-12">
+                <button id="addComment" type="button" class="btn btn-primary">Dodaj komentarz</button>
+            </div>
+        </div>
     }
     else
     {
-        <div>Już oceniłeś ten przepis</div>
+        <div class="row text-center addCommentDiv">
+            <div class="col-lg-12">
+                <h2>Już oceniłeś ten przepis</h2>
+            </div>
+        </div>
     }
 
-
     <div id="commentsViewPlaceHolder"></div>
-    @*<button id="@Model.Recipe.Id" type="button" class="btn btn-secondary show" data-url="@Url.Action("Comments", "Home")">Pokaż komentarze</button>*@
 
 </form>
 <div class="modal-footer">

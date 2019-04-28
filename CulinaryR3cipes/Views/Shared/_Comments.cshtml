@@ -1,59 +1,84 @@
 ﻿@model CommentsViewModel
 
 <div class="form-group">
-    <h1>Komentarze</h1>
+    <h2>Komentarze</h2>
     @if (Model.Ratings.Any())
     {
-        @foreach (var rating in Model.Ratings)
-        {
-            <div>
-                @rating.User
-            </div>
-            <div>
-                @rating.RatingValue
-            </div>
+        <table id="comments" class="table" style="background-color:#DF691A">
+            <thead>
+                <tr>
+                    <th>Użytkownik</th>
+                    <th>Treść</th>
+                    <th>Ocena</th>
+                    <th>Akcja</th>
+                </tr>
+            </thead>
+            <tbody style="background-color:azure">
+                @foreach (var rating in Model.Ratings)
+                {
+                    <tr style="color:dimgray">
+                        <td>@rating.User.UserName</td>
+                        @if (rating.Comment != null)
+                        {
+                            <td>
+                                @rating.Comment
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                Brak komentarza
+                            </td>
+                        }
+                        <td style="width: 20%">
+                            <span class="rating">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    var starClass = "starAv";
 
-            @if (rating.Comment != null)
-            {
-                <div>
-                    @rating.Comment
-                </div>
-            }
-            else
-            {
-                <div>
-                    Brak komentarza
-                </div>
-            }
-            @if (Model.ReportedCommentId == rating.Id)
-            {
-                <input type="button" id="@rating.Id" class="btn btn-danger reportComment" value="Zgłoszono" disabled/>
-            }
-            else
-            {
-                <input type="button" id="@rating.Id" class="btn btn-danger reportComment" value="Zgłoś" />
-            }
-
-        }
+                                    if (Math.Floor(rating.RatingValue) == 6 - i)
+                                    {
+                                        starClass += " active";
+                                    }
+                                    <span data-value="@(6 - i)" class="@starClass"></span>
+                                }
+                            </span>
+                        </td>
+                        @if (Model.ReportedCommentId == rating.Id)
+                        {
+                            <td style="width: 10%">
+                                <input type="button" id="@rating.Id" class="btn btn-danger reportComment" value="Zgłoszono" disabled />
+                            </td>
+                        }
+                        else
+                        {
+                            <td style="width: 10%">
+                                <input type="button" id="@rating.Id" class="btn btn-danger reportComment" value="Zgłoś" />
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
     }
     else
     {
-        <div>Brak komentarzy</div>
+        <div class="col-lg-12 text-center"><h3>Brak komentarzy</h3></div>
     }
 
-    <nav aria-label="Page navigation example">
-        <ul class="pagination pg-blue">
+    <div class="paginationContainer">
+        <ul class="pagination pg-blue justify-content-center">
 
             @if (Model.PagingInfo.CurrentPage > 1)
             {
                 <li class="page-item">
-                    <a id="prevCommentsPage" class="page-link">Previous</a>
+                    <button id="prevCommentsPage" class="btn page-link"><<</button>
                 </li>
             }
             else
             {
                 <li class="page-item disabled">
-                    <a id="prevCommentsPage" class="page-link">Previous</a>
+                    <button id="prevCommentsPage" class="btn page-link"><<</button>
                 </li>
             }
 
@@ -64,13 +89,13 @@
                     if (i == Model.PagingInfo.CurrentPage)
                     {
                         <li class="page-item active">
-                            <a id="@i " class="page-link commentsPage">@i</a>
+                            <button id="@i " class="btn page-link commentsPage">@i</button>
                         </li>
                     }
                     else
                     {
                         <li class="page-item">
-                            <a id="@i" class="page-link commentsPage">@i</a>
+                            <button id="@i" class="btn page-link commentsPage">@i</button>
                         </li>
                     }
                 }
@@ -79,20 +104,19 @@
             @if (Model.PagingInfo.CurrentPage < Model.PagingInfo.TotalPages)
             {
                 <li class="page-item">
-                    <a id="nextCommentsPage" class="page-link">Next</a>
+                    <button id="nextCommentsPage" class="btn page-link">>></button>
                 </li>
             }
             else
             {
                 <li class="page-item disabled">
-                    <a id="nextCommentsPage" class="page-link">Next</a>
+                    <button id="nextCommentsPage" class="btn page-link">>></button>
                 </li>
             }
         </ul>
-    </nav>
-</div>
+    </div>
 
-<script>
+    <script>
     //# sourceURL=_Comments.cshtml
     $("#nextCommentsPage").on("click", function (e) {
         var page = @Model.PagingInfo.CurrentPage + 1;
@@ -119,4 +143,4 @@
         $("#commentsViewPlaceHolder").load(path,
             { commentPage: page, reportId: comment});
     });
-</script>
+    </script>

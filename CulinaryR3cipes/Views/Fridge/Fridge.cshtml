@@ -12,18 +12,6 @@
         <div class="form-group col-md-6">
             <label asp-for="Id" class="col-form-label"></label>
             <div>
-                @{
-                    var x = Model.Products.Select(p => new SelectListItem
-                    {
-                        Text = p.Name,
-                        Value = Convert.ToString(p.Id),
-                        Selected = (p.Id == Model.Id)
-                    });
-
-                    var pom = new SelectList(Model.Products, "Id", "Name", Convert.ToString(Model.Id));
-                    int i = 0;
-
-                }
                 <select id="selectProduct" asp-for="Id" class="form-control">
                     <option>Wybierz produkt</option>
                     @foreach (var product in Model.Products)

@@ -6,17 +6,17 @@ namespace CulinaryR3cipes.Models
 {
     public class Recipe : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = "Należy podać nazwę")]
         [Display(Name = "Nazwa")]
         public string Name { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Należy podać opis")]
         [Display(Name = "Opis")]
         public string Description { get; set; }
-        [Required]
-        [Display(Name = "Czas")]
+        [Required(ErrorMessage = "Należy podać czas wykonania przepisu")]
+        [Display(Name = "Czas wykonania")]
         public int? Time { get; set; }
-        [Required]
-        [Display(Name = "Obrazek")]
+        //[Required(ErrorMessage = "Należy dodać obraz")]
+        //[Display(Name = "Obraz")]
         public byte[] Img { get; set; }
         public bool IsSubmitted { get; set; }
         public int ReportsCounter { get; set; }

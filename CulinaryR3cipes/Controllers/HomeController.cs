@@ -21,8 +21,8 @@ namespace CulinaryR3cipes.Models
         private IFridgeRepository fridgeRepository;
         private IFavouriteRepository favouriteRepository;
         private readonly SignInManager<User> _signInManager;
-        int PageSize = 1;
-        int CommentsPageSize = 2;
+        int PageSize = 6;
+        int CommentsPageSize = 5;
 
         public HomeController(IRecipeRepository recipe, ITypeRepository type, ICategoryRepository category, IIngredientRepository ingredient, IFridgeRepository fridge, IFavouriteRepository favourite, SignInManager<User> signInManager)
         {

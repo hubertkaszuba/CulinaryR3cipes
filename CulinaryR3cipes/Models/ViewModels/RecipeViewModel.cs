@@ -10,8 +10,11 @@ namespace CulinaryR3cipes.Models.ViewModels
     public class RecipeViewModel
     {
         public Recipe Recipe { get; set; }
+        [Required]
         public Guid TypeId { get; set; }
         public List<Ingredient> Ingredients { get; set; }
+        [Required(ErrorMessage = "Należy dodać obraz")]
+        [Display(Name = "Obraz")]
         public List<IFormFile> Image { get; set; }
         public IEnumerable<Type> Types { get; set; }
     }

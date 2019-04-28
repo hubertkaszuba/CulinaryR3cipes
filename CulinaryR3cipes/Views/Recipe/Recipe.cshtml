@@ -26,8 +26,8 @@
     <div class="form-group col-md-6">
         <label asp-for="Types" class="col-form-label"></label>
         <div>
-            <select id="selectProduct" asp-for="Recipe.Id" asp-items="@(new SelectList(Model.Types,"Id", "Name", Model.TypeId)) " class="form-control"><option>Wybierz produkt</option></select>
-            <span asp-validation-for="Types" class="text-danger"></span>
+            <select id="selectType" asp-for="TypeId" asp-items="@(new SelectList(Model.Types,"Id", "Name", Model.TypeId)) " class="form-control"><option>Wybierz produkt</option></select>
+            <span asp-validation-for="TypeId" class="text-danger"></span>
         </div>
     </div>
     <div class="form-group">
@@ -39,33 +39,98 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="Image"></label>
-        <input type="file" id="files" asp-for="Image" />
-    </div>
-
-    <div id="IngredientContainer">
-    </div>
-
-    <div class="form-group">
-        <input id="AddNewIngredient" type="button" value="Add new ingredient" />
-    </div>
-    <div class="form-group">
+        <label asp-for="Image" class="col-md-2 custom-control-label"></label>
         <div class="col-md-10">
-            <input type="submit" class="btn btn-primary" value="Dodaj przepis" />
+            <input type="file" id="files" asp-for="Image" />
+            <span asp-validation-for="Image" class="text-danger"></span>
         </div>
     </div>
+
+        <div id="IngredientContainer">
+        </div>
+
+        <div class="form-group">
+            <input id="AddNewIngredient" type="button" value="Add new ingredient" />
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" class="btn btn-primary" value="Dodaj przepis" />
+            </div>
+        </div>
 </form>
 
 
 <script type="text/javascript">
     $(document).ready(function () {
         var i = 0;
+        var model = '@Html.Raw(Json.Serialize(Model.Ingredients))';
+        var parseModel = JSON.parse(model);
+        if (parseModel != null)
+        {
+            for (var j = 0; j < parseModel.length; j++)
+            {
+                var validFlag = 0;
+                var container = $("#IngredientContainer");
+                var div = $("<div />").attr("class", "form-group");
+                var value = parseModel[j].quantity;
+                var select = $("<select></select>").attr("class", "form-control").attr("id", "ProductId_" + i).attr("name", "Ingredients[" + i + "].Id").attr("data-val", "true").attr("data-val-required", "Produkt jest wymagany");
+                var text = $("<input />").attr("class", "form-control").attr("type", "textbox").attr("id", "Ingredients[" + i + "]_Quantity").attr("name", "Ingredients[" + i + "].Quantity").attr("data-val", "true").attr("data-val-required", "Produkt jest wymagany");
+                var options = $("<option>Wybierz produkt</option>");
+                var validInfoText = $("<span>Wartość musi być większa niż 0</span>").attr("class", "text-danger field-validation-error").attr("data-valmsg-for", "Ingredients[" + i + "]_Quantity").attr("data-valmsg-replace", "true");
+                var vadlidInfoDrop = $("<span>Należy wybrać produkt</span>").attr("class", "text-danger field-validation-error").attr("data-valmsg-for", "ProductId_" + i).attr("data-valmsg-replace", "true");
+                select.append(options);
+                text.val(value);
+
+                var id = parseModel[j].id;
+
+                $.ajax({
+                    url: "/Recipe/GetData",
+                    dataType: "JSON",
+                    type: "Get",
+                    async: false,
+                    success: function (data) {
+                        debugger;
+
+                        for (var k = 0; k < data.length; k++) {
+                            var opt = new Option(data[k].name);
+                            opt.value = data[k].id;
+                            if (id == data[k].id) {
+                                opt.selected = true;
+                                validFlag = 1;
+                            }
+
+                            select.append(opt);                      
+
+                        }
+                    }
+                });
+
+                div.append(select);
+                if (validFlag == 0) {
+                    select.attr("class", "form-control input-validation-error");
+                    div.append(vadlidInfoDrop);
+                }
+                    
+                div.append(text);
+                if (parseModel[j].quantity <= 0) {
+                    text.attr("class", "form-control input-validation-error");
+                    div.append(validInfoText);
+                }
+                    
+                container.append(div);
+                i++;
+
+            }
+        }
+        
+
+
         $("#AddNewIngredient").click(function () {
             var container = $("#IngredientContainer");
-            var div = $("<div />");
+            var div = $("<div />").attr("class", "form-group");
             var value = "";
-            var select = $("<select></select>").attr("id", "Ingredients[" + i + "]").attr("name", "Ingredients[" + i + "].Id").attr("data-val", "true").attr("data-val-required", "Produkt jest wymagany");
-            var text = $("<input />").attr("type", "textbox").attr("id", "Ingredients[" + i + "]_Quantity").attr("name", "Ingredients[" + i + "].Quantity").attr("data-val", "true").attr("data-val-required", "Produkt jest wymagany");
+            var select = $("<select></select>").attr("class", "form-control").attr("id", "ProductId_" + i).attr("name", "Ingredients[" + i + "].Id").attr("data-val", "true").attr("data-val-required", "Produkt jest wymagany");
+            var text = $("<input />").attr("class", "form-control").attr("type", "textbox").attr("id", "Ingredients[" + i + "]_Quantity").attr("name", "Ingredients[" + i + "].Quantity").attr("data-val", "true").attr("data-val-required", "Produkt jest wymagany");
             var options = $("<option>Wybierz produkt</option>");
             select.append(options);
             text.val(value);
@@ -79,7 +144,7 @@
 
                     for (var j = 0; j < data.length; j++) {
                         var opt = new Option(data[j].name);
-                        opt.value = data[j].productId;
+                        opt.value = data[j].id;
                         $("select").each(function (i) {
                             $(this).attr("id", "ProductId_" + i).append(opt);
                         });
