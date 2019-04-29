@@ -3,64 +3,113 @@
     ViewData["Title"] = "Dodaj przepis";
 }
 
-<h2>Rejestracja</h2>
+<head>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+
+<div class="section text-center">
+    <h2>Dodaj nowy przepis</h2>
+</div>
 
 <form asp-action="Recipe" enctype="multipart/form-data" asp-controller="Recipe" method="post" class="form-horizontal" role="form">
-    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="section">
+        <div class="row justify-content-center">
+            <div class="col-lg-4">
+                <label asp-for="Recipe.Name"></label>
+                <input asp-for="Recipe.Name" class="form-control" />
+                <span asp-validation-for="Recipe.Name" class="text-danger"></span>
+            </div>
+            <div class="col-lg-4">
+                <label asp-for="Types"></label>
+                <select id="selectType" asp-for="TypeId" asp-items="@(new SelectList(Model.Types,"Id", "Name", Model.TypeId)) " class="form-control"><option>Wybierz typ</option></select>
+                <span asp-validation-for="TypeId" class="text-danger"></span>
+            </div>
+            <div class="col-lg-4">
+                <label asp-for="Recipe.Time"></label>
+                <input asp-for="Recipe.Time" class="form-control" />
+                <span asp-validation-for="Recipe.Time" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <label asp-for="Recipe.Description"></label>
+                <textarea asp-for="Recipe.Description" class="description"></textarea>
+                <span asp-validation-for="Recipe.Description" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row justify-content-center" style="margin-top: 50px;">
+            <div class="col-lg-6 text-center">
+                <div class="row justify-content-center">
+                    @if (Model.Image != null)
+                    {
+                        <div class="col-lg-8">
+                            <img alt="" src="" id="recipeImg" style="height:250px;width:250px;" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-lg-8">
+                            <img alt="" src="" id="recipeImg" style="height:250px;width:250px;display:none;" />
+                        </div>
+                    }
+                    <div class="col-lg-12 text-center" id="imgCol">
+                        <input type="file" id="files" asp-for="Image" accept="image/*" />
+                    </div>
+                    <div class="col-lg-12 text-center">
+                        <span asp-validation-for="Image" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div id="IngredientContainer" class="col-lg-6 text-center">
+                <div class="row" style="margin: 5px">
+                    <div class="col-lg-12 text-center">
+                        <input id="AddNewIngredient" type="button" class="btn btn-sm btn-success" value="Dodaj składnik" />
+                        <input id="DeleteIngredient" type="button" class="btn btn-sm btn-danger" value="Usuń składnik" />
+                    </div>
+                    <div class="col-lg-12 text-center">
+                        <span asp-validation-for="Ingredients" class="text-danger"></span>
+                    </div>
+                </div>
 
-    <div class="form-group">
-        <label asp-for="Recipe.Name" class="col-md-2 custom-control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Recipe.Name" class="form-control" />
-            <span asp-validation-for="Recipe.Name" class="text-danger"></span>
-        </div>
-    </div>
+            </div>
 
-    <div class="form-group">
-        <label asp-for="Recipe.Description" class="col-md-2 custom-control-label"></label>
-        <div class="col-md-10">
-            <textarea asp-for="Recipe.Description" class="form-control"></textarea>
-            <span asp-validation-for="Recipe.Description" class="text-danger"></span>
         </div>
-    </div>
-    <div class="form-group col-md-6">
-        <label asp-for="Types" class="col-form-label"></label>
-        <div>
-            <select id="selectType" asp-for="TypeId" asp-items="@(new SelectList(Model.Types,"Id", "Name", Model.TypeId)) " class="form-control"><option>Wybierz produkt</option></select>
-            <span asp-validation-for="TypeId" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="Recipe.Time" class="col-md-2 custom-control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Recipe.Time" class="form-control" />
-            <span asp-validation-for="Recipe.Time" class="text-danger"></span>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Image" class="col-md-2 custom-control-label"></label>
-        <div class="col-md-10">
-            <input type="file" id="files" asp-for="Image" />
-            <span asp-validation-for="Image" class="text-danger"></span>
-        </div>
-    </div>
-
-        <div id="IngredientContainer">
-        </div>
-
-        <div class="form-group">
-            <input id="AddNewIngredient" type="button" value="Add new ingredient" />
-        </div>
-        <div class="form-group">
-            <div class="col-md-10">
+        <div class="row justify-content-center" style="margin: 5px">
+            <div class="col-lg-12 text-center">
                 <input type="submit" class="btn btn-primary" value="Dodaj przepis" />
             </div>
         </div>
+    </div>
+
+  
+
 </form>
 
 
 <script type="text/javascript">
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#recipeImg').attr('src', e.target.result).css({ display: flex });
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $('#files').change(function (){
+        var name = $(this).val();
+        var re = /(\.jpg|\.jpeg|\.bmp|\.gif|\.png)$/i;
+        if (!re.exec(name)) {
+            $(this).val('');
+            alert("Proszę załadować zdjęcie!");
+        }
+        else {
+            readURL(this);
+        }
+    });
+
     $(document).ready(function () {
         var i = 0;
         var model = '@Html.Raw(Json.Serialize(Model.Ingredients))';
@@ -71,13 +120,15 @@
             {
                 var validFlag = 0;
                 var container = $("#IngredientContainer");
-                var div = $("<div />").attr("class", "form-group");
+                var row = $("<div />").attr("class", "row justify-content-center ingredientRow").attr("id", "row_" + i);
+                var col1 = $("<div />").attr("class", "col-lg-5 text-center");
+                var col2 = $("<div />").attr("class", "col-lg-5 text-center");
                 var value = parseModel[j].quantity;
                 var select = $("<select></select>").attr("class", "form-control").attr("id", "ProductId_" + i).attr("name", "Ingredients[" + i + "].Id").attr("data-val", "true").attr("data-val-required", "Produkt jest wymagany");
                 var text = $("<input />").attr("class", "form-control").attr("type", "textbox").attr("id", "Ingredients[" + i + "]_Quantity").attr("name", "Ingredients[" + i + "].Quantity").attr("data-val", "true").attr("data-val-required", "Produkt jest wymagany");
-                var options = $("<option>Wybierz produkt</option>");
-                var validInfoText = $("<span>Wartość musi być większa niż 0</span>").attr("class", "text-danger field-validation-error").attr("data-valmsg-for", "Ingredients[" + i + "]_Quantity").attr("data-valmsg-replace", "true");
-                var vadlidInfoDrop = $("<span>Należy wybrać produkt</span>").attr("class", "text-danger field-validation-error").attr("data-valmsg-for", "ProductId_" + i).attr("data-valmsg-replace", "true");
+                var options = $("<option>Wybierz składnik</option>");
+                var validInfoText = $("<span>Ilość musi być większa niż 0</span>").attr("class", "text-danger field-validation-error").attr("data-valmsg-for", "Ingredients[" + i + "]_Quantity").attr("data-valmsg-replace", "true");
+                var vadlidInfoDrop = $("<span>Należy wybrać składnik</span>").attr("class", "text-danger field-validation-error").attr("data-valmsg-for", "ProductId_" + i).attr("data-valmsg-replace", "true");
                 select.append(options);
                 text.val(value);
 
@@ -99,39 +150,42 @@
                                 validFlag = 1;
                             }
 
-                            select.append(opt);                      
+                            select.append(opt);
 
                         }
                     }
                 });
 
-                div.append(select);
+                col1.append(select);
                 if (validFlag == 0) {
                     select.attr("class", "form-control input-validation-error");
-                    div.append(vadlidInfoDrop);
+                    col1.append(vadlidInfoDrop);
                 }
-                    
-                div.append(text);
+
+                col2.append(text);
                 if (parseModel[j].quantity <= 0) {
                     text.attr("class", "form-control input-validation-error");
-                    div.append(validInfoText);
+                    col2.append(validInfoText);
                 }
-                    
-                container.append(div);
+                row.css({ margin: "5px"});
+                row.append(col1).append(col2);
+                container.append(row);
                 i++;
 
             }
         }
-        
+
 
 
         $("#AddNewIngredient").click(function () {
             var container = $("#IngredientContainer");
-            var div = $("<div />").attr("class", "form-group");
+            var row = $("<div />").attr("class", "row justify-content-center ingredientRow").attr("id", "row_" + i);
+            var col1 = $("<div />").attr("class", "col-lg-5 text-center");
+            var col2 = $("<div />").attr("class", "col-lg-5 text-center");
             var value = "";
             var select = $("<select></select>").attr("class", "form-control").attr("id", "ProductId_" + i).attr("name", "Ingredients[" + i + "].Id").attr("data-val", "true").attr("data-val-required", "Produkt jest wymagany");
-            var text = $("<input />").attr("class", "form-control").attr("type", "textbox").attr("id", "Ingredients[" + i + "]_Quantity").attr("name", "Ingredients[" + i + "].Quantity").attr("data-val", "true").attr("data-val-required", "Produkt jest wymagany");
-            var options = $("<option>Wybierz produkt</option>");
+            var text = $("<input />").attr("class", "form-control").attr("type", "textbox").attr("id", "Ingredients[" + i + "]_Quantity").attr("name", "Ingredients[" + i + "].Quantity").attr("data-val", "true").attr("data-val-required", "Produkt jest wymagany").attr("placeholder", "Ilość");
+            var options = $("<option>Wybierz składnik</option>");
             select.append(options);
             text.val(value);
 
@@ -139,23 +193,28 @@
                 url: "/Recipe/GetData",
                 dataType: "JSON",
                 type: "Get",
+                async: false,
                 success: function (data) {
                     debugger;
 
                     for (var j = 0; j < data.length; j++) {
                         var opt = new Option(data[j].name);
                         opt.value = data[j].id;
-                        $("select").each(function (i) {
-                            $(this).attr("id", "ProductId_" + i).append(opt);
-                        });
+                        select.append(opt);
                     }
                 }
             });
 
-            div.append(select);
-            div.append(text);
-            container.append(div);
+            col1.append(select);
+            col2.append(text);
+            row.append(col1).append(col2);
+            container.append(row);
             i++;
+        });
+
+        $("#DeleteIngredient").click(function () {
+            $('#row_' + (i - 1)).remove();
+            i--;
         });
     });
 </script>

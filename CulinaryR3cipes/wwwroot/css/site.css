@@ -53,10 +53,14 @@ img {
     justify-content: center;
 }
 
-.filterSection {
+.section {
     margin: 10px;
     padding: 10px;
     background-color: rgba(121, 116, 116, 0.3);
+}
+
+.ingredientRow {
+    margin: 5px;
 }
 
 .footer-widget {

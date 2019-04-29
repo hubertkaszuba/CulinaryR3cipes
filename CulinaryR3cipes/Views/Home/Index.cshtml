@@ -1,17 +1,18 @@
 ﻿@model RecipesListViewModel
-
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<User> _signInManager;
 @{
     ViewData["Title"] = "Index";
 }
-<script type="text/javascript" src="~/js/Index.js"></script>
+
 <div class="row filterContainer justify-content-center">
-    <div class="col-lg-5 filterSection">
+    <div class="col-lg-5 section">
         <div class="row text-center">
             <div class="col-lg-4 filterLabel">
                 <label for="typeDropDown">Typ posiłku:</label>
             </div>
             <div class="col-lg-8">
-                @Html.ListBoxFor(model => model.SelectedTypeIds, new MultiSelectList(Model.Types, "Id", "Name"), new { id = "typeDropDown", multiple = "multiple" })
+                @Html.ListBoxFor(model => model.SelectedTypeIds, new MultiSelectList(Model.Types, "Id", "Name"), new { id = "typeDropDown", multiple = "multiple", value = "Wybierz" })
             </div>
         </div>
         <div class="row">
@@ -42,8 +43,15 @@
             <input id="btnSearch" type="button" class="btn btn-primary" value="Wyszukaj" />
         </div>
     </div>
-    <div class="col-md-5 text-center searchByFrige filterSection">
-        <input id="btnSearchFridge" type="button" class="btn btn-primary" value="Wyszukaj po produktach z lodówki" />
+    <div class="col-md-5 text-center searchByFrige section">
+        @if (_signInManager.IsSignedIn(User))
+        {
+            <input id="btnSearchFridge" type="button" class="btn btn-primary" value="Wyszukaj po produktach z lodówki" />
+        }
+        else
+        {
+            <input id="btnSearchFridge" type="button" class="btn btn-primary" value="Wyszukaj po produktach z lodówki" disabled/>
+        }
     </div>
 </div>
 
@@ -85,7 +93,7 @@
     $("#recipeSearch").on('change paste input', function () {
         var recipeName = $("#recipeSearch").val();
         $("#viewPlaceHolder").load("/Home/Recipes",
-            { name: recipeName})
+            { name: recipeName })
     });
 
     $("#btnSearch").on("click", function (e) {
@@ -98,5 +106,5 @@
 
     $("#btnSearchFridge").on("click", function (e) {
         $("#viewPlaceHolder").load("/Home/RecipesByFridge", { recipePage: 1 });
-        });
+    });
 </script>
