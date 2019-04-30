@@ -3,32 +3,34 @@
     ViewData["Title"] = "_FavouriteRecipesPartial";
 }
 
-<table class="table" style="background-color:#DF691A">
-    <thead>
-        <tr>
-            <th>Nazwa </th>
-            <th>Akcja</th>
-        </tr>
-    </thead>
-    <tbody style="background-color:azure">
-        @foreach (var item in Model.FavouriteRecipes)
-        {
-            <tr style="color:dimgray">
-                <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                <td>
-                    <button id="@item.Id" type="button" class="btn btn-sm btn-success recipesDelete" data-target="#viewPlaceHolder" data-url="@Url.Action("RemoveFromFavourite")">Usuń z ulubionych</button>
-                    <button id="@item.Id" type="button" class="btn btn-sm btn-success recipesDetails" data-toggle="ajax-modal" data-target="#details" data-url="@Url.Action("Details", "Home")">Szczegóły</button>
-                </td>
+<div class="col-lg-12">
+    <table class="table" style="background-color:#DF691A">
+        <thead>
+            <tr>
+                <th>Nazwa </th>
+                <th>Akcja</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody style="background-color:azure">
+            @foreach (var item in Model.FavouriteRecipes)
+            {
+                <tr style="color:dimgray">
+                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                    <td>
+                        <button id="@item.Id" type="button" class="btn btn-sm btn-success recipesDelete" data-target="#viewPlaceHolder" data-url="@Url.Action("RemoveFromFavourite")">Usuń z ulubionych</button>
+                        <button id="@item.Id" type="button" class="btn btn-sm btn-success recipesDetails" data-toggle="ajax-modal" data-target="#details" data-url="@Url.Action("Details", "Home")">Szczegóły</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 <div class="modal fade" id="details" tabindex="-1" role="dialog" aria-labelledby="submitRecipeLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog customModal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="submitRecipeLabel">Zaakceptuj przepis</h5>
+                <h5 class="modal-title" id="submitRecipeLabel">Szczegóły</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -37,6 +39,7 @@
         </div>
     </div>
 </div>
+
 
 <script>
     $(function () {

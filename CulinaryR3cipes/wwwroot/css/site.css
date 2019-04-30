@@ -52,15 +52,19 @@ img {
     align-items: center;
     justify-content: center;
 }
-
-.section {
+.section,
+.row.section {
     margin: 10px;
     padding: 10px;
-    background-color: rgba(121, 116, 116, 0.3);
+    background-color: rgba(78, 93, 108, 1);
+}
+
+.loginButton {
+    margin-top:5px;
 }
 
 .ingredientRow {
-    margin: 5px;
+    margin:5px;
 }
 
 .footer-widget {

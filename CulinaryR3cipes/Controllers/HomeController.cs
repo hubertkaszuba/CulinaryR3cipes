@@ -84,7 +84,7 @@ namespace CulinaryR3cipes.Models
             {
                 User user = await _signInManager.UserManager.GetUserAsync(User);
                 IEnumerable<Fridge> productsInFridge = await fridgeRepository.GetUserProducts(user);
-                IEnumerable<Recipe> filteredRecipes = await recipeRepository.FindAllAsync(r => r.Ingredients.All(i => productsInFridge.Any(p => (p.Id == i.Id && (p.Quantity >= i.Quantity)))));
+                IEnumerable<Recipe> filteredRecipes = await recipeRepository.FindAllAsync(r => r.Ingredients.All(i => productsInFridge.Any(p => (p.Product.Id == i.Product.Id && (p.Quantity >= i.Quantity)))));
 
                 return PartialView("_RecipesListPartial", new RecipesListViewModel  {
                     Recipes = filteredRecipes

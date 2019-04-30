@@ -68,22 +68,21 @@
 
     <div class="paginationContainer">
         <ul class="pagination pg-blue justify-content-center">
+            @if (Model.PagingInfo.TotalPages > 1)
+            {
+                @if (Model.PagingInfo.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <button id="prevCommentsPage" class="btn page-link"><<</button>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <button id="prevCommentsPage" class="btn page-link"><<</button>
+                    </li>
+                }
 
-            @if (Model.PagingInfo.CurrentPage > 1)
-            {
-                <li class="page-item">
-                    <button id="prevCommentsPage" class="btn page-link"><<</button>
-                </li>
-            }
-            else
-            {
-                <li class="page-item disabled">
-                    <button id="prevCommentsPage" class="btn page-link"><<</button>
-                </li>
-            }
-
-            @if (Model.PagingInfo.TotalPages > 2)
-            {
                 for (int i = 1; i <= Model.PagingInfo.TotalPages; i++)
                 {
                     if (i == Model.PagingInfo.CurrentPage)
@@ -99,19 +98,20 @@
                         </li>
                     }
                 }
-            }
 
-            @if (Model.PagingInfo.CurrentPage < Model.PagingInfo.TotalPages)
-            {
-                <li class="page-item">
-                    <button id="nextCommentsPage" class="btn page-link">>></button>
-                </li>
-            }
-            else
-            {
-                <li class="page-item disabled">
-                    <button id="nextCommentsPage" class="btn page-link">>></button>
-                </li>
+
+                @if (Model.PagingInfo.CurrentPage < Model.PagingInfo.TotalPages)
+                {
+                    <li class="page-item">
+                        <button id="nextCommentsPage" class="btn page-link">>></button>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <button id="nextCommentsPage" class="btn page-link">>></button>
+                    </li>
+                }
             }
         </ul>
     </div>

@@ -15,7 +15,7 @@ namespace CulinaryR3cipes.Models.ViewModels
         public List<Ingredient> Ingredients { get; set; }
         [Required(ErrorMessage = "Należy dodać obraz")]
         [Display(Name = "Obraz")]
-        public List<IFormFile> Image { get; set; }
+        public IFormFile Image { get; set; }
         public IEnumerable<Type> Types { get; set; }
     }
 }

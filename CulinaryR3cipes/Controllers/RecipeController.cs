@@ -53,17 +53,15 @@ namespace CulinaryR3cipes.Controllers
 
             if (model.Image != null)
             {
-                foreach (var item in model.Image)
+                if (model.Image.Length > 0)
                 {
-                    if (item.Length > 0)
+                    using (var stream = new MemoryStream())
                     {
-                        using (var stream = new MemoryStream())
-                        {
-                            await item.CopyToAsync(stream);
-                            model.Recipe.Img = stream.ToArray();
-                        }
+                        await model.Image.CopyToAsync(stream);
+                        model.Recipe.Img = stream.ToArray();
                     }
                 }
+               
             }
 
             IEnumerable<Product> productsToIngredients = await productRepository.FindAllAsync(p => model.Ingredients.Any(i => i.Id == p.Id));

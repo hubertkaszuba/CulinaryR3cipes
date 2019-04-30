@@ -4,35 +4,32 @@
     ViewData["Title"] = "Login";
 }
 
-<h2>
-    Logowanie
-</h2>
+<div class="section text-center">
+    <h2>Zaloguj się</h2>
+</div>
 
 <form asp-action="Login" asp-controller="Account" method="post" class="form-horizontal" role="form">
-    <div asp-validation-summary="All" class="text-danger"></div>
-
-    <div class="form-group">
-        <label asp-for="Email" class="col-md-2 custom-control-label"></label>
-        <div class="col-md-10">
+    <div asp-validation-summary="All" class="text-danger section"></div>
+    <div class="row section justify-content-center">
+        <div class="col-xs-6 tex">
+            <label asp-for="Email"></label>
             <input asp-for="Email" class="form-control" />
             <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
-    </div>
 
-    <div class="form-group">
-        <label asp-for="Password" class="col-md-2 custom-control-label"></label>
-        <div class="col-md-10">
+            <label asp-for="Password"></label>
             <input asp-for="Password" class="form-control" />
             <span asp-validation-for="Password" class="text-danger"></span>
+            <div class="col-md-12">
+                <a asp-action="Register" asp-controller="Account">Nie masz jeszcze konta? Zarejestruj się!</a>
+            </div>
+
+            <div class="col-md-12">
+                <a asp-action="ForgotPassword" asp-controller="Account">Zapomniałeś hasła?</a>
+            </div>
+        </div>
+
+        <div class="col-md-12 text-center loginButton">
+            <input type="submit" class="btn btn-primary" value="Zaloguj się" />
         </div>
     </div>
-
-    <a asp-action="Register" asp-controller="Account">Nie masz jeszcze konta? Zarejestruj się!</a>
-    <a asp-action="ForgotPassword" asp-controller="Account">Zapomniałeś hasła?</a>
-    <div class="form-group">
-        <div class="col-md-10">
-            <input type="submit" class="btn btn-primary" value="Zaloguj" />
-        </div>
-    </div>
-
 </form>

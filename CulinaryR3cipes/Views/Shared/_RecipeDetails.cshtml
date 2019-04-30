@@ -76,41 +76,43 @@
             </table>
         </div>
     </div>
-
-    @if (!Model.DidUserRate)
+    @if (_signInManager.IsSignedIn(User))
     {
-        <div class="row">
-            <div class="form-group col-lg-6">
-                <label asp-for="Rating" class="control-label">Twoja ocena</label>
-                <div>
-                    <span class="rating">
-                        @for (int i = 1; i <= 5; i++)
-                        {
-                            <span data-value="@(6 - i)" class="star"></span>
-                        }
-                    </span>
+        @if (!Model.DidUserRate)
+        {
+            <div class="row">
+                <div class="form-group col-lg-6">
+                    <label asp-for="Rating" class="control-label">Twoja ocena</label>
+                    <div>
+                        <span class="rating">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <span data-value="@(6 - i)" class="star"></span>
+                            }
+                        </span>
+                    </div>
+                    <input asp-for="Rating.RatingValue" hidden />
                 </div>
-                <input asp-for="Rating.RatingValue" hidden />
-            </div>
 
-            <div class="form-group col-lg-6">
-                <label asp-for="Rating.Comment">Twój komentarz</label>
-                <textarea asp-for="Rating.Comment" class="description"></textarea>
+                <div class="form-group col-lg-6">
+                    <label asp-for="Rating.Comment">Twój komentarz</label>
+                    <textarea asp-for="Rating.Comment" class="description"></textarea>
+                </div>
             </div>
-        </div>
-        <div class="row text-center addCommentDiv">
-            <div class="col-lg-12">
-                <button id="addComment" type="button" class="btn btn-primary">Dodaj komentarz</button>
+            <div class="row text-center addCommentDiv">
+                <div class="col-lg-12">
+                    <button id="addComment" type="button" class="btn btn-primary">Dodaj komentarz</button>
+                </div>
             </div>
-        </div>
-    }
-    else
-    {
-        <div class="row text-center addCommentDiv">
-            <div class="col-lg-12">
-                <h2>Już oceniłeś ten przepis</h2>
+        }
+        else
+        {
+            <div class="row text-center addCommentDiv">
+                <div class="col-lg-12">
+                    <h2>Już oceniłeś ten przepis</h2>
+                </div>
             </div>
-        </div>
+        }
     }
 
     <div id="commentsViewPlaceHolder"></div>

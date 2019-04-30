@@ -3,29 +3,45 @@
     ViewData["Title"] = "Panel administratora";
 }
 
-<h2>Panel administratora</h2>
-
-<div class="row m-1 p-1">
-    <div id="adminNavbar">
-        <a id="btnRecipes" class="btn btn-block btn-secondary">Lista przepisów do zaakceptowania</a>
-        <a id="btnAlerts" class="btn btn-block btn-secondary">Lista alertów</a>
-        <a id="btnUsers" class="btn btn-block btn-secondary">Lista użytkowników</a>
+<div class="section text-center">
+    <h2>Panel administratora</h2>
+</div>
+<div class="row section justify-content-center">
+    <div class="col-lg-4 text-center">
+        <button id="btnRecipes" class="btn btn-primary">Lista przepisów do zaakceptowania</button>
     </div>
-    <div id="viewPlaceHolder" class="col-9">
-
+    <div class="col-lg-4 text-center">
+        <button id="btnAlerts" class="btn btn-outline-primary">Lista alertów</button>
+    </div>
+    <div class="col-lg-4 text-center">
+        <button id="btnUsers" class="btn btn-outline-primary">Lista użytkowników</button>
     </div>
 </div>
 
+<div class="row section" id="viewPlaceHolder"></div>
+
 <script>
+    $(document).ready(function () {
+        $("#viewPlaceHolder").load("/Admin/RecipesToSubmit");
+    });
     $("#btnRecipes").on("click", function (e) {
+        $(this).attr("class", "btn btn-primary");
+        $("#btnAlerts").attr("class", "btn btn-outline-primary");
+        $("#btnUsers").attr("class", "btn btn-outline-primary");
         $("#viewPlaceHolder").load("/Admin/RecipesToSubmit");
     });
 
     $("#btnAlerts").on("click", function (e) {
+        $(this).attr("class", "btn btn-primary");
+        $("#btnRecipes").attr("class", "btn btn-outline-primary");
+        $("#btnUsers").attr("class", "btn btn-outline-primary");
         $("#viewPlaceHolder").load("/Admin/Alerts");
     });
 
     $("#btnUsers").on("click", function (e) {
+        $(this).attr("class", "btn btn-primary");
+        $("#btnRecipes").attr("class", "btn btn-outline-primary");
+        $("#btnAlerts").attr("class", "btn btn-outline-primary");
         $("#viewPlaceHolder").load("/Admin/Users");
     });
 

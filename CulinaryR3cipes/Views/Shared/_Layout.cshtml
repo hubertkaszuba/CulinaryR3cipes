@@ -31,7 +31,7 @@
                 @if (!_signInManager.IsSignedIn(User))
                 {
                     <li class="nav-item">
-                        <a class="nav-link" asp-action="Login" asp-controller="Account">Login</a>
+                        <a class="nav-link" asp-action="Login" asp-controller="Account">Zaloguj</a>
                     </li>
                 }
                 else
@@ -48,16 +48,16 @@
                         <a class="nav-link" asp-action="Favourites" asp-controller="Favourite">Ulubione przepisy</a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" asp-action="Logout" asp-controller="Account">Wyloguj</a>
-                    </li>
-
                     @if (User.IsInRole("Admin"))
                     {
                         <li class="nav-item">
                             <a class="nav-link" asp-action="AdminPanel" asp-controller="Admin">Panel administracyjny</a>
                         </li>
                     }
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-action="Logout" asp-controller="Account">Wyloguj</a>
+                    </li>
                 }
             </ul>
             @if (_signInManager.IsSignedIn(User))

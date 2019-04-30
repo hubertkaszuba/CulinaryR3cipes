@@ -40,18 +40,9 @@
         <div class="row justify-content-center" style="margin-top: 50px;">
             <div class="col-lg-6 text-center">
                 <div class="row justify-content-center">
-                    @if (Model.Image != null)
-                    {
-                        <div class="col-lg-8">
-                            <img alt="" src="" id="recipeImg" style="height:250px;width:250px;" />
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="col-lg-8">
-                            <img alt="" src="" id="recipeImg" style="height:250px;width:250px;display:none;" />
-                        </div>
-                    }
+                    <div class="col-sm-4 col-lg-8" id="recipeImgContainer">
+                        <img alt="" src="" id="recipeImg" style="height:250px;width:250px;display:none;" />
+                    </div>
                     <div class="col-lg-12 text-center" id="imgCol">
                         <input type="file" id="files" asp-for="Image" accept="image/*" />
                     </div>
@@ -92,7 +83,9 @@
             var reader = new FileReader();
 
             reader.onload = function (e) {
-                $('#recipeImg').attr('src', e.target.result).css({ display: flex });
+                $('#files').css('margin-top', "5px");
+                $('#recipeImgContainer').children('#recipeImg').show();
+                $('#recipeImgContainer').children('#recipeImg').attr('src', e.target.result);
             }
             reader.readAsDataURL(input.files[0]);
         }
@@ -103,6 +96,8 @@
         var re = /(\.jpg|\.jpeg|\.bmp|\.gif|\.png)$/i;
         if (!re.exec(name)) {
             $(this).val('');
+            $('#recipeImg').hide();
+            $('#files').css('margin-top', "0px");
             alert("Proszę załadować zdjęcie!");
         }
         else {
