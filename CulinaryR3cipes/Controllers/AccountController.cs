@@ -73,6 +73,12 @@ namespace CulinaryR3cipes.Controllers
         {
             if(ModelState.IsValid)
             {
+                if(_userManager.Users.Where(u => u.Email == register.Email).Any())
+                {
+                    ModelState.AddModelError("", "Istnieje już użytkownik z takim adresem email");
+                    return View(register);
+                }
+
                 var user = new User { UserName = register.Name, Email = register.Email };
                 var result = await _userManager.CreateAsync(user, register.Password);
 
@@ -84,7 +90,7 @@ namespace CulinaryR3cipes.Controllers
                         "Account",
                         values: new { userId = user.Id, code = emailVerifiactionCode },
                         protocol: Request.Scheme);
-                    await _sendGridEmailSender.SendMail(user.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _sendGridEmailSender.SendMail(user.Email, "Potwierdź adres email", $"Potwierdź swoje konto, <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>klikając tutaj</a>.");
                     await _userManager.AddToRoleAsync(user, "User");
                     return RedirectToAction("Login", "Account");
                 }
@@ -106,12 +112,12 @@ namespace CulinaryR3cipes.Controllers
                         ConfirmEmailAsync(user, code).Result;
             if (result.Succeeded)
             {
-                ViewBag.Message = "Email confirmed successfully!";
+                ViewBag.Message = "Twój adres email został potwierdzony!";
                 return View();
             }
             else
             {
-                ViewBag.Message = "Error while confirming your email!";
+                ViewBag.Message = "Nastąpił błąd podczas potwierdzania Twojego adresu email!";
                 return View();
             }
         }

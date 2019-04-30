@@ -14,7 +14,6 @@
 
 
 <form asp-action="AddToFridge" asp-controller="Fridge" method="post" class="form-horizontal" role="form">
-    <div asp-validation-summary="All" class="text-danger"></div>
     <div class="row section">
         <div class="form-group col-md-6">
             <label asp-for="Id" class="col-form-label"></label>
@@ -66,7 +65,7 @@
                     <tr style="color:dimgray">
                         <td>@Html.DisplayFor(modelItem => item.Product.Name)</td>
                         <td>@Html.DisplayFor(modelItem => item.Quantity)@Html.DisplayFor(modelItem => item.Product.Measure)</td>
-                        <td>
+                        <td style="width: 20%">
                             <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-success btn-sm">Usuń</a>
                             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success btn-sm">Edytuj</a>
                         </td>
