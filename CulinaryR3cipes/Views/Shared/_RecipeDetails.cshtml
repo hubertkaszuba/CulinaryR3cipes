@@ -130,6 +130,14 @@
         {
             <button id="remove" type="button" class="btn btn-primary">Usuń z ulubionych</button>
         }
+        if (Model.HasIngredients)
+        {
+            <button id="followTheRecipe" type="button" class="btn btn-success">Wykonaj przepis</button>
+        }
+        else
+        {
+            <button id="followTheRecipe" type="button" class="btn btn-success" disabled>Brak składników</button>
+        }
     }
 
 </div>
@@ -169,6 +177,9 @@
         var path = '@Url.Action("RemoveFromFavourite", "Home", new { id=Model.Recipe.Id })';
         $("#modal-placeholder").load(path);
     });
-
+    $('#followTheRecipe').on('click', function () {
+        var path = '@Url.Action("FollowTheRecipe", "Home", new { id=Model.Recipe.Id })';
+        $("#modal-placeholder").load(path);
+    });
 
 </script>

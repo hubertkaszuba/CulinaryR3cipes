@@ -11,5 +11,6 @@ namespace CulinaryR3cipes.Models.ViewModels
         public Rating Rating { get; set; }
         public bool DidUserRate { get; set; }
         public bool IsInUserFavourites { get; set; }
+        public bool HasIngredients { get; set; }
     }
 }

@@ -1,4 +1,6 @@
 ﻿@model User
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<User> _singInManager;
 <!-- Modal -->
 <head>
     <link rel="stylesheet" href="~/css/site.css" />
@@ -36,7 +38,14 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
-                <button id="setAdminRole" type="button" class="btn btn-primary">Nadaj prawa administratora</button>
+                @if (await _singInManager.UserManager.IsInRoleAsync(Model, "Admin"))
+                {
+                    <button id="setAdminRole" type="button" class="btn btn-primary">Usuń prawa administratora</button>
+                }
+                else
+                {
+                    <button id="setAdminRole" type="button" class="btn btn-primary">Nadaj prawa administratora</button>
+                }
             </div>
         </div>
     </div>

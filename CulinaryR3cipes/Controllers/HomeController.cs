@@ -109,10 +109,14 @@ namespace CulinaryR3cipes.Models
         {
             var user = await _signInManager.UserManager.GetUserAsync(User);
             Recipe recipe = await recipeRepository.FindAsync(r => r.Id == id);
+
+            IEnumerable<Fridge> productsInFridge = await fridgeRepository.GetUserProducts(user);
+
             return PartialView("_RecipeDetails", new RecipeDetailsViewModel {
                 Recipe = recipe,
                 DidUserRate = recipe.Ratings.Any(rating => rating.User == user),
-                IsInUserFavourites = recipe.Favourites.Any(f => f.User == user)
+                IsInUserFavourites = recipe.Favourites.Any(f => f.User == user),
+                HasIngredients = recipe.Ingredients.All(i => productsInFridge.Any(p => (p.Product.Id == i.Product.Id && (p.Quantity >= i.Quantity))))
             });
         }
 
@@ -204,6 +208,52 @@ namespace CulinaryR3cipes.Models
                 Recipe = recipe,
                 DidUserRate = recipe.Ratings.Any(rating => rating.User == user),
                 IsInUserFavourites = false
+            });
+        }
+
+        public async Task<IActionResult> FollowTheRecipe(Guid id)
+        {
+            Recipe recipe = await recipeRepository.FindAsync(r => r.Id == id);
+            User user = await _signInManager.UserManager.GetUserAsync(User);
+
+            IEnumerable<Fridge> productsInFridge = await fridgeRepository.GetUserProducts(user);
+
+            List<Guid> productsInFridgeToRemove = new List<Guid>();
+            Dictionary<Guid, int> productsInFridgeToChange = new Dictionary<Guid, int>();
+
+            foreach (var fridge in productsInFridge)
+            {
+                if(recipe.Ingredients.Any(ingredient => ingredient.Product.Id == fridge.Product.Id))
+                {
+                    var subtraction = fridge.Quantity - recipe.Ingredients.Where(i => i.Product.Id == fridge.Product.Id).First().Quantity;
+
+                    if (subtraction == 0)
+                        productsInFridgeToRemove.Add(fridge.Product.Id);
+                    else
+                        productsInFridgeToChange.Add(fridge.Product.Id, subtraction);
+                }
+            }
+
+            foreach(var item in productsInFridgeToRemove)
+            {
+                fridgeRepository.Remove(productsInFridge.Where(p => p.Product.Id == item).First());
+            }
+
+            foreach(var item in productsInFridgeToChange)
+            {
+                Fridge fridge = productsInFridge.Where(p => p.Product.Id == item.Key).First();
+                fridge.Quantity = item.Value;
+                fridgeRepository.Update(fridge);
+            }
+
+            productsInFridge = await fridgeRepository.GetUserProducts(user);
+
+            return PartialView("_RecipeDetails", new RecipeDetailsViewModel
+            {
+                Recipe = recipe,
+                DidUserRate = recipe.Ratings.Any(rating => rating.User == user),
+                IsInUserFavourites = false,
+                HasIngredients = recipe.Ingredients.All(i => productsInFridge.Any(p => (p.Product.Id == i.Product.Id && (p.Quantity >= i.Quantity))))
             });
         }
     }

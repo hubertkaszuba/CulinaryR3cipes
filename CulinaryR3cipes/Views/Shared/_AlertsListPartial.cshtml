@@ -18,7 +18,7 @@
             <td style="width: 30%">@Html.DisplayFor(modelItem => item.User.UserName)</td>
             <td style="width: 40%">@Html.DisplayFor(modelItem => item.Comment)</td>
             <td style="width: 30%">
-                <button id="@item.User.Id" type="button" class="btn btn-sm btn-success delete" data-target="#viewPlaceHolder" data-url="@Url.Action("BanUserFromAlerts")">Zablokuj użytkownika</button>
+                <button id="@item.User.Id" type="button" class="btn btn-sm btn-danger delete" data-target="#viewPlaceHolder" data-url="@Url.Action("BanUserFromAlerts")">Zablokuj użytkownika</button>
                 <button id="@item.Id" type="button" class="btn btn-sm btn-success delete"  data-target="#viewPlaceHolder" data-url="@Url.Action("DeleteComment")">Usuń komentarz</button>
             </td>
         </tr>

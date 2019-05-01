@@ -39,11 +39,12 @@ namespace CulinaryR3cipes.Controllers
             });
         }
 
-        public IActionResult Users()
+        public async Task<IActionResult> Users()
         {
+            var user = await _signInManager.UserManager.GetUserAsync(User);
             return PartialView("_UsersListPartial", new UsersListViewModel
             {
-                Users = _signInManager.UserManager.Users.Where(user => !user.isBanned)
+                Users = _signInManager.UserManager.Users.Where(u => !u.isBanned && u.Id != user.Id)
             });
         }
 
@@ -153,11 +154,18 @@ namespace CulinaryR3cipes.Controllers
         [HttpPost]
         public async Task<IActionResult> SetAdminRole(User user)
         {
-            User newAdmin = _signInManager.UserManager.Users.Where(u => u.Id == user.Id).FirstOrDefault();
+            User Admin = _signInManager.UserManager.Users.Where(u => u.Id == user.Id).FirstOrDefault();
 
-            if (newAdmin != null)
-                await _signInManager.UserManager.AddToRoleAsync(newAdmin, "Admin");
+            if (Admin != null)
+            {
+                bool isInRole = await _signInManager.UserManager.IsInRoleAsync(Admin, "Admin");
 
+                if(isInRole)
+                    await _signInManager.UserManager.RemoveFromRoleAsync(Admin, "Admin");
+                else
+                    await _signInManager.UserManager.AddToRoleAsync(Admin, "Admin");
+            }
+                
             return PartialView("_UsersListPartial", new UsersListViewModel
             {
                 Users = _signInManager.UserManager.Users
