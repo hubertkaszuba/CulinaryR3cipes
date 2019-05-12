@@ -84,24 +84,25 @@
             { SelectedTypeIds: selectedTypeIds });
     });
 
-    $("#typeDropDown").change(function (e) {
-        var selectedTypeIds = $("#typeDropDown").val();
-        $("#viewPlaceHolder").load("/Home/Recipes",
-            { SelectedTypeIds: selectedTypeIds });
-    });
+    //$("#typeDropDown").change(function (e) {
+    //    var selectedTypeIds = $("#typeDropDown").val();
+    //    $("#viewPlaceHolder").load("/Home/Recipes",
+    //        { SelectedTypeIds: selectedTypeIds });
+    //});
 
-    $("#recipeSearch").on('change paste input', function () {
-        var recipeName = $("#recipeSearch").val();
-        $("#viewPlaceHolder").load("/Home/Recipes",
-            { name: recipeName })
-    });
+    //$("#recipeSearch").on('change paste input', function () {
+    //    var recipeName = $("#recipeSearch").val();
+    //    $("#viewPlaceHolder").load("/Home/Recipes",
+    //        { name: recipeName })
+    //});
 
     $("#btnSearch").on("click", function (e) {
         var selectedTypeIds = $("#typeDropDown").val();
         var includedCategoryIds = $("#categoryIncludedDropDown").val();
         var excludedCategoryIds = $("#categoryExcludedDropDown").val();
+        var recipeName = $("#recipeSearch").val();
         $("#viewPlaceHolder").load("/Home/Recipes",
-            { SelectedTypeIds: selectedTypeIds, IncludedCategoryIds: includedCategoryIds, ExcludedCategoryIds: excludedCategoryIds, recipePage: 1 });
+            { SelectedTypeIds: selectedTypeIds, IncludedCategoryIds: includedCategoryIds, ExcludedCategoryIds: excludedCategoryIds, name: recipeName, recipePage: 1 });
     });
 
     $("#btnSearchFridge").on("click", function (e) {

@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <div class="modal fade" id="details" tabindex="-1" role="dialog" aria-labelledby="submitRecipeLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog customModal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="submitRecipeLabel">Zaakceptuj przepis</h5>
@@ -14,54 +14,76 @@
             </div>
             <div class="modal-body">
                 <form asp-action="SubmitRecipe">
-                    @if (@Model.Img != null)
-                    {
-                        var tmp = "data:image/jpg;base64," + Convert.ToBase64String(Model.Img, 0, Model.Img.Length);
-                        <img alt="" src="@tmp" style="height:300px;width:300px;" />
-                    }
+                    <div class="row">
+                        @if (@Model.Img != null)
+                        {
+                            var tmp = "data:image/jpg;base64," + Convert.ToBase64String(Model.Img, 0, Model.Img.Length);
+                            <div class="col-lg-6">
+                                <img alt="" src="@tmp" style="height:300px;width:300px;" />
+                            </div>
+                        }
+                        <div class="col-lg-6">
+
+                            <div class="form-group">
+                                <label asp-for="Time"></label>
+                                <input asp-for="Time" class="form-control" style="background-color: #f8f8f8" readonly />
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Type.Name"></label>
+                                <input asp-for="Type.Name" class="form-control" style="background-color: #f8f8f8" readonly />
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="AverageRating" class="control-label">Średnia ocena</label>
+                                <div>
+                                    <span class="rating">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            var starClass = "starAv";
+
+                                            if (Math.Floor(Model.AverageRating) == 6 - i)
+                                            {
+                                                starClass += " active";
+                                            }
+                                            <span data-value="@(6 - i)" class="@starClass"></span>
+                                        }
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
 
                     <div class="form-group">
                         <input asp-for="Id" hidden />
                     </div>
-
-                    <div class="form-group">
-                        <label asp-for="Name"></label>
-                        <input asp-for="Name" class="form-control" style="background-color: #f8f8f8" readonly />
+                    <div class="row">
+                        <div class="form-group col-lg-6">
+                            <label asp-for="Description"></label>
+                            <textarea asp-for="Description" class="description" readonly></textarea>
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="ingredients">Składniki</label>
+                            <table id="ingredients" class="table" style="background-color:#DF691A">
+                                <thead>
+                                    <tr>
+                                        <th>Nazwa</th>
+                                        <th>Ilość</th>
+                                    </tr>
+                                </thead>
+                                <tbody style="background-color:azure">
+                                    @foreach (var item in Model.Ingredients)
+                                    {
+                                        <tr style="color:dimgray">
+                                            <td>@Html.DisplayFor(modelItem => item.Product.Name)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Quantity)@Html.DisplayFor(modelItem => item.Product.Measure)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-
-                    <div class="form-group">
-                        <label asp-for="Time"></label>
-                        <input asp-for="Time" class="form-control" style="background-color: #f8f8f8" readonly />
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="Type.Name"></label>
-                        <input asp-for="Type.Name" class="form-control" style="background-color: #f8f8f8" readonly />
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="Description"></label>
-                        <textarea asp-for="Description" class="description" readonly></textarea>
-                    </div>
-
-                    <table class="table" style="background-color:#DF691A">
-                        <thead>
-                            <tr>
-                                <th>Nazwa</th>
-                                <th>Ilość</th>
-                            </tr>
-                        </thead>
-                        <tbody style="background-color:azure">
-                            @foreach (var item in Model.Ingredients)
-                            {
-                                <tr style="color:dimgray">
-                                    <td>@Html.DisplayFor(modelItem => item.Product.Name)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.Quantity)@Html.DisplayFor(modelItem => item.Product.Measure)</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-
                 </form>
             </div>
             <div class="modal-footer">

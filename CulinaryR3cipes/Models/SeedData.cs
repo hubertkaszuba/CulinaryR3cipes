@@ -35,9 +35,9 @@ namespace CulinaryR3cipes.Models
                 Type dinner = new Type { Name = "Obiad" };
                 Type supper = new Type { Name = "Kolacja" };
 
-                typeRepository.Add(breakfast);
-                typeRepository.Add(dinner);
                 typeRepository.Add(supper);
+                typeRepository.Add(dinner);
+                typeRepository.Add(breakfast);
 
                 Category dairyProduct = new Category { Name = "Nabiał" };
                 Category fruit = new Category { Name = "Owoc" }; ;
@@ -67,6 +67,10 @@ namespace CulinaryR3cipes.Models
                 Product ham = new Product { Name = "Szynka", Measure = "szt.", Category = meat };
                 Product oatmealFlakes = new Product { Name = "Płatki owsiane", Measure = "g", Category = wheatProduct };
                 Product butter = new Product { Name = "Masło", Measure = "g", Category = dairyProduct };
+                Product banana = new Product { Name = "Banan", Measure = "szt.", Category = fruit };
+                Product rice = new Product { Name = "Ryż", Measure = "g", Category = wheatProduct };
+                Product spinach = new Product { Name = "Szpinak", Measure = "g", Category = vegetable };
+                Product broccoli = new Product { Name = "Brokuł", Measure = "g", Category = vegetable };
 
                 productRepository.Add(eggs);
                 productRepository.Add(apple);
@@ -82,15 +86,24 @@ namespace CulinaryR3cipes.Models
                 productRepository.Add(ham);
                 productRepository.Add(oatmealFlakes);
                 productRepository.Add(butter);
+                productRepository.Add(banana);
 
-                
                 Recipe pastaWithChicken = new Recipe { Name = "Makaron z kurczakiem i pieczarkami", Type = dinner, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at mattis dui. Duis vitae rhoncus lacus. Duis luctus eleifend dolor, ut facilisis magna vehicula ac. Vestibulum nec suscipit magna, et gravida sem. Quisque quis malesuada felis, in luctus tortor. Aenean pulvinar id turpis vel volutpat. Nullam libero urna, ultrices a mollis sit amet, ultricies at erat. Mauris nec pharetra neque. Praesent ipsum turpis, dictum vitae massa pulvinar, eleifend rhoncus tellus. Sed interdum elementum rhoncus. Sed ac nisl varius, faucibus sem eget, tempus risus. Maecenas eu leo eu massa consectetur venenatis nec sed lorem.", Time = 30, Img = File.ReadAllBytes(Path.Combine(Environment.CurrentDirectory, @"wwwroot\seedImages\kurczak_pieczarki.jpg")) };
                 Recipe breadWithHam = new Recipe { Name = "Kanapka z szynką", Type = breakfast, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at mattis dui. Duis vitae rhoncus lacus. Duis luctus eleifend dolor, ut facilisis magna vehicula ac. Vestibulum nec suscipit magna, et gravida sem. Quisque quis malesuada felis, in luctus tortor. Aenean pulvinar id turpis vel volutpat. Nullam libero urna, ultrices a mollis sit amet, ultricies at erat. Mauris nec pharetra neque. Praesent ipsum turpis, dictum vitae massa pulvinar, eleifend rhoncus tellus. Sed interdum elementum rhoncus. Sed ac nisl varius, faucibus sem eget, tempus risus. Maecenas eu leo eu massa consectetur venenatis nec sed lorem.", Time = 10, Img = File.ReadAllBytes(Path.Combine(Environment.CurrentDirectory, @"wwwroot\seedImages\kanapka_szynka.jpg")) };
                 Recipe pancakes = new Recipe { Name = "Naleśniki", Type = dinner, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at mattis dui. Duis vitae rhoncus lacus. Duis luctus eleifend dolor, ut facilisis magna vehicula ac. Vestibulum nec suscipit magna, et gravida sem. Quisque quis malesuada felis, in luctus tortor. Aenean pulvinar id turpis vel volutpat. Nullam libero urna, ultrices a mollis sit amet, ultricies at erat. Mauris nec pharetra neque. Praesent ipsum turpis, dictum vitae massa pulvinar, eleifend rhoncus tellus. Sed interdum elementum rhoncus. Sed ac nisl varius, faucibus sem eget, tempus risus. Maecenas eu leo eu massa consectetur venenatis nec sed lorem.", Time = 20, Img = File.ReadAllBytes(Path.Combine(Environment.CurrentDirectory, @"wwwroot\seedImages\nalesniki.jpg")) };
+                Recipe porridge = new Recipe { Name = "Owsianka", Type = breakfast, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at mattis dui. Duis vitae rhoncus lacus. Duis luctus eleifend dolor, ut facilisis magna vehicula ac. Vestibulum nec suscipit magna, et gravida sem. Quisque quis malesuada felis, in luctus tortor. Aenean pulvinar id turpis vel volutpat. Nullam libero urna, ultrices a mollis sit amet, ultricies at erat. Mauris nec pharetra neque. Praesent ipsum turpis, dictum vitae massa pulvinar, eleifend rhoncus tellus. Sed interdum elementum rhoncus. Sed ac nisl varius, faucibus sem eget, tempus risus. Maecenas eu leo eu massa consectetur venenatis nec sed lorem.", Time = 15, Img = File.ReadAllBytes(Path.Combine(Environment.CurrentDirectory, @"wwwroot\seedImages\owsianka.jpg")) };
+                Recipe omelette = new Recipe { Name = "Omlet", Type = breakfast, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at mattis dui. Duis vitae rhoncus lacus. Duis luctus eleifend dolor, ut facilisis magna vehicula ac. Vestibulum nec suscipit magna, et gravida sem. Quisque quis malesuada felis, in luctus tortor. Aenean pulvinar id turpis vel volutpat. Nullam libero urna, ultrices a mollis sit amet, ultricies at erat. Mauris nec pharetra neque. Praesent ipsum turpis, dictum vitae massa pulvinar, eleifend rhoncus tellus. Sed interdum elementum rhoncus. Sed ac nisl varius, faucibus sem eget, tempus risus. Maecenas eu leo eu massa consectetur venenatis nec sed lorem.", Time = 15, Img = File.ReadAllBytes(Path.Combine(Environment.CurrentDirectory, @"wwwroot\seedImages\omlet.jpg")) };
+                Recipe scrambledEggs = new Recipe { Name = "Jajecznica", Type = breakfast, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at mattis dui. Duis vitae rhoncus lacus. Duis luctus eleifend dolor, ut facilisis magna vehicula ac. Vestibulum nec suscipit magna, et gravida sem. Quisque quis malesuada felis, in luctus tortor. Aenean pulvinar id turpis vel volutpat. Nullam libero urna, ultrices a mollis sit amet, ultricies at erat. Mauris nec pharetra neque. Praesent ipsum turpis, dictum vitae massa pulvinar, eleifend rhoncus tellus. Sed interdum elementum rhoncus. Sed ac nisl varius, faucibus sem eget, tempus risus. Maecenas eu leo eu massa consectetur venenatis nec sed lorem.", Time = 15, Img = File.ReadAllBytes(Path.Combine(Environment.CurrentDirectory, @"wwwroot\seedImages\jajecznica.jpg")) };
+                Recipe riceWithChickenAndSpinach = new Recipe { Name = "Kurczak z ryżem i szpinakiem", Type = breakfast, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at mattis dui. Duis vitae rhoncus lacus. Duis luctus eleifend dolor, ut facilisis magna vehicula ac. Vestibulum nec suscipit magna, et gravida sem. Quisque quis malesuada felis, in luctus tortor. Aenean pulvinar id turpis vel volutpat. Nullam libero urna, ultrices a mollis sit amet, ultricies at erat. Mauris nec pharetra neque. Praesent ipsum turpis, dictum vitae massa pulvinar, eleifend rhoncus tellus. Sed interdum elementum rhoncus. Sed ac nisl varius, faucibus sem eget, tempus risus. Maecenas eu leo eu massa consectetur venenatis nec sed lorem.", Time = 45, Img = File.ReadAllBytes(Path.Combine(Environment.CurrentDirectory, @"wwwroot\seedImages\kurczakRyżSzpinak.jpg")) };
+                Recipe riceWithChickenCarrotBroccoli = new Recipe { Name = "Kurczak z ryżem, marchewką i brokułem", Type = breakfast, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at mattis dui. Duis vitae rhoncus lacus. Duis luctus eleifend dolor, ut facilisis magna vehicula ac. Vestibulum nec suscipit magna, et gravida sem. Quisque quis malesuada felis, in luctus tortor. Aenean pulvinar id turpis vel volutpat. Nullam libero urna, ultrices a mollis sit amet, ultricies at erat. Mauris nec pharetra neque. Praesent ipsum turpis, dictum vitae massa pulvinar, eleifend rhoncus tellus. Sed interdum elementum rhoncus. Sed ac nisl varius, faucibus sem eget, tempus risus. Maecenas eu leo eu massa consectetur venenatis nec sed lorem.", Time = 45, Img = File.ReadAllBytes(Path.Combine(Environment.CurrentDirectory, @"wwwroot\seedImages\kurczakRyżMarchewkaBrokuł.jpg")) };
 
                 recipeRepository.Add(pastaWithChicken);
                 recipeRepository.Add(breadWithHam);
                 recipeRepository.Add(pancakes);
+                recipeRepository.Add(porridge);
+                recipeRepository.Add(omelette);
+                recipeRepository.Add(scrambledEggs);
+                recipeRepository.Add(riceWithChickenAndSpinach);
 
                 ingredientRepository.AddIngredients(new List<Ingredient> {
                     new Ingredient { Product = chicken, Quantity = 200, Recipe = pastaWithChicken},
@@ -110,7 +123,41 @@ namespace CulinaryR3cipes.Models
                     new Ingredient { Product = eggs, Quantity = 3, Recipe = pancakes },
                     new Ingredient { Product = flour, Quantity = 200, Recipe = pancakes},
                     new Ingredient { Product = sugar, Quantity = 10, Recipe = pancakes}
-                });             
+                });
+
+                ingredientRepository.AddIngredients(new List<Ingredient> {
+                    new Ingredient { Product = milk, Quantity = 250, Recipe = porridge},
+                    new Ingredient { Product = oatmealFlakes, Quantity = 150, Recipe = porridge },
+                    new Ingredient { Product = apple, Quantity = 1, Recipe = porridge},
+                });
+
+                ingredientRepository.AddIngredients(new List<Ingredient> {
+                    new Ingredient { Product = milk, Quantity = 50, Recipe = omelette},
+                    new Ingredient { Product = oatmealFlakes, Quantity = 150, Recipe = omelette },
+                    new Ingredient { Product = banana, Quantity = 1, Recipe = omelette},
+                    new Ingredient { Product = eggs, Quantity = 3, Recipe = omelette}
+                });
+
+                ingredientRepository.AddIngredients(new List<Ingredient> {
+                    new Ingredient { Product = milk, Quantity = 30, Recipe = scrambledEggs},
+                    new Ingredient { Product = butter, Quantity = 5, Recipe = scrambledEggs },
+                    new Ingredient { Product = ham, Quantity = 4, Recipe = scrambledEggs},
+                    new Ingredient { Product = eggs, Quantity = 3, Recipe = scrambledEggs}
+                });
+
+                ingredientRepository.AddIngredients(new List<Ingredient> {
+                    new Ingredient { Product = rice, Quantity = 100, Recipe = riceWithChickenAndSpinach},
+                    new Ingredient { Product = butter, Quantity = 5, Recipe = riceWithChickenAndSpinach },
+                    new Ingredient { Product = chicken, Quantity = 250, Recipe = riceWithChickenAndSpinach},
+                    new Ingredient { Product = spinach, Quantity = 100, Recipe = riceWithChickenAndSpinach}
+                });
+
+                ingredientRepository.AddIngredients(new List<Ingredient> {
+                    new Ingredient { Product = rice, Quantity = 100, Recipe = riceWithChickenCarrotBroccoli},
+                    new Ingredient { Product = chicken, Quantity = 250, Recipe = riceWithChickenCarrotBroccoli},
+                    new Ingredient { Product = broccoli, Quantity = 100, Recipe = riceWithChickenCarrotBroccoli},
+                    new Ingredient { Product = carrot, Quantity = 3, Recipe = riceWithChickenCarrotBroccoli}
+                });
             }
         }
 

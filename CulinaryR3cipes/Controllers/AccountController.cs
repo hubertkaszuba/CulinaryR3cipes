@@ -94,6 +94,10 @@ namespace CulinaryR3cipes.Controllers
                     await _userManager.AddToRoleAsync(user, "User");
                     return RedirectToAction("Login", "Account");
                 }
+                else
+                {
+                    ModelState.AddModelError("", "Hasło powinno zawierać conajmniej 8 znaków, w tym: jedną dużą literę, jedną małą literę, cyfrę oraz znak specjalny");
+                }
             }
 
             return View(register);

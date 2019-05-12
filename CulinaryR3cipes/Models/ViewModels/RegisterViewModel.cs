@@ -20,7 +20,7 @@ namespace CulinaryR3cipes.Models.ViewModels
         public string Password { get; set; }
         [Required(ErrorMessage = "Podaj hasło")]
         [Display(Name = "Powtórz hasło")]
-        [DataType(DataType.Password)]
+        [DataType(DataType.Password, ErrorMessage = "Hasło powinno zawierać conajmniej 8 znaków, w tym: jedną dużą literę, jedną małą literę, cyfrę oraz znak specjalny")]
         [Compare(nameof(Password), ErrorMessage = "Hasła nie są identyczne")]
         public string PasswordConfirm { get; set; }
     }

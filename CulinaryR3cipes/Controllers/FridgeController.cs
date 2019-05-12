@@ -32,7 +32,10 @@ namespace CulinaryR3cipes.Controllers
         public async Task<IActionResult> Fridge()
         {
             var user = await _signInManager.UserManager.GetUserAsync(User);
-            return View(new FridgeViewModel { Products = await productRepository.Products(),
+            var products = await productRepository.Products();
+            products = products.OrderBy(p => p.Name);
+            return View(new FridgeViewModel {
+                Products = products,
                 Fridges = await fridgeRepository.GetUserProducts(user)
             });
         }
@@ -41,12 +44,13 @@ namespace CulinaryR3cipes.Controllers
         {
             var user = await _signInManager.UserManager.GetUserAsync(User);
             Fridge productInFridge = await fridgeRepository.FindAsync(f => f.Id == id && f.User == user);
-
+            var products = await productRepository.Products();
+            products = products.OrderBy(p => p.Name);
             return View("Fridge", new FridgeViewModel
             {
                 Id = productInFridge.Product.Id,
                 Quantity = productInFridge.Quantity,
-                Products = await productRepository.Products(),
+                Products = products,
                 Fridges = await fridgeRepository.GetUserProducts(user)
             });
         }
@@ -54,6 +58,8 @@ namespace CulinaryR3cipes.Controllers
         public async Task<IActionResult> AddToFridge(FridgeViewModel fridge)
         {
             User user = await _signInManager.UserManager.GetUserAsync(User);
+            var products = await productRepository.Products();
+            products = products.OrderBy(p => p.Name);
 
             if (!ModelState.IsValid)
             {
@@ -64,7 +70,7 @@ namespace CulinaryR3cipes.Controllers
                     ModelState.AddModelError("Id", "Należy wybrać produkt");
                 }
 
-                fridge.Products = await productRepository.Products();
+                fridge.Products = products;
                 fridge.Fridges = await fridgeRepository.GetUserProducts(user);
                 return View("Fridge", fridge);
             }

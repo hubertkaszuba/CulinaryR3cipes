@@ -78,6 +78,7 @@ namespace CulinaryR3cipes.Controllers
         public async Task<JsonResult> GetData()
         {
             IEnumerable<Product> products = await productRepository.Products();
+            products = products.OrderBy(p => p.Name);
             List<Product> productsJson = new List<Product>();
             foreach(var p in products)
             {

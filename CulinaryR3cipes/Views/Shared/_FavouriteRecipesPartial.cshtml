@@ -17,7 +17,7 @@
                 <tr style="color:dimgray">
                     <td>@Html.DisplayFor(modelItem => item.Name)</td>
                     <td style="width: 20%">
-                        <button id="@item.Id" type="button" class="btn btn-sm btn-success recipesDelete" data-target="#viewPlaceHolder" data-url="@Url.Action("RemoveFromFavourite")">Usuń z ulubionych</button>
+                        <button id="@item.Id" type="button" class="btn btn-sm btn-danger recipesDelete" data-target="#viewPlaceHolder" data-url="@Url.Action("RemoveFromFavourite")">Usuń z ulubionych</button>
                         <button id="@item.Id" type="button" class="btn btn-sm btn-success recipesDetails" data-toggle="ajax-modal" data-target="#details" data-url="@Url.Action("Details", "Home")">Szczegóły</button>
                     </td>
                 </tr>
